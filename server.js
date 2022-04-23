@@ -1,59 +1,81 @@
-'use strict';
+'use strict'
+require('dotenv').config()
+const bodyParser = require('body-parser'),
+  expect = require('chai').expect,
+  cors = require('cors'),
+  apiRoutes = require('./routes/api.js'),
+  fccTestingRoutes = require('./routes/fcctesting.js'),
+  runner = require('./test-runner'),
+  express = require('express'),
+  app = express(),
+  // For development: browser auto-refresh.
+  liveReload = require('livereload'),
+  connectLiveReload = require('connect-livereload'),
+  liveReloadServer = liveReload.createServer()
+liveReloadServer.server.once('connection', () => {
+  setTimeout(() => {
+    liveReloadServer.refresh('/')
+  }, 10)
+})
+app.use(connectLiveReload())
 
-const express     = require('express');
-const bodyParser  = require('body-parser');
-const expect      = require('chai').expect;
-const cors        = require('cors');
-require('dotenv').config();
+function log() {
+  console.log(...arguments)
+}
 
-const apiRoutes         = require('./routes/api.js');
-const fccTestingRoutes  = require('./routes/fcctesting.js');
-const runner            = require('./test-runner');
+app.use('/public', express.static(process.cwd() + '/public'))
+app.use(cors({ origin: '*' })) // For FCC testing purposes only.
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-let app = express();
+const views = process.cwd() + '/views'
 
-app.use('/public', express.static(process.cwd() + '/public'));
+// Index page (static HTML).
+app.route('/').get((req, res) => {
+  res.sendFile(views + '/')
+})
+app.route('/metric-imperial').get((req, res) => {
+  res.sendFile(views + '/metric-imperial/')
+})
+app.route('/issue-tracker').get((req, res) => {
+  res.sendFile(views + '/issue-tracker/')
+})
+app.route('/personal-library').get((req, res) => {
+  res.sendFile(views + '/personal-library/')
+})
+app.route('/sudoku-solver').get((req, res) => {
+  res.sendFile(views + '/sudoku-solver/')
+})
+app.route('/american-british').get((req, res) => {
+  res.sendFile(views + '/american-british/')
+})
 
-app.use(cors({origin: '*'})); //For FCC testing purposes only
+// For FCC testing purposes.
+fccTestingRoutes(app)
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Routing for API.
+apiRoutes(app)
 
-//Index page (static HTML)
-app.route('/')
-  .get(function (req, res) {
-    res.sendFile(process.cwd() + '/views/index.html');
-  });
+// 404 Not Found Middleware.
+app.use((req, res, next) => {
+  res.status(404).type('text').send('404 not Found')
+})
 
-//For FCC testing purposes
-fccTestingRoutes(app);
+// Start our server and tests!
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+  log('Listening on port ' + port)
+  if (process.env.NODE_ENV !== 'test') return
 
-//Routing for API 
-apiRoutes(app);  
-    
-//404 Not Found Middleware
-app.use(function(req, res, next) {
-  res.status(404)
-    .type('text')
-    .send('Not Found');
-});
+  log('Running Tests...')
+  setTimeout(() => {
+    try {
+      // @ts-ignore
+      runner.run()
+    } catch (e) {
+      console.error('Tests are not valid:', e)
+    }
+  }, 1500)
+})
 
-const port = process.env.PORT || 3000;
-
-//Start our server and tests!
-app.listen(port, function () {
-  console.log("Listening on port " + port);
-  if(process.env.NODE_ENV==='test') {
-    console.log('Running Tests...');
-    setTimeout(function () {
-      try {
-        runner.run();
-      } catch(e) {
-          console.log('Tests are not valid:');
-          console.error(e);
-      }
-    }, 1500);
-  }
-});
-
-module.exports = app; //for testing
+module.exports = app // For testing.
