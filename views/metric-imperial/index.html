@@ -2,75 +2,29 @@
 <html>
   <head>
     <title>Metric/Imperial Converter</title>
-    <meta
-      name="description"
-      content="The freeCodeCamp Metric/Imperial Converter Project from the Quality Assurance Unit"
-    />
     <link
       id="favicon"
       rel="icon"
       href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png"
       type="image/x-icon"
     />
+    <link rel="stylesheet" href="../public/all.css" />
+    <link rel="stylesheet" href="../../public/metric-imperial.css" />
+    <meta
+      name="description"
+      content="The freeCodeCamp Metric/Imperial Converter Project from the Quality Assurance Unit"
+    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="../public/style.css" />
-  </head>
-  <body>
-    <header>
-      <h1>Metric-Imperial Converter</h1>
-      <hr />
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li class="current">
-            <a href="/metric-imperial">Metric-Imperial Converter</a>
-          </li>
-          <li><a href="/issue-tracker">Issue Tracker</a></li>
-          <li><a href="/personal-library">Personal Library</a></li>
-          <li><a href="/sudoku-solver">Sudoku Solver</a></li>
-          <li><a href="/american-british">American British Translator</a></li>
-        </ul>
-      </nav>
-    </header>
-    <hr />
-    <section class="examples">
-      <h3>Example Usage</h3>
-      <code>/api/convert?input=4gal</code><br /><br />
-      <code>/api/convert?input=1/2km</code><br /><br />
-      <code>/api/convert?input=5.4/3lbs</code><br /><br />
-      <code>/api/convert?input=kg</code><br /><br />
-      <h3>Example Return</h3>
-      <code
-        >{ initNum: 3.1, initUnit: 'mi', returnNum: 4.98895, returnUnit: 'km',
-        string: '3.1 miles converts to 4.98895 kilometers' }</code
-      >
-    </section>
-    <hr />
-    <section class="input">
-      <div id="testui">
-        <h3>Front-End</h3>
-        <form id="convertForm" class="border">
-          <input
-            type="text"
-            id="convertField"
-            name="input"
-            placeholder="3.1mi"
-          />
-          <input id="convert" type="submit" value="Convert!" />
-        </form>
-        <p id="result"></p>
-        <code id="jsonResult"></code>
-      </div>
-    </section>
     <!-- Your web-app is https, so your scripts need to be too -->
     <script
+      defer
       src="https://code.jquery.com/jquery-2.2.1.min.js"
       integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
       crossorigin="anonymous"
     ></script>
-    <script>
+    <script defer>
       $(function () {
         $('#convertForm').submit(function (event) {
           event.preventDefault()
@@ -86,5 +40,53 @@
         })
       })
     </script>
+  </head>
+  <body>
+    <header>
+      <h1>Metric-Imperial Converter</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li class="current">
+            <a href="/metric-imperial">Metric-Imperial Converter</a>
+          </li>
+          <li><a href="/issue-tracker">Issue Tracker</a></li>
+          <li><a href="/personal-library">Personal Library</a></li>
+          <li><a href="/sudoku-solver">Sudoku Solver</a></li>
+          <li><a href="/american-british">American British Translator</a></li>
+        </ul>
+      </nav>
+    </header>
+    <hr />
+    <main>
+      <h3>Example Usage</h3>
+      <code>/api/convert?input=4gal</code><br /><br />
+      <code>/api/convert?input=1/2km</code><br /><br />
+      <code>/api/convert?input=5.4/3lbs</code><br /><br />
+      <code>/api/convert?input=kg</code><br /><br />
+      <h3>Example Return</h3>
+      <code
+        >{<br />&emsp;&emsp;initNum: 3.1, <br />&emsp;&emsp;initUnit: 'mi',
+        <br />&emsp;&emsp;returnNum: 4.98895, <br />&emsp;&emsp;returnUnit:
+        'km', <br />&emsp;&emsp;string: '3.1 miles converts to 4.98895
+        kilometers' <br />}</code
+      >
+      <section class="input">
+        <div id="testui">
+          <h3>Front End</h3>
+          <form id="convertForm" class="border">
+            <input
+              type="text"
+              id="convertField"
+              name="input"
+              placeholder="3.1mi"
+            />
+            <input id="convert" type="submit" value="Convert!" />
+          </form>
+          <p id="result"></p>
+          <code id="jsonResult"></code>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

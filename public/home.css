@@ -1,0 +1,10 @@
+footer ul {
+  display: flex;
+  flex-direction: row;
+}
+
+footer ul li {
+  text-decoration: none;
+  list-style-type: none;
+  margin: 15px;
+}

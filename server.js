@@ -32,7 +32,7 @@ const views = process.cwd() + '/views'
 
 // Index page (static HTML).
 app.route('/').get((req, res) => {
-  res.sendFile(views + '/')
+  res.sendFile(views + '/home.html')
 })
 app.route('/metric-imperial').get((req, res) => {
   res.sendFile(views + '/metric-imperial/')
@@ -69,12 +69,14 @@ app.listen(port, () => {
 
   log('Running Tests...')
   setTimeout(() => {
-    try {
-      // @ts-ignore
-      runner.run()
-    } catch (e) {
-      console.error('Tests are not valid:', e)
-    }
+    // @ts-ignore
+    runner.run().catch(err => console.error('Tests are not valid:', err))
+    // try {
+    //   // @ts-ignore
+    //   runner.run()
+    // } catch (e) {
+    //   console.error('Tests are not valid:', e)
+    // }
   }, 1500)
 })
 
