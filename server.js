@@ -1,23 +1,16 @@
 'use strict'
 require('dotenv').config()
 const bodyParser = require('body-parser'),
-  expect = require('chai').expect,
+  { expect } = require('chai'),
+  // expect = require('chai').expect,
   cors = require('cors'),
   apiRoutes = require('./routes/api.js'),
   fccTestingRoutes = require('./routes/fcctesting.js'),
   runner = require('./test-runner'),
   express = require('express'),
-  app = express(),
-  // For development: browser auto-refresh.
-  liveReload = require('livereload'),
-  connectLiveReload = require('connect-livereload'),
-  liveReloadServer = liveReload.createServer()
-liveReloadServer.server.once('connection', () => {
-  setTimeout(() => {
-    liveReloadServer.refresh('/')
-  }, 10)
-})
-app.use(connectLiveReload())
+  app = express()
+// For development: browser auto-refresh.
+if (process.env.NODE_ENV === 'dev') require('./dev-server')(app)
 
 function log() {
   console.log(...arguments)
@@ -65,7 +58,7 @@ app.use((req, res, next) => {
 const port = process.env.PORT || 3000
 app.listen(port, () => {
   log('Listening on port ' + port)
-  if (process.env.NODE_ENV !== 'test') return
+  if (process.env.NODE_ENV !== 'dev') return
 
   log('Running Tests...')
   setTimeout(() => {
