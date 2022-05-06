@@ -16,8 +16,15 @@ suite('Unit Tests', function () {
       .request(server)
       .get(`/api/convert?input=${integer}${unit}`)
       .end((err, res) => {
-        assert.equal(res.status, 200)
-        // assert.equal(res.text, '3')
+        const {
+          status,
+          ok,
+          body: { inputNum },
+        } = res
+
+        assert.isTrue(ok)
+        assert.strictEqual(status, 200)
+        assert.strictEqual(inputNum, integer)
         done()
       })
   })
