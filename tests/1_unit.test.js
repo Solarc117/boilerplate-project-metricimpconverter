@@ -9,7 +9,6 @@ chai.use(chaiHttp)
 
 suite('Unit Tests', function () {
   test('can read integer input', done => {
-    console.log('hi from unit-tests')
     const integer = 3,
       unit = 'mi'
 
@@ -17,8 +16,6 @@ suite('Unit Tests', function () {
       .request(server)
       .get(`/api/convert?input=${integer}${unit}`)
       .end((err, res) => {
-        console.log('res:', res)
-
         assert.equal(res.status, 200)
         // assert.equal(res.text, '3')
         done()

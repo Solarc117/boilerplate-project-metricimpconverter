@@ -31,7 +31,6 @@ app.listen(port, () => {
 
   setTimeout(() => {
     try {
-      console.log(runner)
       // @ts-ignore
       runner.run()
     } catch (e) {

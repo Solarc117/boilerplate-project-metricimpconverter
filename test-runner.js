@@ -35,11 +35,7 @@ const analyser = require('./assertion-analyser'),
 
 // Add each .js file to the mocha instance
 fs.readdirSync(testDir)
-  .filter(file => {
-    const last3Chars = file.substring(file.length - 3, file.length)
-    console.log('last3Chars:', last3Chars)
-    return last3Chars === '.js'
-  })
+  .filter(file => file.substring(file.length - 3, file.length) === '.js')
   .forEach(file => mocha.addFile(path.join(testDir, file)))
 
 const emitter = new EventEmitter()
