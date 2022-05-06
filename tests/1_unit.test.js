@@ -28,4 +28,25 @@ suite('Unit Tests', function () {
         done()
       })
   })
+
+  test('can read a decimal input', done => {
+    const decimal = 4.7,
+      unit = 'kg'
+
+    chai
+      .request(server)
+      .get(`/api/convert?input=${decimal}${unit}`)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { inputNum },
+        } = res
+
+        assert.isTrue(ok)
+        assert.strictEqual(status, 200)
+        assert.strictEqual(inputNum, decimal)
+        done()
+      })
+  })
 })
