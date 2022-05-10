@@ -95,4 +95,25 @@ suite('Unit Tests', function () {
         done()
       })
   })
+
+  test('5. Return an error on double fraction', done => {
+    const fraction = '5.2/7/3',
+      unit = 'km'
+
+    chai
+      .request(server)
+      .get(`${convertPath}?input=${fraction}${unit}`)
+      .end((err, res) => {
+        const { status, ok, body, text } = res
+
+        assert.isFalse(ok)
+        assert.strictEqual(status, 400)
+        assert.deepEqual(body, {})
+        assert.strictEqual(
+          text,
+          'invalid number format - too many divisions: 5.2/7/3'
+        )
+        done()
+      })
+  })
 })

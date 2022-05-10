@@ -18,14 +18,24 @@ function fractionalStrToDec(frcStr) {
 
 module.exports = function (app) {
   app.route('/api/convert').get((req, res) => {
-    const { input } = req.query,
-      inputUnit = input.match(/[a-z]+$/i)[0]
-    let inputVal = input.match(/^[\d./]+/)[0]
+    const { input } = req.query
+    let inputVal = input?.match(/^[\d./]+/g)[0],
+      inputUnit = input?.match(/[a-z]+$/gi)
 
-    // Check if inputVal contains a '/' - if so, split using that, and
-    // divide the first num (numerator) by the second (denom)
+    if (!inputUnit)
+      return res.status(400).send('invalid input - please provide a unit')
+    inputUnit = inputUnit[0]
 
-    if (inputVal.match(/\//)) {
+    const divisors = inputVal.match(/\//g)
+
+    console.log('divisors:', divisors)
+
+    if (divisors) {
+      if (divisors.length > 1)
+        return res
+          .status(400)
+          .send('invalid number format - too many divisions: ' + inputVal)
+
       const [num, denom] = inputVal.split('/')
       inputVal = num / denom
     } else {
