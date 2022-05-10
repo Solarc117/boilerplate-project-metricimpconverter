@@ -68,8 +68,30 @@ suite('Unit Tests', function () {
 
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
-        // 5/7 = 0.7142857142857143 (in node)
+        // 5 / 7 = 0.7142857142857143 (in Node)
         assert.strictEqual(inputNum, 0.7142857142857143)
+        done()
+      })
+  })
+
+  test('4. Read fractional input with decimal', done => {
+    const fraction = '2.5/6.9',
+      unit = 'm'
+
+    chai
+      .request(server)
+      .get(`${convertPath}?input=${fraction}${unit}`)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { inputNum },
+        } = res
+
+        assert.isTrue(ok)
+        assert.strictEqual(status, 200)
+        // 2.5 / 6.9 = 0.36231884057971014 (in Node)
+        assert.strictEqual(inputNum, 0.36231884057971014)
         done()
       })
   })
