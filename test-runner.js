@@ -46,7 +46,6 @@ emitter.run = function () {
     separator = ' -> '
 
   try {
-    console.log(mocha.files)
     mocha
       .ui('tdd')
       .run()
