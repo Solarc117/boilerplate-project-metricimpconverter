@@ -10,7 +10,7 @@ chai.use(chaiHttp)
 suite('Unit Tests', function () {
   const convertPath = '/api/convert'
 
-  test('correctly read integer input', done => {
+  test('1. Read integer input', done => {
     const integer = 3,
       unit = 'mi'
 
@@ -31,7 +31,7 @@ suite('Unit Tests', function () {
       })
   })
 
-  test('correctly read a decimal input', done => {
+  test('2. Read decimal input', done => {
     const decimal = 4.7,
       unit = 'kg'
 
@@ -52,7 +52,7 @@ suite('Unit Tests', function () {
       })
   })
 
-  test('correctly read a fractional input', done => {
+  test('3. Read fractional input', done => {
     const fraction = '5/7',
       unit = 'lbs'
 
@@ -70,6 +70,7 @@ suite('Unit Tests', function () {
         assert.strictEqual(status, 200)
         // 5/7 = 0.7142857142857143 (in node)
         assert.strictEqual(inputNum, 0.7142857142857143)
+        done()
       })
   })
 })
