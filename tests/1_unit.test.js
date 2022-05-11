@@ -111,8 +111,24 @@ suite('Unit Tests', function () {
         assert.deepEqual(body, {})
         assert.strictEqual(
           text,
-          'invalid number format - too many divisions: 5.2/7/3'
+          'invalid number format - too many divisors: 5.2/7/3'
         )
+        done()
+      })
+  })
+
+  test('6. default to 1 if no numerical input provided', done => {
+    const unit = 'kg'
+
+    chai
+      .request(server)
+      .get(`${convertPath}?input=${unit}`)
+      .end((err, res) => {
+        const { status, ok, body } = res
+
+        assert.strictEqual(status, 200)
+        assert.isTrue(ok)
+        assert.deepEqual(body, { inputNum: 1, inputUnit: 'kg' })
         done()
       })
   })
