@@ -8,15 +8,18 @@ const chai = require('chai'),
 chai.use(chaiHttp)
 
 suite('Unit Tests', function () {
-  const convertPath = '/api/convert'
+  const CONVERT_PATH = '/api/convert',
+    GAL_TO_L = 3.78541,
+    LBS_TO_KG = 0.453592,
+    MI_TO_KM = 1.60934
 
   test('1. Read integer input', done => {
     const integer = 3,
-      unit = 'mi'
+      unit = 'Mi'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${integer}${unit}`)
+      .get(`${CONVERT_PATH}?input=${integer}${unit}`)
       .end((err, res) => {
         const {
           status,
@@ -27,17 +30,17 @@ suite('Unit Tests', function () {
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
         assert.strictEqual(inputNum, integer)
+
         done()
       })
   })
-
   test('2. Read decimal input', done => {
     const decimal = 4.7,
-      unit = 'kg'
+      unit = 'kG'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${decimal}${unit}`)
+      .get(`${CONVERT_PATH}?input=${decimal}${unit}`)
       .end((err, res) => {
         const {
           status,
@@ -48,17 +51,20 @@ suite('Unit Tests', function () {
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
         assert.strictEqual(inputNum, decimal)
+
         done()
       })
   })
 
+  // %2F encodes for forward slashes in urls.
   test('3. Read fractional input', done => {
     const fraction = '5/7',
-      unit = 'lbs'
+      encodedFraction = fraction.replace(/\//g, '/'),
+      unit = 'lBs'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${fraction}${unit}`)
+      .get(`${CONVERT_PATH}?input=${fraction}${unit}`)
       .end((err, res) => {
         const {
           status,
@@ -70,17 +76,19 @@ suite('Unit Tests', function () {
         assert.strictEqual(status, 200)
         // 5 / 7 = 0.7142857142857143 (in Node)
         assert.strictEqual(inputNum, 0.7142857142857143)
+
         done()
       })
   })
 
   test('4. Read fractional input with decimal', done => {
     const fraction = '2.5/6.9',
+      encodedFraction = fraction.replace(/\//g, '/'),
       unit = 'm'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${fraction}${unit}`)
+      .get(`${CONVERT_PATH}?input=${fraction}${unit}`)
       .end((err, res) => {
         const {
           status,
@@ -92,43 +100,48 @@ suite('Unit Tests', function () {
         assert.strictEqual(status, 200)
         // 2.5 / 6.9 = 0.36231884057971014 (in Node)
         assert.strictEqual(inputNum, 0.36231884057971014)
+
         done()
       })
   })
 
   test('5. Return an error on double fraction', done => {
     const fraction = '5.2/7/3',
+      encodedFraction = fraction.replace(/\//g, '/'),
       unit = 'km'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${fraction}${unit}`)
+      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
       .end((err, res) => {
         const { status, ok, body, text } = res
 
         assert.isFalse(ok)
         assert.strictEqual(status, 400)
         assert.deepEqual(body, {})
-        assert.strictEqual(
-          text,
-          'invalid number format - too many divisors: 5.2/7/3'
-        )
+        assert.match(text, new RegExp(fraction, 'g'))
+
         done()
       })
   })
 
-  test('6. default to 1 if no numerical input provided', done => {
-    const unit = 'kg'
+  test('6. Default to 1 if no numerical input provided', done => {
+    const unit = 'KG'
 
     chai
       .request(server)
-      .get(`${convertPath}?input=${unit}`)
+      .get(`${CONVERT_PATH}?input=${unit}`)
       .end((err, res) => {
-        const { status, ok, body } = res
+        const {
+          status,
+          ok,
+          body: { inputNum },
+        } = res
 
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.deepEqual(body, { inputNum: 1, inputUnit: 'kg' })
+        assert.strictEqual(inputNum, 1)
+
         done()
       })
   })
