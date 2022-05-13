@@ -11,6 +11,8 @@ const { expect } = require('chai'),
   runner = require('./test-runner.js')
 if (process.env.NODE_ENV === 'dev') require('./dev-server.js')(app)
 
+console.clear()
+
 middleware(app, express)
 htmlRoutes(app)
 fccTestingRoutes(app)
@@ -21,20 +23,20 @@ app.use((req, res, next) => {
   res.status(404).type('text').send('404 not found')
 })
 
-const port = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 function log() {
   console.log(...arguments)
 }
-app.listen(port, () => {
-  log('Listening on port ' + port)
+app.listen(PORT, () => {
+  log('Listening on port ' + PORT)
   if (process.env.NODE_ENV !== 'dev') return
 
   setTimeout(() => {
     try {
       // @ts-ignore
       runner.run()
-    } catch (e) {
-      console.error('Tests are not valid:', e)
+    } catch (err) {
+      console.error('Tests are not valid:', err)
     }
   }, 1500)
 })
