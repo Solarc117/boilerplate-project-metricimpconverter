@@ -34,7 +34,7 @@ module.exports = class ConvertHandler {
 
     if (initUnit === null || !acceptableUnits.some(unit => unit === initUnit))
       return {
-        err: 'please provide one of the acceptable units at the end of your input: kg, lbs, km, mi, l or gal',
+        err: 'please provide one of the supported units at the end of your input: kg, lbs, km, mi, l or gal',
       }
 
     return { initUnit }

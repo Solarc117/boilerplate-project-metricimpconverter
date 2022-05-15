@@ -164,4 +164,27 @@ suite('Unit Tests', function () {
         })
     })
   })
+
+  test('8. Return an error for an invalid input unit', done => {
+    const unsupportedUnits = ['m', 'g', 'mg', 'yd', 'in', 'cm']
+
+    unsupportedUnits.forEach((unit, ind) => {
+      chai
+        .request(server)
+        .get(`${CONVERT_PATH}?input=${unit}`)
+        .end((err, res) => {
+          const { status, ok, body, text } = res
+
+          assert.strictEqual(status, 400)
+          assert.isFalse(ok)
+          assert.deepEqual(body, {})
+          assert.strictEqual(
+            text,
+            'please provide one of the supported units at the end of your input: kg, lbs, km, mi, l or gal'
+          )
+
+          if (ind === unsupportedUnits.length - 1) done()
+        })
+    })
+  })
 })
