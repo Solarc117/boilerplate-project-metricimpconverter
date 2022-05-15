@@ -5,13 +5,16 @@ const { expect } = require('chai'),
 module.exports = function (app) {
   app.route('/api/convert').get((req, res) => {
     const { input } = req.query,
-      { error, inputNum } = ConvertHandler.getNum(input)
+      { err: getNumErr, initNum } = ConvertHandler.getNum(input),
+      { err: getUnitErr, initUnit } = ConvertHandler.getUnit(input)
 
-    if (error) return res.status(400).send(error)
+    if (getNumErr) return res.status(400).send(getNumErr)
+    if (getUnitErr) return res.status(400).send(getUnitErr)
 
     res.json({
-      inputNum,
-      // , initUnit, returnNum, returnUnit, string
+      initNum,
+      initUnit,
+      // returnNum, returnUnit, string,
     })
   })
 }

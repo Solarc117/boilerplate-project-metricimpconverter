@@ -2,20 +2,16 @@ const chai = require('chai'),
   { assert } = chai,
   chaiHttp = require('chai-http'),
   ConvertHandler = require('../controllers/convertHandler.js'),
-  convertHandler = new ConvertHandler(),
   server = require('../server.js')
 
 chai.use(chaiHttp)
 
 suite('Unit Tests', function () {
-  const CONVERT_PATH = '/api/convert',
-    GAL_TO_L = 3.78541,
-    LBS_TO_KG = 0.453592,
-    MI_TO_KM = 1.60934
+  const CONVERT_PATH = '/api/convert'
 
   test('1. Read integer input', done => {
     const integer = 3,
-      unit = 'Mi'
+      unit = 'L'
 
     chai
       .request(server)
@@ -24,19 +20,19 @@ suite('Unit Tests', function () {
         const {
           status,
           ok,
-          body: { inputNum },
+          body: { initNum },
         } = res
 
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
-        assert.strictEqual(inputNum, integer)
+        assert.strictEqual(initNum, integer)
 
         done()
       })
   })
   test('2. Read decimal input', done => {
     const decimal = 4.7,
-      unit = 'kG'
+      unit = 'gAl'
 
     chai
       .request(server)
@@ -45,12 +41,12 @@ suite('Unit Tests', function () {
         const {
           status,
           ok,
-          body: { inputNum },
+          body: { initNum },
         } = res
 
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
-        assert.strictEqual(inputNum, decimal)
+        assert.strictEqual(initNum, decimal)
 
         done()
       })
@@ -59,23 +55,23 @@ suite('Unit Tests', function () {
   // %2F encodes for forward slashes in urls.
   test('3. Read fractional input', done => {
     const fraction = '5/7',
-      encodedFraction = fraction.replace(/\//g, '/'),
+      encodedFraction = fraction.replace(/\//g, '%2F'),
       unit = 'lBs'
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${fraction}${unit}`)
+      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
       .end((err, res) => {
         const {
           status,
           ok,
-          body: { inputNum },
+          body: { initNum },
         } = res
 
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
         // 5 / 7 = 0.7142857142857143 (in Node)
-        assert.strictEqual(inputNum, 0.7142857142857143)
+        assert.strictEqual(initNum, 0.7142857142857143)
 
         done()
       })
@@ -83,23 +79,23 @@ suite('Unit Tests', function () {
 
   test('4. Read fractional input with decimal', done => {
     const fraction = '2.5/6.9',
-      encodedFraction = fraction.replace(/\//g, '/'),
-      unit = 'm'
+      encodedFraction = fraction.replace(/\//g, '%2F'),
+      unit = 'mi'
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${fraction}${unit}`)
+      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
       .end((err, res) => {
         const {
           status,
           ok,
-          body: { inputNum },
+          body: { initNum },
         } = res
 
         assert.isTrue(ok)
         assert.strictEqual(status, 200)
         // 2.5 / 6.9 = 0.36231884057971014 (in Node)
-        assert.strictEqual(inputNum, 0.36231884057971014)
+        assert.strictEqual(initNum, 0.36231884057971014)
 
         done()
       })
@@ -107,7 +103,7 @@ suite('Unit Tests', function () {
 
   test('5. Return an error on double fraction', done => {
     const fraction = '5.2/7/3',
-      encodedFraction = fraction.replace(/\//g, '/'),
+      encodedFraction = fraction.replace(/\//g, '%2F'),
       unit = 'km'
 
     chai
@@ -135,14 +131,37 @@ suite('Unit Tests', function () {
         const {
           status,
           ok,
-          body: { inputNum },
+          body: { initNum },
         } = res
 
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.strictEqual(inputNum, 1)
+        assert.strictEqual(initNum, 1)
 
         done()
       })
+  })
+
+  test('7. Read each valid input unit', done => {
+    const units = ['L', 'gAl', 'Km', 'mI', 'kg', 'lbS']
+
+    units.forEach((unit, ind) => {
+      chai
+        .request(server)
+        .get(`${CONVERT_PATH}?input=${unit}`)
+        .end((err, res) => {
+          const {
+            status,
+            ok,
+            body: { initUnit },
+          } = res
+
+          assert.strictEqual(status, 200)
+          assert.isTrue(ok)
+          assert.strictEqual(initUnit, unit.toLowerCase())
+
+          if (ind === units.length - 1) done()
+        })
+    })
   })
 })
