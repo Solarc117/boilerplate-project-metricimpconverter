@@ -187,4 +187,39 @@ suite('Unit Tests', function () {
         })
     })
   })
+
+  test('9. Return the correct unit for each valid input unit', done => {
+    const unitPairs = [
+        ['gal', 'l'],
+        ['mi', 'km'],
+        ['lbs', 'kg'],
+      ],
+      timesToRun = unitPairs.length * 2
+    let counter = 0
+    function checkUnitPair(unitSent, unitExpected) {
+      chai
+        .request(server)
+        .get(`${CONVERT_PATH}?input=${unitSent}`)
+        .end((err, res) => {
+          const {
+            status,
+            ok,
+            body: { initUnit, returnUnit },
+          } = res
+
+          assert.strictEqual(status, 200)
+          assert.isTrue(ok)
+          assert.strictEqual(initUnit, unitSent)
+          assert.strictEqual(returnUnit, unitExpected)
+
+          counter++
+          if (counter === timesToRun) done()
+        })
+    }
+
+    unitPairs.forEach(pair => {
+      checkUnitPair(pair[0], pair[1])
+      checkUnitPair(pair[1], pair[0])
+    })
+  })
 })

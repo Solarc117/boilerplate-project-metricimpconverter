@@ -4,3 +4,4 @@ node_modules
 notes.txt
 ignore.js
 dev-server.js
+nodemon.json
