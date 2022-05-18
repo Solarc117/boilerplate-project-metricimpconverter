@@ -76,10 +76,27 @@ module.exports = class ConvertHandler {
     return result
   }
 
+  /**
+   * @description A pure static method that returns the fully spelled out version of imperial or metric unit abbreviations.
+   * @param {string} unit The unit abbreviation to spell out.
+   * @returns {{ err: string|null, spelledUnit: string|null }} An object containing an error property if the unit abbreviation could not be spelled out, or a spell property containing the full version of the abbreviation.
+   */
   static spellOutUnit(unit) {
-    let result
+    const abbreviations = [
+      ['kg', 'kilograms'],
+      ['l', 'litres'],
+      ['km', 'kilometres'],
+      ['lbs', 'pounds'],
+      ['gal', 'gallons'],
+      ['mi', 'miles'],
+    ]
+    let spelledUnit = null
+    abbreviations.forEach(abbFull => {
+      const [abbr, full] = abbFull
+      if (unit === abbr) spelledUnit = full
+    })
 
-    return result
+    return { err: spelledUnit ? null : 'something went wrong', spelledUnit }
   }
 
   static getString(initNum, initUnit, returnNum, returnUnit) {

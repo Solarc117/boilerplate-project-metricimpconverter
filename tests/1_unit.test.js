@@ -7,9 +7,10 @@ const chai = require('chai'),
 chai.use(chaiHttp)
 
 suite('Unit Tests', function () {
-  const CONVERT_PATH = '/api/convert'
+  const CONVERT_PATH = '/api/convert',
+    { SUPPORTED_UNITS: UNITS } = ConvertHandler
 
-  test('1. Read integer input', done => {
+  test('1. Read integer inputs', done => {
     const integer = 3,
       unit = 'L'
 
@@ -30,7 +31,7 @@ suite('Unit Tests', function () {
         done()
       })
   })
-  test('2. Read decimal input', done => {
+  test('2. Read decimal inputs', done => {
     const decimal = 4.7,
       unit = 'gAl'
 
@@ -53,7 +54,7 @@ suite('Unit Tests', function () {
   })
 
   // %2F encodes for forward slashes in urls.
-  test('3. Read fractional input', done => {
+  test('3. Read fractional inputs', done => {
     const fraction = '5/7',
       encodedFraction = fraction.replace(/\//g, '%2F'),
       unit = 'lBs'
@@ -77,7 +78,7 @@ suite('Unit Tests', function () {
       })
   })
 
-  test('4. Read fractional input with decimal', done => {
+  test('4. Read fractional inputs with decimals', done => {
     const fraction = '2.5/6.9',
       encodedFraction = fraction.replace(/\//g, '%2F'),
       unit = 'mi'
@@ -101,7 +102,7 @@ suite('Unit Tests', function () {
       })
   })
 
-  test('5. Return an error on double fraction', done => {
+  test('5. Return error on double fractions', done => {
     const fraction = '5.2/7/3',
       encodedFraction = fraction.replace(/\//g, '%2F'),
       unit = 'km'
@@ -143,9 +144,7 @@ suite('Unit Tests', function () {
   })
 
   test('7. Read each valid input unit', done => {
-    const units = ['L', 'gAl', 'Km', 'mI', 'kg', 'lbS']
-
-    units.forEach((unit, ind) => {
+    UNITS.forEach((unit, ind) => {
       chai
         .request(server)
         .get(`${CONVERT_PATH}?input=${unit}`)
@@ -160,12 +159,12 @@ suite('Unit Tests', function () {
           assert.isTrue(ok)
           assert.strictEqual(initUnit, unit.toLowerCase())
 
-          if (ind === units.length - 1) done()
+          if (ind === UNITS.length - 1) done()
         })
     })
   })
 
-  test('8. Return an error for an invalid input unit', done => {
+  test('8. Return error for invalid input units', done => {
     const unsupportedUnits = ['m', 'g', 'mg', 'yd', 'in', 'cm']
 
     unsupportedUnits.forEach((unit, ind) => {
@@ -188,7 +187,7 @@ suite('Unit Tests', function () {
     })
   })
 
-  test('9. Return the correct unit for each valid input unit', done => {
+  test('9. Return correct unit for each valid input unit', done => {
     const unitPairs = [
         ['gal', 'l'],
         ['mi', 'km'],
@@ -220,6 +219,27 @@ suite('Unit Tests', function () {
     unitPairs.forEach(pair => {
       checkUnitPair(pair[0], pair[1])
       checkUnitPair(pair[1], pair[0])
+    })
+  })
+
+  test('10. Return spelled-out string unit for each valid input unit', done => {
+    const abbrevs = [
+      ['kg', 'kilograms'],
+      ['l', 'litres'],
+      ['km', 'kilometres'],
+      ['lbs', 'pounds'],
+      ['gal', 'gallons'],
+      ['mi', 'miles'],
+    ]
+
+    abbrevs.forEach((abbFull, ind) => {
+      const [abbr, spellingExpected] = abbFull,
+        { err, spelledUnit } = ConvertHandler.spellOutUnit(abbr)
+      
+      assert.isNull(err)
+      assert.strictEqual(spelledUnit, spellingExpected)
+
+      if (ind === abbrevs.length - 1) done()
     })
   })
 })
