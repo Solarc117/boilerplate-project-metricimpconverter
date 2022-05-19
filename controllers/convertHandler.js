@@ -46,7 +46,9 @@ module.exports = class ConvertHandler {
       !this.UNIT_PAIRS.flat().some(unit => unit === initUnit)
     ) {
       return {
-        err: 'please provide one of the supported units at the end of your input: kg, lbs, km, mi, l or gal',
+        err: `please provide one of the supported units at the end of your input: ${this.UNIT_PAIRS.flat().join(
+          ', '
+        )}`,
         initUnit: null,
       }
     }
