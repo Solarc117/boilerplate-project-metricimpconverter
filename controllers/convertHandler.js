@@ -1,8 +1,13 @@
 module.exports = class ConvertHandler {
-  static SUPPORTED_UNITS = ['kg', 'lbs', 'km', 'mi', 'l', 'gal']
-  static GAL_TO_L = 3.78541
+  static UNIT_PAIRS = [
+    ['lbs', 'kg'],
+    ['mi', 'km'],
+    ['gal', 'l'],
+  ]
   static LBS_TO_KG = 0.453592
   static MI_TO_KM = 1.60934
+  static GAL_TO_L = 3.78541
+
   /**
    * @description A pure, static method that returns the client's numerical input.
    * @param {string} clientInput Unfiltered input from the client.
@@ -38,7 +43,7 @@ module.exports = class ConvertHandler {
 
     if (
       initUnit === null ||
-      !this.SUPPORTED_UNITS.some(unit => unit === initUnit)
+      !this.UNIT_PAIRS.flat().some(unit => unit === initUnit)
     ) {
       return {
         err: 'please provide one of the supported units at the end of your input: kg, lbs, km, mi, l or gal',
@@ -55,25 +60,65 @@ module.exports = class ConvertHandler {
    * @returns {{ err: string|null, returnUnit: string|null }} An object containing an error property if the unit passed cannot be converted, or a returnUnit property containing the unit to convert to.
    */
   static getReturnUnit(initUnit) {
-    const unitPairs = [
-      ['kg', 'lbs'],
-      ['l', 'gal'],
-      ['km', 'mi'],
-    ]
-
     let returnUnit = null
-    unitPairs.forEach(pair => {
-      if (initUnit === pair[0]) returnUnit = pair[1]
-      if (initUnit === pair[1]) returnUnit = pair[0]
-    })
 
-    return { err: returnUnit ? null : 'something went wrong', returnUnit }
+    for (const pair of this.UNIT_PAIRS) {
+      if (initUnit === pair[0]) {
+        returnUnit = pair[1]
+        break
+      }
+      if (initUnit === pair[1]) {
+        returnUnit = pair[0]
+        break
+      }
+    }
+
+    return {
+      err: returnUnit
+        ? null
+        : `expected ${initUnit} to be one of: ${this.UNIT_PAIRS.flat().join(
+            ', '
+          )}`,
+      returnUnit,
+    }
   }
 
+  /**
+   * @description A pure, static method that accepts a number and a unit, and an optional returnUnit argument (for performance; this.convert is able to determine the returnUnit via the initUnit & this.getReturnUnit), and returns the number representing the passed quanitiy in the new unit, returnUnit.
+   * @param {number} initNum The quantity of initUnit.
+   * @param {string} initUnit The unit to convert from.
+   * @returns {{ err: string|null, returnNum: number|null }} An object containing an err property of type string or null and a returnNum property of the opposite type, depending on whether the conversion was successful or not.
+   */
   static convert(initNum, initUnit) {
-    let result
+    let returnNum = null
 
-    return result
+    for (const [ind, pair] of this.UNIT_PAIRS.entries()) {
+      const converter =
+          ind === 0
+            ? this.LBS_TO_KG
+            : ind === 1
+            ? this.MI_TO_KM
+            : this.GAL_TO_L,
+        [met, imp] = pair
+
+      if (initUnit === met) {
+        returnNum = initNum * converter
+        break
+      }
+      if (initUnit === imp) {
+        returnNum = initNum / converter
+        break
+      }
+    }
+
+    return {
+      err: returnNum
+        ? null
+        : `expected ${initUnit} to be one of ${this.UNIT_PAIRS.flat().join(
+            ', '
+          )}`,
+      returnNum,
+    }
   }
 
   /**
@@ -91,12 +136,21 @@ module.exports = class ConvertHandler {
       ['mi', 'miles'],
     ]
     let spelledUnit = null
-    abbreviations.forEach(abbFull => {
-      const [abbr, full] = abbFull
-      if (unit === abbr) spelledUnit = full
-    })
 
-    return { err: spelledUnit ? null : 'something went wrong', spelledUnit }
+    for (const abbFull of abbreviations) {
+      const [abbr, full] = abbFull
+      if (unit === abbr) {
+        spelledUnit = full
+        break
+      }
+    }
+
+    return {
+      err: spelledUnit
+        ? null
+        : `expected ${unit} to be one of: ${this.UNIT_PAIRS.flat().join(', ')}`,
+      spelledUnit,
+    }
   }
 
   static getString(initNum, initUnit, returnNum, returnUnit) {

@@ -8,7 +8,8 @@ chai.use(chaiHttp)
 
 suite('Unit Tests', function () {
   const CONVERT_PATH = '/api/convert',
-    { SUPPORTED_UNITS: UNITS } = ConvertHandler
+    { UNIT_PAIRS } = ConvertHandler,
+    UNITS = UNIT_PAIRS.flat()
 
   test('1. Read integer inputs', done => {
     const integer = 3,
@@ -188,12 +189,7 @@ suite('Unit Tests', function () {
   })
 
   test('9. Return correct unit for each valid input unit', done => {
-    const unitPairs = [
-        ['gal', 'l'],
-        ['mi', 'km'],
-        ['lbs', 'kg'],
-      ],
-      timesToRun = unitPairs.length * 2
+    const timesToRun = UNIT_PAIRS.length * 2
     let counter = 0
     function checkUnitPair(unitSent, unitExpected) {
       chai
@@ -216,7 +212,7 @@ suite('Unit Tests', function () {
         })
     }
 
-    unitPairs.forEach(pair => {
+    UNIT_PAIRS.forEach(pair => {
       checkUnitPair(pair[0], pair[1])
       checkUnitPair(pair[1], pair[0])
     })
@@ -233,13 +229,39 @@ suite('Unit Tests', function () {
     ]
 
     abbrevs.forEach((abbFull, ind) => {
-      const [abbr, spellingExpected] = abbFull,
+      const [abbr, spellExp] = abbFull,
         { err, spelledUnit } = ConvertHandler.spellOutUnit(abbr)
-      
+
       assert.isNull(err)
-      assert.strictEqual(spelledUnit, spellingExpected)
+      assert.strictEqual(spelledUnit, spellExp)
 
       if (ind === abbrevs.length - 1) done()
     })
+  })
+
+  test('11. Convert gal to l', done => {
+    const unit = 'gal',
+      expectedUnit = 'l',
+      { GAL_TO_L } = ConvertHandler
+
+    chai
+      .request(server)
+      .get(`${CONVERT_PATH}?input=${unit}`)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { initUnit, initNum, returnNum, returnUnit },
+        } = res
+
+        assert.strictEqual(status, 200)
+        assert.isTrue(ok)
+        assert.strictEqual(initNum, 1)
+        assert.strictEqual(initUnit, unit)
+        assert.strictEqual(returnNum, GAL_TO_L)
+        assert.strictEqual(returnUnit, expectedUnit)
+
+        done()
+      })
   })
 })

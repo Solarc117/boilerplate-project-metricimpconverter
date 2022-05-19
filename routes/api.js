@@ -10,7 +10,8 @@ module.exports = function (app) {
     const { input } = req.query,
       { err: err0, initNum } = ConvertHandler.getNum(input),
       { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnUnit } = ConvertHandler.getReturnUnit(initUnit)
+      { err: err2, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      { err: err3, returnNum } = ConvertHandler.convert(initNum, initUnit)
 
     return err0
       ? clientErr(err0)
@@ -18,10 +19,12 @@ module.exports = function (app) {
       ? clientErr(err1)
       : err2
       ? clientErr(err2)
+      : err3
+      ? clientErr(err3)
       : res.json({
           initNum,
           initUnit,
-          // returnNum,
+          returnNum,
           returnUnit,
           // string,
         })
