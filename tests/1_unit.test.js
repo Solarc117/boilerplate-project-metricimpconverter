@@ -1,221 +1,134 @@
 const chai = require('chai'),
   { assert } = chai,
-  chaiHttp = require('chai-http'),
-  ConvertHandler = require('../controllers/convertHandler.js'),
-  server = require('../server.js')
+  ConvertHandler = require('../controllers/convertHandler.js')
 
-chai.use(chaiHttp)
-
-suite('Unit Tests', function () {
-  const CONVERT_PATH = '/api/convert',
-    { UNIT_PAIRS } = ConvertHandler,
+suite('ConvertHandler', function () {
+  // Cannot destructure methods from ConvertHandler, as this sets any instances of 'this' to undefined.
+  // 📄Maybe I can fix this using bind?
+  const { UNIT_PAIRS } = ConvertHandler,
     UNITS = UNIT_PAIRS.flat()
 
   test('1. Read integer inputs', done => {
     const integer = 3,
-      unit = 'L'
+      unit = 'L',
+      input = `${integer}${unit}`
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${integer}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum },
-        } = res
+    const { err, initNum } = ConvertHandler.getNum(input)
 
-        assert.isTrue(ok)
-        assert.strictEqual(status, 200)
-        assert.strictEqual(initNum, integer)
+    assert.isNull(err)
+    assert.strictEqual(initNum, integer)
 
-        done()
-      })
+    done()
   })
+
   test('2. Read decimal inputs', done => {
     const decimal = 4.7,
-      unit = 'gAl'
+      unit = 'gAl',
+      input = `${decimal}${unit}`
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${decimal}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum },
-        } = res
+    const { err, initNum } = ConvertHandler.getNum(input)
 
-        assert.isTrue(ok)
-        assert.strictEqual(status, 200)
-        assert.strictEqual(initNum, decimal)
+    assert.isNull(err)
+    assert.strictEqual(initNum, decimal)
 
-        done()
-      })
+    done()
   })
 
-  // %2F encodes for forward slashes in urls.
   test('3. Read fractional inputs', done => {
     const fraction = '5/7',
-      encodedFraction = fraction.replace(/\//g, '%2F'),
-      unit = 'lBs'
+      unit = 'lBs',
+      input = `${fraction}${unit}`,
+      expectedNum = 0.7142857142857143
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum },
-        } = res
+    const { err, initNum } = ConvertHandler.getNum(input)
 
-        assert.isTrue(ok)
-        assert.strictEqual(status, 200)
-        // 5 / 7 = 0.7142857142857143 (in Node)
-        assert.strictEqual(initNum, 0.7142857142857143)
+    assert.isNull(err)
+    assert.strictEqual(initNum, expectedNum)
 
-        done()
-      })
+    done()
   })
 
   test('4. Read fractional inputs with decimals', done => {
     const fraction = '2.5/6.9',
-      encodedFraction = fraction.replace(/\//g, '%2F'),
-      unit = 'mi'
+      unit = 'mi',
+      input = `${fraction}${unit}`,
+      numberExpected = 0.36231884057971014
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum },
-        } = res
+    const { err, initNum } = ConvertHandler.getNum(input)
 
-        assert.isTrue(ok)
-        assert.strictEqual(status, 200)
-        // 2.5 / 6.9 = 0.36231884057971014 (in Node)
-        assert.strictEqual(initNum, 0.36231884057971014)
+    assert.isNull(err)
+    assert.strictEqual(initNum, numberExpected)
 
-        done()
-      })
+    done()
   })
 
   test('5. Return error on double fractions', done => {
     const fraction = '5.2/7/3',
-      encodedFraction = fraction.replace(/\//g, '%2F'),
-      unit = 'km'
+      unit = 'km',
+      input = `${fraction}${unit}`
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${encodedFraction}${unit}`)
-      .end((err, res) => {
-        const { status, ok, body, text } = res
+    const { err, initNum } = ConvertHandler.getNum(input)
 
-        assert.isFalse(ok)
-        assert.strictEqual(status, 400)
-        assert.deepEqual(body, {})
-        assert.match(text, new RegExp(fraction, 'g'))
+    assert.isString(err)
+    assert.isNull(initNum)
 
-        done()
-      })
+    done()
   })
 
   test('6. Default to 1 if no numerical input provided', done => {
-    const unit = 'KG'
+    const unit = 'KG',
+      numExpected = 1
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum },
-        } = res
+    const { err, initNum } = ConvertHandler.getNum(unit)
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, 1)
+    assert.isNull(err)
+    assert.strictEqual(initNum, numExpected)
 
-        done()
-      })
+    done()
   })
 
   test('7. Read each valid input unit', done => {
-    for (const [ind, unit] of UNITS.entries()) {
-      chai
-        .request(server)
-        .get(`${CONVERT_PATH}?input=${unit}`)
-        .end((err, res) => {
-          const {
-            status,
-            ok,
-            body: { initUnit },
-          } = res
+    for (const unit of UNITS) {
+      const dec = 32.8,
+        input = `${dec}${unit}`
 
-          assert.strictEqual(status, 200)
-          assert.isTrue(ok)
-          assert.strictEqual(initUnit, unit.toLowerCase())
+      const { err, initUnit } = ConvertHandler.getUnit(input)
 
-          if (ind === UNITS.length - 1) done()
-        })
+      assert.isNull(err)
+      assert.strictEqual(initUnit, unit.toLowerCase())
     }
+
+    done()
   })
 
   test('8. Return error for invalid input units', done => {
     const unsupportedUnits = ['m', 'g', 'mg', 'yd', 'in', 'cm']
 
-    for (const [ind, unit] of unsupportedUnits.entries()) {
-      chai
-        .request(server)
-        .get(`${CONVERT_PATH}?input=${unit}`)
-        .end((err, res) => {
-          const { status, ok, body, text } = res
+    for (const unit of unsupportedUnits) {
+      const { err, initUnit } = ConvertHandler.getUnit(unit)
 
-          assert.strictEqual(status, 400)
-          assert.isFalse(ok)
-          assert.deepEqual(body, {})
-          assert.isString(text)
-
-          if (ind === unsupportedUnits.length - 1) done()
-        })
+      assert.isString(err)
+      assert.isNull(initUnit)
     }
+
+    done()
   })
 
   test('9. Return correct unit for each valid input unit', done => {
-    const timesToRun = UNIT_PAIRS.length * 2
-    let counter = 0
+    // ConvertHandler.getReturnUnit should return imp when passed met, and vice versa.
+    for (const [imp, met] of UNIT_PAIRS) {
+      const { err: err0, returnUnit: returnImp } =
+          ConvertHandler.getReturnUnit(imp),
+        { err: err1, returnUnit: returnMet } =
+          ConvertHandler.getReturnUnit(met),
+        errs = [err0, err1]
 
-    function checkUnitPair(unitSent, unitExpected) {
-      chai
-        .request(server)
-        .get(`${CONVERT_PATH}?input=${unitSent}`)
-        .end((err, res) => {
-          const {
-            status,
-            ok,
-            body: { initUnit, returnUnit },
-          } = res
-
-          assert.strictEqual(status, 200)
-          assert.isTrue(ok)
-          assert.strictEqual(initUnit, unitSent)
-          assert.strictEqual(returnUnit, unitExpected)
-
-          /* Comparison is executed first, THEN counter is incremented, meaning the updated operator is compared at the NEXT iteration. This is why timesToRun is decremented by 1. Same as: 
-          counter++
-          if (counter === timesToRun) done() */
-          if (counter++ === timesToRun - 1) done()
-        })
+      for (const err of errs) assert.isNull(err)
+      assert.strictEqual(imp, returnMet)
+      assert.strictEqual(met, returnImp)
     }
 
-    for (const pair of UNIT_PAIRS) {
-      checkUnitPair(pair[0], pair[1])
-      checkUnitPair(pair[1], pair[0])
-    }
+    done()
   })
 
   test('10. Return spelled-out string unit for each valid input unit', done => {
@@ -228,15 +141,14 @@ suite('Unit Tests', function () {
       ['mi', 'miles'],
     ]
 
-    for (const [ind, abbFull] of abbrevs.entries()) {
-      const [abbr, spellExp] = abbFull,
-        { err, spelledUnit } = ConvertHandler.spellOutUnit(abbr)
+    for (const [abbr, spellExp] of abbrevs) {
+      const { err, spelledUnit } = ConvertHandler.spellOutUnit(abbr)
 
       assert.isNull(err)
       assert.strictEqual(spelledUnit, spellExp)
-
-      if (ind === abbrevs.length - 1) done()
     }
+
+    done()
   })
 
   test('11. Convert gal to l', done => {
@@ -244,159 +156,152 @@ suite('Unit Tests', function () {
       expectedUnit = 'l',
       expectedNum = 3.78541
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initUnit, initNum, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(unit),
+      { err: err1, initUnit } = ConvertHandler.getUnit(unit),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, 1],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, 1)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 
   test('12. Convert l to gal', done => {
     const num = 0.397,
       unit = 'l',
+      input = `${num}${unit}`,
       expectedNum = 0.10487635421262162,
       expectedUnit = 'gal'
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${num}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum, initUnit, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(input),
+      { err: err1, initUnit } = ConvertHandler.getUnit(input),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, num],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, num)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 
   test('13. Convert mi to km', done => {
     const num = 32.0,
       unit = 'mi',
+      input = `${num}${unit}`,
       expectedNum = 51.49888,
       expectedUnit = 'km'
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${num}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum, initUnit, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(input),
+      { err: err1, initUnit } = ConvertHandler.getUnit(input),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, num],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, num)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 
   test('14. Convert km to mi', done => {
     const num = 1.1,
       unit = 'km',
+      input = `${num}${unit}`,
       expectedNum = 0.6835100103147875,
       expectedUnit = 'mi'
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${num}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum, initUnit, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(input),
+      { err: err1, initUnit } = ConvertHandler.getUnit(input),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, num],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, num)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 
   test('15. Convert lbs to kg', done => {
     const num = 9.701239,
       unit = 'lbs',
+      input = `${num}${unit}`,
       expectedNum = 4.400404400487999,
       expectedUnit = 'kg'
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${num}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum, initUnit, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(input),
+      { err: err1, initUnit } = ConvertHandler.getUnit(input),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, num],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, num)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 
   test('16. Convert kg to lbs', done => {
     const num = 0.000002,
       unit = 'kg',
+      input = `${num}${unit}`,
       expectedNum = 0.000004409248840367555,
       expectedUnit = 'lbs'
 
-    chai
-      .request(server)
-      .get(`${CONVERT_PATH}?input=${num}${unit}`)
-      .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { initNum, initUnit, returnNum, returnUnit },
-        } = res
+    const { err: err0, initNum } = ConvertHandler.getNum(input),
+      { err: err1, initUnit } = ConvertHandler.getUnit(input),
+      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+      errs = [err0, err1, err2, err3],
+      returnedExpectedPairs = [
+        [initNum, num],
+        [initUnit, unit],
+        [returnNum, expectedNum],
+        [returnUnit, expectedUnit],
+      ]
 
-        assert.strictEqual(status, 200)
-        assert.isTrue(ok)
-        assert.strictEqual(initNum, num)
-        assert.strictEqual(initUnit, unit)
-        assert.strictEqual(returnNum, expectedNum)
-        assert.strictEqual(returnUnit, expectedUnit)
+    for (const err of errs) assert.isNull(err)
+    for (const [returned, expected] of returnedExpectedPairs)
+      assert.strictEqual(returned, expected)
 
-        done()
-      })
+    done()
   })
 })

@@ -11,7 +11,7 @@ module.exports = function (app) {
       { err: err0, initNum } = ConvertHandler.getNum(input),
       { err: err1, initUnit } = ConvertHandler.getUnit(input),
       { err: err2, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
-      { err: err3, returnNum } = ConvertHandler.convert(initNum, initUnit)
+      { err: err3, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit)
 
     return err0
       ? clientErr(err0)

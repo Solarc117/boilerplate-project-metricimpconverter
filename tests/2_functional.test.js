@@ -1,10 +1,8 @@
-const chaiHttp = require('chai-http');
-const chai = require('chai');
-let assert = chai.assert;
-const server = require('../server');
+const chaiHttp = require('chai-http'),
+  chai = require('chai'),
+  { assert } = chai,
+  server = require('../server.js')
 
-chai.use(chaiHttp);
+chai.use(chaiHttp)
 
-suite('Functional Tests', function() {
-
-});
+suite('Functional Tests', function () {})

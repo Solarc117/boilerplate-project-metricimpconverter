@@ -58,7 +58,7 @@ module.exports = class ConvertHandler {
 
   /**
    * @description A pure, static method that returns the unit that the client's input should be converted to (avoids converting between mass, volume, or length).
-   * @param {string} initUnit The client's unit in lowercase, as returned by this.getUnit.
+   * @param {string} initUnit The return value of this.getUnit with the raw client input as the argument.
    * @returns {{ err: string|null, returnUnit: string|null }} An object containing an error property if the unit passed cannot be converted, or a returnUnit property containing the unit to convert to.
    */
   static getReturnUnit(initUnit) {
@@ -86,12 +86,12 @@ module.exports = class ConvertHandler {
   }
 
   /**
-   * @description A pure, static method that accepts a number and a unit, and an optional returnUnit argument (for performance; this.convert is able to determine the returnUnit via the initUnit & this.getReturnUnit), and returns the number representing the passed quanitiy in the new unit, returnUnit.
+   * @description A pure, static method that accepts a number and a unit, and an optional returnUnit argument (for performance; this.getReturnNum is able to determine the returnUnit via the initUnit & this.getReturnUnit), and returns the number representing the passed quanitiy in the new unit: returnUnit.
    * @param {number} initNum The quantity of initUnit.
    * @param {string} initUnit The unit to convert from.
    * @returns {{ err: string|null, returnNum: number|null }} An object containing an err property of type string or null and a returnNum property of the opposite type, depending on whether the conversion was successful or not.
    */
-  static convert(initNum, initUnit) {
+  static getReturnNum(initNum, initUnit) {
     let returnNum = null
 
     for (const [ind, pair] of this.UNIT_PAIRS.entries()) {
