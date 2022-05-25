@@ -1,19 +1,27 @@
-const chai = require('chai'),
-  { assert } = chai,
-  ConvertHandler = require('../controllers/convertHandler.js')
+const { assert } = require('chai'),
+  ConvertHandler = require('../controllers/convertHandler.js'),
+  {
+    IMP_MET_PAIRS,
+    getNum: gN,
+    getUnit: gU,
+    getReturnNum: gRN,
+    getReturnUnit: gRU,
+    spellOutUnit: sOU,
+  } = ConvertHandler,
+  UNITS = IMP_MET_PAIRS.flat(),
+  getNum = gN.bind(ConvertHandler),
+  getUnit = gU.bind(ConvertHandler),
+  getReturnNum = gRN.bind(ConvertHandler),
+  getReturnUnit = gRU.bind(ConvertHandler),
+  spellOutUnit = sOU.bind(ConvertHandler)
 
 suite('ConvertHandler', function () {
-  // Cannot destructure methods from ConvertHandler, as this sets any instances of 'this' to undefined.
-  // 📄Maybe I can fix this using bind?
-  const { UNIT_PAIRS } = ConvertHandler,
-    UNITS = UNIT_PAIRS.flat()
-
   test('1. Read integer inputs', done => {
     const integer = 3,
       unit = 'L',
       input = `${integer}${unit}`
 
-    const { err, initNum } = ConvertHandler.getNum(input)
+    const { err, initNum } = getNum(input)
 
     assert.isNull(err)
     assert.strictEqual(initNum, integer)
@@ -26,7 +34,7 @@ suite('ConvertHandler', function () {
       unit = 'gAl',
       input = `${decimal}${unit}`
 
-    const { err, initNum } = ConvertHandler.getNum(input)
+    const { err, initNum } = getNum(input)
 
     assert.isNull(err)
     assert.strictEqual(initNum, decimal)
@@ -38,12 +46,14 @@ suite('ConvertHandler', function () {
     const fraction = '5/7',
       unit = 'lBs',
       input = `${fraction}${unit}`,
-      expectedNum = 0.7142857142857143
+      // From Google.
+      expectedNum = 0.71428571428,
+      within = 0.01
 
-    const { err, initNum } = ConvertHandler.getNum(input)
+    const { err, initNum } = getNum(input)
 
     assert.isNull(err)
-    assert.strictEqual(initNum, expectedNum)
+    assert.approximately(initNum, expectedNum, within)
 
     done()
   })
@@ -52,12 +62,13 @@ suite('ConvertHandler', function () {
     const fraction = '2.5/6.9',
       unit = 'mi',
       input = `${fraction}${unit}`,
-      numberExpected = 0.36231884057971014
+      numberExpected = 0.36231884058,
+      within = 0.01
 
-    const { err, initNum } = ConvertHandler.getNum(input)
+    const { err, initNum } = getNum(input)
 
     assert.isNull(err)
-    assert.strictEqual(initNum, numberExpected)
+    assert.approximately(initNum, numberExpected, within)
 
     done()
   })
@@ -67,7 +78,7 @@ suite('ConvertHandler', function () {
       unit = 'km',
       input = `${fraction}${unit}`
 
-    const { err, initNum } = ConvertHandler.getNum(input)
+    const { err, initNum } = getNum(input)
 
     assert.isString(err)
     assert.isNull(initNum)
@@ -79,7 +90,7 @@ suite('ConvertHandler', function () {
     const unit = 'KG',
       numExpected = 1
 
-    const { err, initNum } = ConvertHandler.getNum(unit)
+    const { err, initNum } = getNum(unit)
 
     assert.isNull(err)
     assert.strictEqual(initNum, numExpected)
@@ -92,10 +103,10 @@ suite('ConvertHandler', function () {
       const dec = 32.8,
         input = `${dec}${unit}`
 
-      const { err, initUnit } = ConvertHandler.getUnit(input)
+      const { err, initUnit } = getUnit(input)
 
       assert.isNull(err)
-      assert.strictEqual(initUnit, unit.toLowerCase())
+      assert.strictEqual(initUnit, unit)
     }
 
     done()
@@ -105,7 +116,7 @@ suite('ConvertHandler', function () {
     const unsupportedUnits = ['m', 'g', 'mg', 'yd', 'in', 'cm']
 
     for (const unit of unsupportedUnits) {
-      const { err, initUnit } = ConvertHandler.getUnit(unit)
+      const { err, initUnit } = getUnit(unit)
 
       assert.isString(err)
       assert.isNull(initUnit)
@@ -115,12 +126,10 @@ suite('ConvertHandler', function () {
   })
 
   test('9. Return correct unit for each valid input unit', done => {
-    // ConvertHandler.getReturnUnit should return imp when passed met, and vice versa.
-    for (const [imp, met] of UNIT_PAIRS) {
-      const { err: err0, returnUnit: returnImp } =
-          ConvertHandler.getReturnUnit(imp),
-        { err: err1, returnUnit: returnMet } =
-          ConvertHandler.getReturnUnit(met),
+    // getReturnUnit should return imp when passed met, and vice versa.
+    for (const [imp, met] of IMP_MET_PAIRS) {
+      const { err: err0, returnUnit: returnImp } = getReturnUnit(imp),
+        { err: err1, returnUnit: returnMet } = getReturnUnit(met),
         errs = [err0, err1]
 
       for (const err of errs) assert.isNull(err)
@@ -141,12 +150,8 @@ suite('ConvertHandler', function () {
       ['mi', 'miles'],
     ]
 
-    for (const [abbr, spellExp] of abbrevs) {
-      const { err, spelledUnit } = ConvertHandler.spellOutUnit(abbr)
-
-      assert.isNull(err)
-      assert.strictEqual(spelledUnit, spellExp)
-    }
+    for (const [abbr, expectedSpell] of abbrevs)
+      assert.strictEqual(spellOutUnit(abbr), expectedSpell)
 
     done()
   })
@@ -156,10 +161,10 @@ suite('ConvertHandler', function () {
       expectedUnit = 'l',
       expectedNum = 3.78541
 
-    const { err: err0, initNum } = ConvertHandler.getNum(unit),
-      { err: err1, initUnit } = ConvertHandler.getUnit(unit),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(unit),
+      { err: err1, initUnit } = getUnit(unit),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, 1],
@@ -182,10 +187,10 @@ suite('ConvertHandler', function () {
       expectedNum = 0.10487635421262162,
       expectedUnit = 'gal'
 
-    const { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, num],
@@ -208,10 +213,10 @@ suite('ConvertHandler', function () {
       expectedNum = 51.49888,
       expectedUnit = 'km'
 
-    const { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, num],
@@ -234,10 +239,10 @@ suite('ConvertHandler', function () {
       expectedNum = 0.6835100103147875,
       expectedUnit = 'mi'
 
-    const { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, num],
@@ -260,10 +265,10 @@ suite('ConvertHandler', function () {
       expectedNum = 4.400404400487999,
       expectedUnit = 'kg'
 
-    const { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, num],
@@ -286,10 +291,10 @@ suite('ConvertHandler', function () {
       expectedNum = 0.000004409248840367555,
       expectedUnit = 'lbs'
 
-    const { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit),
-      { err: err3, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
+    const { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnNum } = getReturnNum(initNum, initUnit),
+      { err: err3, returnUnit } = getReturnUnit(initUnit),
       errs = [err0, err1, err2, err3],
       returnedExpectedPairs = [
         [initNum, num],

@@ -10,3 +10,7 @@ code {
 input {
   margin: 0;
 }
+
+#result, #jsonResult {
+  margin: 10px 0;
+}

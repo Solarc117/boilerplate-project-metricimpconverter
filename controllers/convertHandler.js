@@ -1,5 +1,5 @@
 module.exports = class ConvertHandler {
-  static UNIT_PAIRS = [
+  static IMP_MET_PAIRS = [
     ['lbs', 'kg'],
     ['mi', 'km'],
     ['gal', 'l'],
@@ -43,10 +43,10 @@ module.exports = class ConvertHandler {
 
     if (
       initUnit === null ||
-      !this.UNIT_PAIRS.flat().some(unit => unit === initUnit)
+      !this.IMP_MET_PAIRS.flat().some(unit => unit === initUnit)
     ) {
       return {
-        err: `please provide one of the supported units at the end of your input: ${this.UNIT_PAIRS.flat().join(
+        err: `please provide one of the supported units after your numerical input: ${this.IMP_MET_PAIRS.flat().join(
           ', '
         )}`,
         initUnit: null,
@@ -64,13 +64,13 @@ module.exports = class ConvertHandler {
   static getReturnUnit(initUnit) {
     let returnUnit = null
 
-    for (const pair of this.UNIT_PAIRS) {
-      if (initUnit === pair[0]) {
-        returnUnit = pair[1]
+    for (const [imp, met] of this.IMP_MET_PAIRS) {
+      if (initUnit === imp) {
+        returnUnit = met
         break
       }
-      if (initUnit === pair[1]) {
-        returnUnit = pair[0]
+      if (initUnit === met) {
+        returnUnit = imp
         break
       }
     }
@@ -78,7 +78,7 @@ module.exports = class ConvertHandler {
     return {
       err: returnUnit
         ? null
-        : `expected ${initUnit} to be one of: ${this.UNIT_PAIRS.flat().join(
+        : `expected ${initUnit} to be one of: ${this.IMP_MET_PAIRS.flat().join(
             ', '
           )}`,
       returnUnit,
@@ -94,14 +94,9 @@ module.exports = class ConvertHandler {
   static getReturnNum(initNum, initUnit) {
     let returnNum = null
 
-    for (const [ind, pair] of this.UNIT_PAIRS.entries()) {
+    for (const [ind, [met, imp]] of this.IMP_MET_PAIRS.entries()) {
       const converter =
-          ind === 0
-            ? this.LBS_TO_KG
-            : ind === 1
-            ? this.MI_TO_KM
-            : this.GAL_TO_L,
-        [met, imp] = pair
+        ind === 0 ? this.LBS_TO_KG : ind === 1 ? this.MI_TO_KM : this.GAL_TO_L
 
       if (initUnit === met) {
         returnNum = initNum * converter
@@ -116,7 +111,7 @@ module.exports = class ConvertHandler {
     return {
       err: returnNum
         ? null
-        : `expected ${initUnit} to be one of ${this.UNIT_PAIRS.flat().join(
+        : `expected ${initUnit} to be one of ${this.IMP_MET_PAIRS.flat().join(
             ', '
           )}`,
       returnNum,
@@ -126,7 +121,7 @@ module.exports = class ConvertHandler {
   /**
    * @description A pure static method that returns the fully spelled out version of imperial or metric unit abbreviations.
    * @param {string} unit The unit abbreviation to spell out.
-   * @returns {{ err: string|null, spelledUnit: string|null }} An object containing an error property if the unit abbreviation could not be spelled out, or a spell property containing the full version of the abbreviation.
+   * @returns {string|null} The full version of the abbreviation, or null if the appreviation was not valid.
    */
   static spellOutUnit(unit) {
     const abbreviations = [
@@ -137,27 +132,28 @@ module.exports = class ConvertHandler {
       ['gal', 'gallons'],
       ['mi', 'miles'],
     ]
-    let spelledUnit = null
 
-    for (const abbFull of abbreviations) {
-      const [abbr, full] = abbFull
-      if (unit === abbr) {
-        spelledUnit = full
-        break
-      }
-    }
+    for (const [abbr, full] of abbreviations) if (unit === abbr) return full
 
-    return {
-      err: spelledUnit
-        ? null
-        : `expected ${unit} to be one of: ${this.UNIT_PAIRS.flat().join(', ')}`,
-      spelledUnit,
-    }
+    return null
   }
 
+  /**
+   * @description A pure static method that returns a description of the conversion.
+   * @param {number} initNum The number to be converted.
+   * @param {string} initUnit The abbreviated unit to convert from.
+   * @param {number} returnNum The converted number.
+   * @param {string} returnUnit The abbreviated unit to convert to.
+   * @returns {string|null} A short description of the conversion, or null if the static spellOutUnit method was unable to find the spelling of a unit.
+   */
   static getString(initNum, initUnit, returnNum, returnUnit) {
-    let result
+    const [initSpelled, returnSpelled] = [
+      this.spellOutUnit(initUnit),
+      this.spellOutUnit(returnUnit),
+    ]
 
-    return result
+    return !initSpelled || !returnSpelled
+      ? null
+      : `${initNum} ${initSpelled} converts to ${returnNum} ${returnSpelled}`
   }
 }

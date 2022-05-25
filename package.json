@@ -2,7 +2,7 @@
 	"name": "fcc-quality-assurance-projects",
 	"version": "1.0.0",
 	"description": "the last 5 quality assurance unit projects from fcc's curriculum",
-	"main": "server.js",
+	"main": "server.js", 
 	"scripts": {
 		"start": "node server.js",
 		"dev": "nodemon server.js",

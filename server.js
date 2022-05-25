@@ -1,22 +1,26 @@
 'use strict'
+function log() {
+  console.log(...arguments)
+}
+console.clear()
 require('dotenv').config()
-const { expect } = require('chai'),
-  // expect = require('chai').expect,
-  apiRoutes = require('./routes/api.js'),
+const apiRoutes = require('./routes/api.js'),
   fccTestingRoutes = require('./routes/fcctesting.js'),
+  cors = require('cors'),
+  bodyParser = require('body-parser'),
   express = require('express'),
   app = express(),
   htmlRoutes = require('./routes/html-routes.js'),
-  middleware = require('./routes/middleware.js'),
   runner = require('./test-runner.js')
 if (process.env.NODE_ENV === 'dev') require('./dev-server.js')(app)
 
-console.clear()
+app.use('/public', express.static(process.cwd() + '/public'))
+app.use(cors({ origin: '*' })) // For FCC testing purposes only.
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-middleware(app, express)
 htmlRoutes(app)
 fccTestingRoutes(app)
-// Routing for API.
 apiRoutes(app)
 
 app.use((req, res, next) => {
@@ -24,21 +28,19 @@ app.use((req, res, next) => {
 })
 
 const PORT = process.env.PORT || 3000
-function log() {
-  console.log(...arguments)
-}
 app.listen(PORT, () => {
   log('Listening on port ' + PORT)
   if (process.env.NODE_ENV !== 'dev') return
 
-  setTimeout(() => {
-    try {
-      // @ts-ignore
-      runner.run()
-    } catch (err) {
-      console.error('Tests are not valid:', err)
-    }
-  }, 1500)
+  // Commented out timeout instead of deleting because the fcc team likely had a reason for it; I just don't understand it.
+  // setTimeout(() => {
+  try {
+    // @ts-ignore
+    runner.run()
+  } catch (err) {
+    console.error('Tests are not valid:', err)
+  }
+  // }, 1500)
 })
 
 module.exports = app // For testing.

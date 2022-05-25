@@ -58,6 +58,7 @@
               id="convertField"
               name="input"
               placeholder="3.1mi"
+              required
             />
             <input id="convert" type="submit" value="Convert!" />
           </form>
@@ -73,17 +74,19 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      $(function () {
-        $('#convertForm').submit(function (event) {
+      $(() => {
+        $('#convertForm').submit(event => {
           event.preventDefault()
           $.ajax({
             url: '/api/convert',
             type: 'get',
             data: $('#convertForm').serialize(),
-            success: function (data) {
+            success: data => {
               $('#result').text(data.string || data)
-              $('#jsonResult').text(JSON.stringify(data))
+              $('#jsonResult').text(JSON.stringify(data, null, 2))
             },
+            error: data =>
+              $('#jsonResult').text(JSON.stringify(data.responseJSON, null, 2)),
           })
         })
       })

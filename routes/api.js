@@ -1,32 +1,38 @@
 'use strict'
-const { expect } = require('chai'),
-  ConvertHandler = require('../controllers/convertHandler.js')
+const ConvertHandler = require('../controllers/convertHandler.js'),
+  {
+    getNum: gN,
+    getUnit: gU,
+    getReturnNum: gRN,
+    getReturnUnit: gRU,
+    spellOutUnit: sOU,
+    getString: gS,
+  } = ConvertHandler,
+  getNum = gN.bind(ConvertHandler),
+  getUnit = gU.bind(ConvertHandler),
+  getReturnNum = gRN.bind(ConvertHandler),
+  getReturnUnit = gRU.bind(ConvertHandler),
+  spellOutUnit = sOU.bind(ConvertHandler),
+  getString = gS.bind(ConvertHandler)
 
 module.exports = function (app) {
   app.route('/api/convert').get((req, res) => {
-    function clientErr(err) {
-      return res.status(400).send(err)
-    }
     const { input } = req.query,
-      { err: err0, initNum } = ConvertHandler.getNum(input),
-      { err: err1, initUnit } = ConvertHandler.getUnit(input),
-      { err: err2, returnUnit } = ConvertHandler.getReturnUnit(initUnit),
-      { err: err3, returnNum } = ConvertHandler.getReturnNum(initNum, initUnit)
+      { err: err0, initNum } = getNum(input),
+      { err: err1, initUnit } = getUnit(input),
+      { err: err2, returnUnit } = getReturnUnit(initUnit),
+      { err: err3, returnNum } = getReturnNum(initNum, initUnit),
+      string = getString(initNum, initUnit, returnNum, returnUnit),
+      errs = [err0, err1, err2, err3]
 
-    return err0
-      ? clientErr(err0)
-      : err1
-      ? clientErr(err1)
-      : err2
-      ? clientErr(err2)
-      : err3
-      ? clientErr(err3)
-      : res.json({
-          initNum,
-          initUnit,
-          returnNum,
-          returnUnit,
-          // string,
-        })
+    for (const err of errs) if (err) return res.status(400).json({ err })
+
+    res.json({
+      initNum,
+      initUnit,
+      returnNum,
+      returnUnit,
+      string,
+    })
   })
 }
