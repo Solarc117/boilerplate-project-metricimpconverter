@@ -5,14 +5,12 @@ const ConvertHandler = require('../controllers/convertHandler.js'),
     getUnit: gU,
     getReturnNum: gRN,
     getReturnUnit: gRU,
-    spellOutUnit: sOU,
     getString: gS,
   } = ConvertHandler,
   getNum = gN.bind(ConvertHandler),
   getUnit = gU.bind(ConvertHandler),
   getReturnNum = gRN.bind(ConvertHandler),
   getReturnUnit = gRU.bind(ConvertHandler),
-  spellOutUnit = sOU.bind(ConvertHandler),
   getString = gS.bind(ConvertHandler)
 
 module.exports = function (app) {
@@ -35,4 +33,23 @@ module.exports = function (app) {
       string,
     })
   })
+
+  app
+    .route('/api/issues/:project')
+
+    .get((req, res) => {
+      const { project } = req.params
+    })
+
+    .post((req, res) => {
+      const { project } = req.params
+    })
+
+    .put((req, res) => {
+      const { project } = req.params
+    })
+
+    .delete((req, res) => {
+      const { project } = req.params
+    })
 }

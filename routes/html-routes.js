@@ -13,6 +13,7 @@ module.exports = function (app) {
   app.route('/issue-tracker').get((req, res) => {
     res.sendFile(views + '/issue-tracker/')
   })
+  app.route('/issue-tracker/:project/').get((req, res) => res.sendFile(views + '/issue-tracker/issues.html'))
 
   app.route('/personal-library').get((req, res) => {
     res.sendFile(views + '/personal-library/')

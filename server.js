@@ -4,14 +4,14 @@ function log() {
 }
 console.clear()
 require('dotenv').config()
-const apiRoutes = require('./routes/api.js'),
-  fccTestingRoutes = require('./routes/fcctesting.js'),
-  cors = require('cors'),
+const cors = require('cors'),
   bodyParser = require('body-parser'),
   express = require('express'),
-  app = express(),
+  apiRoutes = require('./routes/api.js'),
+  fccTestingRoutes = require('./routes/fcctesting.js'),
   htmlRoutes = require('./routes/html-routes.js'),
-  runner = require('./test-runner.js')
+  runner = require('./test-runner.js'),
+  app = express()
 if (process.env.NODE_ENV === 'dev') require('./dev-server.js')(app)
 
 app.use('/public', express.static(process.cwd() + '/public'))
@@ -23,9 +23,7 @@ htmlRoutes(app)
 fccTestingRoutes(app)
 apiRoutes(app)
 
-app.use((req, res, next) => {
-  res.status(404).type('text').send('404 not found')
-})
+app.use((req, res, next) => res.status(404).type('text').send('404 not found'))
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
