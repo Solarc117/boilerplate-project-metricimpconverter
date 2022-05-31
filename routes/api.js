@@ -13,43 +13,33 @@ const ConvertHandler = require('../controllers/convertHandler.js'),
   getReturnUnit = gRU.bind(ConvertHandler),
   getString = gS.bind(ConvertHandler)
 
-module.exports = function (app) {
-  app.route('/api/convert').get((req, res) => {
-    const { input } = req.query,
-      { err: err0, initNum } = getNum(input),
-      { err: err1, initUnit } = getUnit(input),
-      { err: err2, returnUnit } = getReturnUnit(initUnit),
-      { err: err3, returnNum } = getReturnNum(initNum, initUnit),
-      string = getString(initNum, initUnit, returnNum, returnUnit),
-      errs = [err0, err1, err2, err3]
-
-    for (const err of errs) if (err) return res.status(400).json({ err })
-
-    res.json({
-      initNum,
-      initUnit,
-      returnNum,
-      returnUnit,
-      string,
-    })
-  })
-
+function nonDbRoutes(app) {
   app
-    .route('/api/issues/:project')
+    .route('/api/convert')
 
     .get((req, res) => {
-      const { project } = req.params
-    })
+      const { input } = req.query,
+        { err: err0, initNum } = getNum(input),
+        { err: err1, initUnit } = getUnit(input),
+        { err: err2, returnUnit } = getReturnUnit(initUnit),
+        { err: err3, returnNum } = getReturnNum(initNum, initUnit),
+        string = getString(initNum, initUnit, returnNum, returnUnit),
+        errs = [err0, err1, err2, err3]
 
-    .post((req, res) => {
-      const { project } = req.params
-    })
+      for (const err of errs) if (err) return res.status(400).json({ err })
 
-    .put((req, res) => {
-      const { project } = req.params
-    })
-
-    .delete((req, res) => {
-      const { project } = req.params
+      res.json({
+        initNum,
+        initUnit,
+        returnNum,
+        returnUnit,
+        string,
+      })
     })
 }
+
+function dbRoutes(app, users) {
+
+}
+
+module.exports = [nonDbRoutes, dbRoutes]

@@ -1,0 +1,89 @@
+<------ Problem Solving Steps from Fireship --------->
+
+1. Identify 
+  - definte the issue
+  - definte the context
+  - why do we care to solve it?
+2. Research & Define 
+  - Google the problem; you're likely not the first one
+  - Discuss w/other devs
+  - Break problem down into smaller tasks
+  - Determine what tools & apis to use 
+3. Pseudo-code
+  - how do we implement our code?
+  - don't worry about syntax
+  - can write pseudo-code in a lang, if you're comfortable enough w/it
+4. (optional) Test-Driven Development
+  - Consider using Jest (a JS testing library)
+  - Red, green, refactor process:
+    a) write failing tests that describe what you're trying to do
+    b) write code that makes your tests pass
+    c) refactor/optimize tests/code
+  - good specs help you catch issues much quicker than you could debug them
+5. Implement Code
+  - try to implement the first working prototype as quickly as possible: try to treat it like a hackathon & don't worry about the quality of the code
+    * refactoring and cleaning imperfect code is easier than writing clean code from the get-go
+6. Relax, sleep, & reflect on the code
+  - take a break if you're stuck!
+  - a few suggestions to improve code:
+    a) improve readability
+    b) add useful comments
+    c) remove duplication
+    d) optimize time/space complexities
+    e) add error handling
+    f) add caching
+7. Keep practicing! Get feedback from other devs.
+
+<!-------------------- END ------------------------->
+
+
+📄⬇️ play around with different properties of res to use to verify a proper response
+📄It would be neat to have a "full response" method in ConvertHandler that draws from its own methods to return all the properties that a response object would be expected to have, and call THAT method in the api file, instead of defining each property individually and returning an anonymous object with all of those properties.
+📄I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
+📄I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. Therefore, I should make verifying fcctesting.js works my last task - still would be nice to get that certification, though, so I do still wanna see if it's doable within a reasonable amount of time.
+📄Should look up diff. betw. res' sendFile & render.
+📄Should look up what my brother said about views being automatic, & why it doesn't work on this project.
+📄Might wanna consider isolating separate api method handlers to their own files, and just invoke them all in the api.js file (ex. issue-tracker-api.js, metric-imperial-api.js, and require them)
+📄In order to continue doing TDD, I should have a sign-in form, and set up tests for the database, form, & api
+
+- ✅think of a possible solution for allowing users to add/edit/remove issues to their repos
+  📄i can only see a PAT being useful for myself; to allow users to add/edit/remove issues from their repositories, I think OAuth would be more suitable.
+  
+
+✅I should check that the GH api allows for issue edits/deletes as well.
+  📄Using the GH api, we can create, update, get & lock/unlock issues
+
+- ⚒️revisit advanced back end code to re-implement github OAuth
+  📄do I need to store user information in mDB? I'll just do what I was doing in adv-node-express
+  - ✅fix failing tests throughout this process
+  - ⚒️set up routes/api so that only the functionality that depends on the db fails when there is a db connection err
+    - 
+  - ✅create a cluster for the quality-assurance projects, and a collection for issue-tracker users 
+  - 
+
+
+fcc tasks:
+- ⚒️Complete the necessary routes in /routes/api.js:
+  - get
+  - post
+  - put
+  - delete
+- ⚒️Create all of the functional tests in tests/issue-tracker.test.js:
+  - Create an issue with every field: POST request to /api/issues/{project}
+  - Create an issue with only required fields: POST request to /api/issues/{project}
+  - Create an issue with missing required fields: POST request to /api/issues/{project}
+  - View issues on a project: GET request to /api/issues/{project}
+  - View issues on a project with one filter: GET request to /api/issues/{project}
+  - View issues on a project with multiple filters: GET request to /api/issues/{project}
+  - Update one field on an issue: PUT request to /api/issues/{project}
+  - Update multiple fields on an issue: PUT request to /api/issues/{project}
+  - Update an issue with missing _id: PUT request to /api/issues/{project}
+  - Update an issue with no fields to update: PUT request to /api/issues/{project}
+  - Update an issue with an invalid _id: PUT request to /api/issues/{project}
+  - Delete an issue: DELETE request to /api/issues/{project}
+  - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
+  - Delete an issue with missing _id: DELETE request to /api/issues/{project}
+
+- style issue-tracker's index page
+- add navbar to issue-tracker
+- compare fccTestingRoutes

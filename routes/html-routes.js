@@ -2,28 +2,28 @@
 const views = process.cwd() + '/views'
 
 module.exports = function (app) {
-  app.route('/').get((req, res) => {
-    res.sendFile(views + '/home.html')
-  })
+  app.route('/').get((req, res) => res.sendFile(views + '/home.html'))
 
-  app.route('/metric-imperial').get((req, res) => {
-    res.sendFile(views + '/metric-imperial/')
-  })
+  app
+    .route('/metric-imperial')
+    .get((req, res) => res.sendFile(views + '/metric-imperial/'))
 
-  app.route('/issue-tracker').get((req, res) => {
-    res.sendFile(views + '/issue-tracker/')
-  })
-  app.route('/issue-tracker/:project/').get((req, res) => res.sendFile(views + '/issue-tracker/issues.html'))
+  app
+    .route('/issue-tracker')
+    .get((req, res) => res.sendFile(views + '/issue-tracker/'))
+  app
+    .route('/issue-tracker/:project/')
+    .get((req, res) => res.sendFile(views + '/issue-tracker/issues.html'))
 
-  app.route('/personal-library').get((req, res) => {
-    res.sendFile(views + '/personal-library/')
-  })
+  app
+    .route('/personal-library')
+    .get((req, res) => res.sendFile(views + '/personal-library/'))
 
-  app.route('/sudoku-solver').get((req, res) => {
-    res.sendFile(views + '/sudoku-solver/')
-  })
+  app
+    .route('/sudoku-solver')
+    .get((req, res) => res.sendFile(views + '/sudoku-solver/'))
 
-  app.route('/american-british').get((req, res) => {
-    res.sendFile(views + '/american-british/')
-  })
+  app
+    .route('/american-british')
+    .get((req, res) => res.sendFile(views + '/american-british/'))
 }

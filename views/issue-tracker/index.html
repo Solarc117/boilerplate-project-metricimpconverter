@@ -10,6 +10,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../public/all.css" />
     <link rel="stylesheet" href="../../public/issue-tracker.css" />
   </head>
   <body>
@@ -17,10 +18,10 @@
       <h1>Issue Tracker</h1>
     </header>
     <section style="margin: 0 50px">
-      <h3>Example <code>GET</code> usage</h3>
+      <h3>Example <code>GET</code> Usage</h3>
       <code>/api/issues/{project}</code><br />
       <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br />
-      <h3>Example return</h3>
+      <h3>Example Return</h3>
       <pre>
 <code>[
   { 
@@ -60,7 +61,7 @@
           name="issue_text"
           placeholder="*Text"
           style="width: 100px"
-          required=""
+          required
         ></textarea
         ><br />
         <input
@@ -68,7 +69,7 @@
           name="created_by"
           placeholder="*Created by"
           style="width: 100px"
-          required=""
+          required
         /><br />
         <input
           type="text"
@@ -156,42 +157,53 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      $(function () {
-        $('#testForm').submit(event => {
-          function ajaxOps(type, dataId) {
-            return {
+      $(() => {
+        function ajax(formId, method) {
+          $(formId).submit(e => {
+            e.preventDefault()
+            $.ajax({
               url: '/api/issues/apitest',
-              type,
-              data: $(dataId).serialize(),
-              success: data => ('#jsonResult').text(JSON.stringify(data))
-            }
-          }
-          e.preventDefault()
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'post',
-            data: $('#testForm').serialize(),
-            success: data => $('#jsonResult').text(JSON.stringify(data)),
+              method,
+              data: $(formId).serialize(),
+              success: data => $('#jsonResult').text(JSON.stringify(data)),
+            })
           })
-        })
-        $('#testForm2').submit(event => {
-          e.preventDefault()
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'put',
-            data: $('#testForm2').serialize(),
-            success: data => $('#jsonResult').text(JSON.stringify(data)),
-          })
-        })
-        $('#testForm3').submit(event => {
-          e.preventDefault()
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'delete',
-            data: $('#testForm3').serialize(),
-            success: data => $('#jsonResult').text(JSON.stringify(data)),
-          })
-        })
+        }
+        const formIdsAndMethods = [
+          ['#testForm', 'post'],
+          ['#testForm2', 'put'],
+          ['#testForm3', 'delete'],
+        ]
+
+        for (const [formId, method] of formIdsAndMethods) ajax(formId, method)
+
+        // $('#testForm').submit(e => {
+        //   e.preventDefault()
+        // $.ajax({
+        //   url: '/api/issues/apitest',
+        //   type: 'post',
+        //   data: $('#testForm').serialize(),
+        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
+        // })
+        // })
+        // $('#testForm2').submit(e => {
+        //   e.preventDefault()
+        // $.ajax({
+        //   url: '/api/issues/apitest',
+        //   type: 'put',
+        //   data: $('#testForm2').serialize(),
+        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
+        // })
+        // })
+        // $('#testForm3').submit(e => {
+        //   e.preventDefault()
+        // $.ajax({
+        //   url: '/api/issues/apitest',
+        //   type: 'delete',
+        //   data: $('#testForm3').serialize(),
+        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
+        // })
+        // })
       })
     </script>
   </body>

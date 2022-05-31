@@ -1,0 +1,3 @@
+{
+  "watch": ["routes", "controllers", "tests", "server.js", "views"]
+}
