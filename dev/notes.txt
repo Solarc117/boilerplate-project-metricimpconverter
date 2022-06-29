@@ -41,33 +41,24 @@
 📄It would be neat to have a "full response" method in ConvertHandler that draws from its own methods to return all the properties that a response object would be expected to have, and call THAT method in the api file, instead of defining each property individually and returning an anonymous object with all of those properties.
 📄I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
 📄I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. Therefore, I should make verifying fcctesting.js works my last task - still would be nice to get that certification, though, so I do still wanna see if it's doable within a reasonable amount of time.
-📄Should look up diff. betw. res' sendFile & render.
+📄render works with templates, like pug. sendFile sends file as is.
 📄Should look up what my brother said about views being automatic, & why it doesn't work on this project.
 📄Might wanna consider isolating separate api method handlers to their own files, and just invoke them all in the api.js file (ex. issue-tracker-api.js, metric-imperial-api.js, and require them)
 📄In order to continue doing TDD, I should have a sign-in form, and set up tests for the database, form, & api
+📄I should wait on impementing mdb until I SEE that I need it.
 
-- ✅think of a possible solution for allowing users to add/edit/remove issues to their repos
-  📄i can only see a PAT being useful for myself; to allow users to add/edit/remove issues from their repositories, I think OAuth would be more suitable.
-  
+- ✅ issue a put request to the owners collection prior to the issue-tracker tests, to ensure a controlled environment.
+- ⚒️🎉 add put request code to make setup test pass
+  - ✅ find a way to connect to db BEFORE the router method setups: connect in server?
+  - ✅ log a message with put requests
+  - ✅ check how the data is being sent
+  - ✅ receive data accordingly in the put request
+  - ✅ look at how the mflix project accesses db in api
+    📄 they use OOP to format apiCalls as methods, and use a different class called DAO (direct access object) which are the objects that access the db
+  - ✅ look at how the DAO are connected to the index file
+  - ✅ implement the mflix api db code
+  - code the ownersDAO get issues method
 
-✅I should check that the GH api allows for issue edits/deletes as well.
-  📄Using the GH api, we can create, update, get & lock/unlock issues
-
-- ⚒️revisit advanced back end code to re-implement github OAuth
-  📄do I need to store user information in mDB? I'll just do what I was doing in adv-node-express
-  - ✅fix failing tests throughout this process
-  - ⚒️set up routes/api so that only the functionality that depends on the db fails when there is a db connection err
-    - 
-  - ✅create a cluster for the quality-assurance projects, and a collection for issue-tracker users 
-  - 
-
-
-fcc tasks:
-- ⚒️Complete the necessary routes in /routes/api.js:
-  - get
-  - post
-  - put
-  - delete
 - ⚒️Create all of the functional tests in tests/issue-tracker.test.js:
   - Create an issue with every field: POST request to /api/issues/{project}
   - Create an issue with only required fields: POST request to /api/issues/{project}
@@ -75,14 +66,20 @@ fcc tasks:
   - View issues on a project: GET request to /api/issues/{project}
   - View issues on a project with one filter: GET request to /api/issues/{project}
   - View issues on a project with multiple filters: GET request to /api/issues/{project}
-  - Update one field on an issue: PUT request to /api/issues/{project}
-  - Update multiple fields on an issue: PUT request to /api/issues/{project}
-  - Update an issue with missing _id: PUT request to /api/issues/{project}
-  - Update an issue with no fields to update: PUT request to /api/issues/{project}
-  - Update an issue with an invalid _id: PUT request to /api/issues/{project}
+  - Update one field on an issue: PATCH request to /api/issues/{project}
+  - Update multiple fields on an issue: PATCH request to /api/issues/{project}
+  - Update an issue with missing _id: PATCH request to /api/issues/{project}
+  - Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  - Update an issue with an invalid _id: PATCH request to /api/issues/{project}
   - Delete an issue: DELETE request to /api/issues/{project}
   - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
   - Delete an issue with missing _id: DELETE request to /api/issues/{project}
+
+- ⚒️Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
+  - get an issue, with the option to filter using asignees, reactions, or other things
+  - post
+  - PATCH
+  - delete (alert user that gh rest api does not include this func)
 
 - style issue-tracker's index page
 - add navbar to issue-tracker
