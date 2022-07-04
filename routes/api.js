@@ -2,7 +2,8 @@
 const { log, error } = console
 
 const { Router } = require('express'),
-  cH = require('../controllers/convertHandler.js'),
+  cH = require('../controllers/convert-handler.js'),
+  ownersDAO = require('../dao/owners-dao.js'),
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),
@@ -44,10 +45,9 @@ router
        2. Find the owner that matches the 'owner' req param.
        3. Find the project under the given owner.
        4. Return all issues under the given project. */
-    const targetOwner = await owners.findOne({ username: owner }).catch(error)
-
-    res.json({ targetOwner })
+    const { body } = req
   })
+  // This put request is only for the issue-tracker tests suiteSetup.
   .put(async (req, res) => {
     const { body } = req
     log(body)

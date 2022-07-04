@@ -6,7 +6,7 @@ clear()
 const { MongoClient } = require('mongodb'),
   app = require('./server.js'),
   runner = require('./test-runner.js'),
-  ownersDAO = require('./dao/ownersDAO.js')
+  ownersDAO = require('./dao/owners-dao.js')
 
 MongoClient.connect(env.MONGO_URI, {
   useNewUrlParser: true,
