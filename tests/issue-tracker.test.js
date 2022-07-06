@@ -9,7 +9,7 @@ const chaiHttp = require('chai-http'),
 
 chai.use(chaiHttp)
 
-suite('🧪 Issue Tracker', () => {
+suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   suiteSetup(done => {
     const testDocument = {
       _id: new ObjectId('0000000197d9af3844c5dc90'),
@@ -30,54 +30,45 @@ suite('🧪 Issue Tracker', () => {
     chai.request(server).put(TEST_PATH).send(testDocument).end(done)
   })
 
-  test('Correct setup document', done => {
+  test('Successful suite setup', done => {
     chai
       .request(server)
-      .get(`${TEST_PATH}`)
+      .get(TEST_PATH)
       .end((err, res) => {
         const {
           status,
           ok,
-          body: { targetOwner },
+          body: { _events, _eventsCount },
         } = res
 
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.isNotNull(targetOwner)
+        assert.isObject(_events)
+        assert.isNumber(_eventsCount)
 
         done()
       })
   })
 
-  test('1. GET /api/issues/:owner/:project', done => {
+  test(`1. GET ${TEST_PATH}`, done => {
     chai
       .request(server)
       .get(TEST_PATH)
       .end((err, res) => {
-        const { status, ok, body } = res
+        const {
+          status,
+          ok,
+          body: { _events, _eventsCount },
+        } = res
 
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        // assert.strictEqual(body, EXPECTED_BODY)
+        assert.isObject(_events)
+        assert.isNumber(_eventsCount)
+
         done()
       })
   })
-
-  // test('2. Create an issue with only required fields: POST /api/issues/{project}', done => {
-  //   const _id = new ObjectId().toString()
-
-  //   chai
-  //     .request(server)
-  //     // Need to encode spaces w/%20
-  //     .post(`${ISSUES_PATH}&title=test%20issue%20#${_id}`)
-  //     .end((err, res) => {
-  //       const { status, ok, body } = res
-
-  //       assert.strictEqual(status, 200)
-  //       assert.isTrue(ok)
-  //       // assert.strictEqual(body, EXPECTED_BODY)
-  //     })
-  // })
 })

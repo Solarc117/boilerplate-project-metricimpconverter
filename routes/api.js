@@ -2,8 +2,9 @@
 const { log, error } = console
 
 const { Router } = require('express'),
-  cH = require('../controllers/convert-handler.js'),
-  ownersDAO = require('../dao/owners-dao.js'),
+  cH = require('../handlers/convert-handler.js'),
+  IssuesDAO = require('../dao/issues-dao.js'),
+  IssueHandler = require('../handlers/issue-handler'),
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),
@@ -39,19 +40,9 @@ router
      equal resources.
      PUT: update a resource, either partially or fully, or create if it doesn't exist. IDEMPOTENT: multiple identical requests will not create a new resource if it was already there, or if the first request created it, and they will not modify the resource more than once.
      PATCH: update a resource partially. IDEMPOTENT: multiple identical requests will not modify the resource more than once, as with PUT requests. */
-  .get(async (req, res) => {
-    // Get all the issues for the given project.
-    /* 1. Access the owners collection.
-       2. Find the owner that matches the 'owner' req param.
-       3. Find the project under the given owner.
-       4. Return all issues under the given project. */
-    const { body } = req
-  })
+  .get(IssueHandler.getDocumentRequest)
   // This put request is only for the issue-tracker tests suiteSetup.
-  .put(async (req, res) => {
-    const { body } = req
-    log(body)
-  })
+  .put(IssueHandler.putDocumentRequest)
   .post(async (req, res) => {})
   .patch(async (req, res) => {})
   .delete(async (req, res) => {})

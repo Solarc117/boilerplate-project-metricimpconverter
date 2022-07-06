@@ -6,14 +6,14 @@ clear()
 const { MongoClient } = require('mongodb'),
   app = require('./server.js'),
   runner = require('./test-runner.js'),
-  ownersDAO = require('./dao/owners-dao.js')
+  IssuesDAO = require('./dao/issues-dao.js')
 
 MongoClient.connect(env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(async client => {
-    await ownersDAO.injectDB(client)
+    await IssuesDAO.injectDB(client)
 
     const port = env.PORT || 3000
     app.listen(port, () => {

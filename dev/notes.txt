@@ -46,6 +46,7 @@
 📄Might wanna consider isolating separate api method handlers to their own files, and just invoke them all in the api.js file (ex. issue-tracker-api.js, metric-imperial-api.js, and require them)
 📄In order to continue doing TDD, I should have a sign-in form, and set up tests for the database, form, & api
 📄I should wait on impementing mdb until I SEE that I need it.
+📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
 
 ✨ ways to optimize learning that I should remember:
   - take short, mind-wandering breaks apart from ultradian breaks
@@ -55,50 +56,14 @@
   - do productive breaks during ultradian breaks (raise adrenalin, then: NSDR, walk, talk to someone, etc.)
   - implement perceptible, non-intrusive white noise during learning
   - MINIMIZE DISTRACTIONS
+  - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
+- ✅ color code different test files
+- 🎉 what is req.body for, and what is req.query for?
+  📄 req.body is what 
 
-- ✅ issue a put request to the owners collection prior to the issue-tracker tests, to ensure a controlled environment.
-- ✅ look at the role of the controller in mflix
-  📄 the MoviesController calls the appropriate DAO methods for a method (eg. apiGetMovies => MovieDAO.getMovies), formats the obtained data in the expected json return object, and responds with said object. It does NOT handle errors; simply calls await DAO.METHOD().
-- ✅ look at the role of router in mflix
-  📄 the router file creates a new router instance, and sets up controller methods for different paths. It then exports the router.
-- ✅ draw a diagram depicting how a put request from the test file is processed and results in a response -- include:
-  📄 the data that is being passed on in every step
-  📄 the way the data being passed on in every step 
-  📄 the test file
-  📄 the respective router
-  📄 the respective controller
-  📄 the respective controller method
-  📄 the respective dao
-  📄 the respective dao method
-  📄 the respective db method
-- 🎉🧱 code everything leading UP to the OwnersDAO put issues method:
-  - ✅ create an issue-handler file in the controller folder
-  - 🎉 create an IssueHandler class in the owners-handler file
-  - create a putDocumentRequest method in the IssueHandler class, with params (req, res, next)
-  - export the IssueHandler class
-  - import the IssueHandler class in the api file
-  - map issues/:owner/:project put requests to the IssueHandler class' putDocumentRequest method
-  - log a message in the putDocumentRequest method of the OwnersHandler class
-  - verify said msg is being logged; if not, debug
-  - add documentation to the putDocumentRequest method
-    📄 simply describe params, and write that the method handles the put request that is submitted by the test file by calling the dao object's putDocument method. Will edit the method's response, but for now will simply respond with whatever the dao method returns.
-  - import the OwnersDAO object if it is not yet imported
-  - call the OwnersDAO putDocument method, with the document passed, and store the return value in a response variable
-  - return said response variable
-- 🧱 add put request code to the OwnersDAO to make setup test pass:
-  - ✅ find a way to connect to db BEFORE the router method setups: connect in server?
-  - ✅ log a message with put requests
-  - ✅ check how the data is being sent
-  - ✅ receive data accordingly in the put request
-  - ✅ look at how the mflix project accesses db in api
-    📄 they use OOP to format apiCalls as methods, and use a different class called DAO (direct access object) which are the objects that access the db
-  - ✅ look at how the DAO are connected to the index file
-  - ✅ implement the mflix api db code
-  - 
-
-- ⚒️Create all of the functional tests in tests/issue-tracker.test.js:
-  - Create an issue with every field: POST request to /api/issues/{project}
+- ⚒️ Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
+  -  Create an issue with every field: POST request to /api/issues/{project}
   - Create an issue with only required fields: POST request to /api/issues/{project}
   - Create an issue with missing required fields: POST request to /api/issues/{project}
   - View issues on a project: GET request to /api/issues/{project}
@@ -113,7 +78,7 @@
   - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
   - Delete an issue with missing _id: DELETE request to /api/issues/{project}
 
-- ⚒️Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
+- ⚒️ Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
   - get an issue, with the option to filter using asignees, reactions, or other things
   - post
   - PATCH

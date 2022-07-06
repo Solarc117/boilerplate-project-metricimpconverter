@@ -1,7 +1,7 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
   server = require('../server.js'),
-  cH = require('../controllers/convert-handler.js'),
+  cH = require('../handlers/convert-handler.js'),
   { assert } = chai,
   { IMP_MET_PAIRS } = cH,
   UNITS = IMP_MET_PAIRS.flat(),
@@ -14,7 +14,7 @@ const chai = require('chai'),
 
 chai.use(chaiHttp)
 
-suite('🧪 Metric Imperial: ConvertHandler', () => {
+suite('🧪\x1b[33mMetric Imperial: ConvertHandler', () => {
   test('1. Read integer inputs', done => {
     const integer = 3,
       unit = 'L',
@@ -310,7 +310,7 @@ suite('🧪 Metric Imperial: ConvertHandler', () => {
   })
 })
 
-suite('Metric Imperial: Functional Tests', () => {
+suite('🧪\x1b[33mMetric Imperial: HTTP', () => {
   test('1. Convert 10L: GET /api/convert', done => {
     const num = 10,
       unit = 'L',
