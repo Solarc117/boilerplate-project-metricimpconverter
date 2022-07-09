@@ -37,16 +37,12 @@
 <!-------------------- END ------------------------->
 
 
-📄⬇️ play around with different properties of res to use to verify a proper response
-📄It would be neat to have a "full response" method in ConvertHandler that draws from its own methods to return all the properties that a response object would be expected to have, and call THAT method in the api file, instead of defining each property individually and returning an anonymous object with all of those properties.
-📄I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
-📄I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. Therefore, I should make verifying fcctesting.js works my last task - still would be nice to get that certification, though, so I do still wanna see if it's doable within a reasonable amount of time.
-📄render works with templates, like pug. sendFile sends file as is.
-📄Should look up what my brother said about views being automatic, & why it doesn't work on this project.
-📄Might wanna consider isolating separate api method handlers to their own files, and just invoke them all in the api.js file (ex. issue-tracker-api.js, metric-imperial-api.js, and require them)
-📄In order to continue doing TDD, I should have a sign-in form, and set up tests for the database, form, & api
-📄I should wait on impementing mdb until I SEE that I need it.
+📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
+📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
+📄 render works with templates, like pug. The sendFile method sends file as is.
+📄 should consider looking up what my brother said about views being automatic, & why it doesn't work on this project.
 📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
+📄 do I need to drop the collection? Or would it be simpler to send a put request for every document that I will need (e.g. if there are two DELETE tests, I can send two PUT requests for every DELETE test)? I think the second will be easier.
 
 ✨ ways to optimize learning that I should remember:
   - take short, mind-wandering breaks apart from ultradian breaks
@@ -58,12 +54,24 @@
   - MINIMIZE DISTRACTIONS
   - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
-- ✅ color code different test files
-- 🎉 what is req.body for, and what is req.query for?
-  📄 req.body is what 
+- ✅ what is the difference between req.body, req.query, and req.params?
+  📄 req.body is what usually contains the majority of information relevant to the request
+  📄 query contains the '...?KEY=VALUE' pairs of a path
+  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
-- ⚒️ Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
-  -  Create an issue with every field: POST request to /api/issues/{project}
+- ✅ rename owners collection to 'projects'
+  📄 I think it'd be better to organize documents by project, like so:
+  {
+    _id: ...,
+    title: ...,
+    owner: ...,
+    issues: [{...}, ...]
+  }
+
+- ✅ drop the test collection in the first suiteSetup via a delete request
+
+- ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
+  - 🎉 Create an issue with every field: POST request to /api/issues/:project
   - Create an issue with only required fields: POST request to /api/issues/{project}
   - Create an issue with missing required fields: POST request to /api/issues/{project}
   - View issues on a project: GET request to /api/issues/{project}
@@ -82,8 +90,16 @@
   - get an issue, with the option to filter using asignees, reactions, or other things
   - post
   - PATCH
-  - delete (alert user that gh rest api does not include this func)
+  - delete 
 
+- ensure method documentation return types are consistent with the actual return types
 - style issue-tracker's index page
 - add navbar to issue-tracker
 - compare fccTestingRoutes
+
+📄 commit notes:
+  - IssuesDAO:
+    - injectDB connects to dev and projects collections in dev and non-dev environments respectively
+    - added dropTest method which drops the test collection (to reset for testing)
+    - reformatted db document structure, removed :owner param from api/issues/:owner/:project path
+    - drop db before sending 3 put requests in suiteSetups

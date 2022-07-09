@@ -90,12 +90,12 @@
   <!-- Your web-app is https, so your scripts need to be too -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="module">
-    $(() => {
-      const { log, error } = console
-      function stringify(data) {
-        $('#jsonResult').text(JSON.stringify(data))
-      }
+    const { log, error } = console
+    function stringify(data) {
+      $('#jsonResult').text(JSON.stringify(data))
+    }
 
+    $(() => {
       $('#testForm0').on('submit', async e => {
         e.preventDefault()
         const [{ value: owner }, { value: project }] =
