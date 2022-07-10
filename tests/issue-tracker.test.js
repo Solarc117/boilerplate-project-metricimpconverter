@@ -155,20 +155,38 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  // test(`2. POST ${ISSUES}/${TEST_DOC1.name} (every field)`, done => {
-  //   chai
-  //     .request(server)
-  //     .post(`${ISSUES}/${TEST_DOC1.name}`)
-  //     .send()
-  //     .end((err, res) => {
-  //       const { status, ok, body } = res
+//   const newIssue = {}
+//   test(`2. POST ${ISSUES}/${projectName} (every field)`, done => {
+//     chai
+//       .request(server)
+//       .post(`${ISSUES}/${TEST_DOC1.name}`)
+//       .send()
+//       .end((err, res) => {
+//         const { status, ok, body } = res
 
-  //       assert.isNull(err)
-  //       assert.strictEqual(status, 200)
-  //       assert.isTrue(ok)
-  //       assert.isObject(body)
+//         assert.isNull(err)
+//         assert.strictEqual(status, 200)
+//         assert.isTrue(ok)
+//         assert.isObject(body)
 
-  //       done()
-  //     })
-  // })
-})
+//         done()
+//       })
+//   })
+// })
+
+/**
+ * @typedef Issue The issue structure maintained in the database.
+ * @property {string} title The title of the issue.
+ * @property {string} created_by The user that created the issue.
+ * @property {string} [text] Text describing in further detail the issue.
+ * @property {string | null} [assigned_to] The user responsible for addressing the issue.
+ * @property {string | null} [status_text] Brief describtion the current state of the issue.
+ */
+
+/**
+ * @typedef Project The project structure maintained in the database.
+ * @property {string} _id The project's unique identifier.
+ * @property {string} name The project's name.
+ * @property {string} owner The project owner.
+ * @property {[Issue]} issues An array containing
+ */
