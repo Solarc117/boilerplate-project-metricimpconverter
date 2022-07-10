@@ -11,7 +11,6 @@ module.exports = class IssueHandler {
    */
   static async dropTestRequest(req, res) {
     const dropResult = await IssuesDAO.dropTest()
-    log(dropResult)
 
     res.status(dropResult?.error ? 500 : 200).json(dropResult)
   }

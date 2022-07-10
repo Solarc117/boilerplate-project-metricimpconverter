@@ -3,7 +3,6 @@ const { log, error } = console
 
 const { Router } = require('express'),
   cH = require('../handlers/convert-handler.js'),
-  IssuesDAO = require('../dao/issues-dao.js'),
   IssueHandler = require('../handlers/issue-handler'),
   // @ts-ignore
   router = new Router(),
@@ -34,6 +33,7 @@ router.route('/convert').get((req, res) => {
   })
 })
 
+// Purely for testing purposes.
 router.route('/issues').delete(IssueHandler.dropTestRequest)
 
 router
