@@ -5,7 +5,6 @@ clear()
 
 const { MongoClient } = require('mongodb'),
   app = require('./server.js'),
-  runner = require('./test-runner.js'),
   IssuesDAO = require('./dao/issues-dao.js')
 
 MongoClient.connect(env.MONGO_URI, {
@@ -17,13 +16,13 @@ MongoClient.connect(env.MONGO_URI, {
 
     const port = env.PORT || 3000
     app.listen(port, () => {
-      log('\x1b[32m', '\n🚀 listening on port ' + port)
+      log(`\x1b[32m\n🚀 listening on port ${port}`)
       if (env.NODE_ENV !== 'dev') return
 
       try {
-        runner.run()
-      } catch (e) {
-        error('\x1b[31m', 'Tests are not valid:', e)
+        require('./test-runner.js').run()
+      } catch (err) {
+        error('\x1b[31m\ntests are not valid:', err)
       }
     })
   })
