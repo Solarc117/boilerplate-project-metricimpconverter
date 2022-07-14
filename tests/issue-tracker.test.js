@@ -47,6 +47,35 @@ const chaiHttp = require('chai-http'),
   },
   ISSUES = '/api/issues'
 
+/**
+ * @description Asserts that arguments passed are null.
+ * @param {...any} vals Values to assert.
+ */
+assert.areNull = function (...vals) {
+  for (const v of vals) assert.isNull(v)
+}
+/**
+ * @description Asserts that arguments passed are strings.
+ * @param  {...any} vals Values to assert.
+ */
+assert.areStrings = function (...vals) {
+  for (const v of vals) assert.isString(v)
+}
+/**
+ * @description Asserts that arguments passed are objects.
+ * @param  {...any} vals Values to assert.
+ */
+assert.areObjects = function (...vals) {
+  for (const v of vals) assert.isObject(v)
+}
+/**
+ * @description Asserts that arguments passed are true booleans.
+ * @param  {...any} vals Values to assert.
+ */
+assert.areTrue = function (...vals) {
+  for (const v of vals) assert.isTrue(v)
+}
+
 chai.use(chaiHttp)
 
 suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
@@ -67,15 +96,13 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .get(`${ISSUES}/${TEST_DOC1.name}`)
       .end((err, res) => {
         const { status, ok, body } = res,
-          { issues, owner, name, _id } = body
+          { issues, owner, _id } = body,
+          { title, assigned_to } = issues[0]
 
-        assert.isNull(err)
+        assert.areNull(err, _id, assigned_to)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        for (const elem of [_id, owner, name]) assert.isString(elem)
-        assert.isArray(issues)
-        assert.isObject(issues[0])
-        assert.strictEqual(Object.keys(issues[0]).length, 5)
+        assert.areStrings(owner, title)
 
         done()
       })
@@ -91,9 +118,9 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        for (const elem of [_id, owner, name]) assert.isString(elem)
+        assert.areStrings(_id, owner, name)
         assert.strictEqual(issues.length, 2)
-        for (const issue of issues) assert.isObject(issue)
+        assert.areObjects(...issues)
 
         done()
       })
@@ -109,7 +136,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        for (const elem of [_id, owner, name]) assert.isString(elem)
+        assert.areStrings(_id, owner, name)
         assert.isArray(issues)
         assert.strictEqual(issues.length, 0)
 
@@ -118,22 +145,6 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   })
 
   test(`1. GET ${ISSUES}/${TEST_DOC1.name}`, done => {
-    /*
-    {
-  _id: null,
-  issues: [
-    {
-      title: 'dysfunctional timer',
-      text: 'timer does not proceed after first focus session',
-      created_by: 'pom0doro_user',
-      assigned_to: null,
-      status_text: null
-    }
-  ],
-  name: 'jsPomodoro',
-  owner: 'cool_user_33'
-}
-    */
     chai
       .request(server)
       .get(`${ISSUES}/${TEST_DOC1.name}`)
@@ -147,35 +158,51 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         assert.isTrue(ok)
 
         assert.isNull(_id)
-        for (const prop of [owner, name, title, text, created_by])
-          assert.isString(prop)
-        for (const prop of [_id, assigned_to, status_text]) assert.isNull(prop)
+        assert.areStrings(owner, name, title, text, created_by)
+        assert.areNull(_id, assigned_to, status_text)
 
         done()
       })
   })
 
-//   const newIssue = {}
-//   test(`2. POST ${ISSUES}/${projectName} (every field)`, done => {
-//     chai
-//       .request(server)
-//       .post(`${ISSUES}/${TEST_DOC1.name}`)
-//       .send()
-//       .end((err, res) => {
-//         const { status, ok, body } = res
+  const newId = new ObjectId(),
+    user = 'johnny123',
+    newProject = {
+      _id: newId,
+      name: user,
+      owner: user,
+      issues: [
+        {
+          title: "knight doesn't jump over other pieces",
+          created_by: user,
+          text: 'the knight is unable to jump over pawns at the beginning of a game',
+          assigned_to: 'anyone',
+          status_text: 'under development',
+        },
+      ],
+    },
+    postPath = `${ISSUES}/${newProject.name}`
+  test(`2. POST ${postPath} (every field)`, done => {
+    chai
+      .request(server)
+      .post(postPath)
+      .send(newProject)
+      .end((err, res) => {
+        const { status, ok, body } = res,
+          { acknowledged, insertedId } = body
 
-//         assert.isNull(err)
-//         assert.strictEqual(status, 200)
-//         assert.isTrue(ok)
-//         assert.isObject(body)
+        assert.isNull(err)
+        assert.strictEqual(status, 200)
+        assert.areTrue(ok, acknowledged)
+        assert.strictEqual(insertedId, newId.toString())
 
-//         done()
-//       })
-//   })
-// })
+        done()
+      })
+  })
+})
 
 /**
- * @typedef Issue The issue structure maintained in the database.
+ * @typedef Issue The element structure maintained in the database issues arrays.
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
  * @property {string} [text] Text describing in further detail the issue.
@@ -184,7 +211,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
  */
 
 /**
- * @typedef Project The project structure maintained in the database.
+ * @typedef Project The document structure in the database projects collection.
  * @property {string} _id The project's unique identifier.
  * @property {string} name The project's name.
  * @property {string} owner The project owner.

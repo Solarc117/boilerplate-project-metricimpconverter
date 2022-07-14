@@ -16,7 +16,7 @@ module.exports = class IssueHandler {
   }
 
   /**
-   * @description Invokes the IssuesDAO putDocument method, with the request body as an argument. For testing purposes.
+   * @description Invokes the IssuesDAO putProject method, with the request body as an argument, and responds with the result. For testing purposes.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    * @param {Function} next The Express function to invoke the next middleware.
@@ -30,7 +30,7 @@ module.exports = class IssueHandler {
   }
 
   /**
-   * @description Invokes the IssuesDAO getOwner method, and sends the result to the client.
+   * @description Invokes the IssuesDAO getProject method, and responds with the result.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
@@ -41,5 +41,17 @@ module.exports = class IssueHandler {
       getResult = await IssuesDAO.getProject(project)
 
     res.status(getResult?.error ? 500 : 200).json(getResult)
+  }
+
+  /**
+   * @description Invokes the IssuesDAO postProject method, and responds with the result.
+   * @param {object} req The Express request object.
+   * @param {object} res The Express response object.
+   */
+  static async postProjectRequest(req, res) {
+    const { body: project } = req,
+      postResult = await IssuesDAO.postProject(project)
+
+    res.status(postResult?.error ? 500 : 200).json(postResult)
   }
 }

@@ -1,5 +1,6 @@
 const { log, error } = console,
-  { env } = process
+  { env } = process,
+  COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
 let db
 
 // 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
@@ -9,19 +10,18 @@ module.exports = class IssuesDAO {
    * @param {object} client The MongoDB project under which the issue-tracker database and owners collection are located.
    */
   static async injectDB(client) {
-    const collection = env.NODE_ENV === 'dev' ? 'test' : 'projects'
-
     if (db)
       return log(
-        `connection to ${collection} collection previously established`
+        `connection to ${COLLECTION} collection previously established`
       )
 
     try {
-      db = await client.db('issue-tracker').collection(collection)
-      log(`\x1b[32m\n🍃 connected to ${collection} collection`)
+      db = await client.db('issue-tracker').collection(COLLECTION)
+      log(`\x1b[32m\n🍃 connected to ${COLLECTION} collection`)
     } catch (err) {
       error(
-        `\x1b[31m\nunable to establish a collection handle in IssuesDAO: ${err}`
+        `\x1b[31m\nunable to establish a collection handle in IssuesDAO:`,
+        err
       )
     }
   }
@@ -33,7 +33,7 @@ module.exports = class IssuesDAO {
   static async dropTest() {
     if (env.NODE_ENV !== 'dev')
       return {
-        error: `unable to drop ${db} collection in a production environment`,
+        error: `\x1b[31m\nunable to drop ${COLLECTION} collection in a production environment`,
       }
 
     let dropResult
@@ -41,50 +41,90 @@ module.exports = class IssuesDAO {
     try {
       dropResult = await db.drop()
     } catch (err) {
-      error(`unsuccessful drop command on ${db} collection: ${err}`)
-      return { error: err }
+      error(
+        `\x1b[31m\nunsuccessful drop command on ${COLLECTION} collection:`,
+        err
+      )
+      return { error: err.message }
     }
 
     return dropResult
   }
 
   /**
-   * @description A method that creates an upsert call (update if it exists, create if it doesn't) to the db with the doc argument passed.
-   * @param {object} doc The document to the upserted into the collection.
+   * @description Creates an upsert call to the db with the project argument passed.
+   * @param {Project} project The document to be upserted into the collection.
    * @returns {object | null} The collection.updateOne response object, if the attempt was successful, or an object containing an error property if the attempt failed.
    */
-  static async putProject(doc) {
-    const filter = { _id: doc._id },
-      operators = { $set: { ...doc } },
+  static async putProject(project) {
+    const filter = { _id: project._id },
+      operators = { $set: { ...project } },
       options = { upsert: true }
     let updateResult
 
     try {
       updateResult = await db.updateOne(filter, operators, options)
     } catch (err) {
-      error(`\x1b[31m\nerror updating ${db} collection: ${err}`)
-      return { error: err }
+      error(`\x1b[31m\nerror updating ${COLLECTION} collection:`, err)
+      return { error: err.message }
     }
 
     return updateResult
   }
 
   /**
-   * @description A method that fetches any documents from the connected collection matching the passed filter fields.
-   * @param {object} projectName The project name of the document.
-   * @returns {object | Array} An object containing an error property if the find method fails, or an array pertaining to the respective project's issues.
+   * @description Attempts to fetch any documents from the connected collection matching the passed filter fields.
+   * @param {string} name The  name of the project.
+   * @returns {object | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
-  static async getProject(projectName) {
-    const query = { name: projectName }
+  static async getProject(name) {
+    const query = { name }
     let result
 
     try {
       result = await db.findOne(query)
     } catch (err) {
-      error(`\x1b[31m\nerror querying ${db} collection: ${err}`)
-      return { error: err }
+      error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
+      return { error: err.message }
+    }
+
+    return result
+  }
+
+  /**
+   * @description Attempts to post the passed object to the connected collection.
+   * @param {Project} project The object to post to the respective collection.
+   */
+  static async postProject(project) {
+    let result
+
+    try {
+      result = await db.insertOne(project)
+    } catch (err) {
+      error(
+        `\x1b[31m\nunable to insert document in ${COLLECTION} collection:`,
+        err
+      )
+      return { error: err.message }
     }
 
     return result
   }
 }
+
+/**
+ * @typedef Issue The element structure maintained in the database issues arrays.
+ * @property {string} title The title of the issue.
+ * @property {string} created_by The user that created the issue.
+ * @property {string | null} [text] Text describing in further detail the issue.
+ * @property {string | null} [assigned_to] The user responsible for addressing the issue.
+ * @property {string | null} [status_text] Brief describtion the current state of the issue.
+ */
+
+/**
+ * @typedef Project The document structure in the database projects collection.
+ * @property {string} _id The project's unique identifier.
+ * @property {string} name The project's name.
+ * @property {string} owner The project owner.
+ * @property {[Issue]} issues An array containing
+ */

@@ -45,7 +45,7 @@ router
   .get(IssueHandler.getProjectRequest)
   // This put request is only for the issue-tracker tests suiteSetup.
   .put(IssueHandler.putProjectRequest)
-  .post(async (req, res) => {})
+  .post(IssueHandler.postProjectRequest)
   .patch(async (req, res) => {})
   .delete(async (req, res) => {})
 
