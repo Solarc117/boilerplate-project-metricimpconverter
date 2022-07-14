@@ -46,7 +46,7 @@
 
 ✨ ways to optimize learning that I should remember:
   - take short, mind-wandering breaks apart from ultradian breaks
-  - use bedtime to estimate ultradian breaks for the day (TODAY: 09:00)
+  - use bedtime to estimate ultradian breaks for the day
   - angle screen upward to trigger alertness
   - consciously try to blink less
   - do productive breaks during ultradian breaks (raise adrenalin, then: NSDR, walk, talk to someone, etc.)
@@ -59,31 +59,33 @@
   📄 query contains the '...?KEY=VALUE' pairs of a path
   📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
-- ✅ rename owners collection to 'projects'
-  📄 I think it'd be better to organize documents by project, like so:
-  {
-    _id: ...,
-    title: ...,
-    owner: ...,
-    issues: [{...}, ...]
-  }
-
-- ✅ drop the test collection in the first suiteSetup via a delete request
-
 - ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
-  - 🎉 Create an issue with every field: POST request to /api/issues/:project
+  - ✅Create an issue with every field: POST request to /api/issues/:project
+  - commit & push
   - Create an issue with only required fields: POST request to /api/issues/{project}
+  - commit & push
   - Create an issue with missing required fields: POST request to /api/issues/{project}
+  - commit & push
   - View issues on a project: GET request to /api/issues/{project}
+  - commit & push
   - View issues on a project with one filter: GET request to /api/issues/{project}
+  - commit & push
   - View issues on a project with multiple filters: GET request to /api/issues/{project}
+  - commit & push
   - Update one field on an issue: PATCH request to /api/issues/{project}
+  - commit & push
   - Update multiple fields on an issue: PATCH request to /api/issues/{project}
+  - commit & push
   - Update an issue with missing _id: PATCH request to /api/issues/{project}
+  - commit & push
   - Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  - commit & push
   - Update an issue with an invalid _id: PATCH request to /api/issues/{project}
+  - commit & push
   - Delete an issue: DELETE request to /api/issues/{project}
+  - commit & push
   - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
+  - commit & push
   - Delete an issue with missing _id: DELETE request to /api/issues/{project}
 
 - ⚒️ Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
@@ -92,14 +94,8 @@
   - PATCH
   - delete 
 
+- check if _id should be a required, or optional property of Project objects.
 - ensure method documentation return types are consistent with the actual return types
 - style issue-tracker's index page
 - add navbar to issue-tracker
 - compare fccTestingRoutes
-
-📄 commit notes:
-  - IssuesDAO:
-    - injectDB connects to dev and projects collections in dev and non-dev environments respectively
-    - added dropTest method which drops the test collection (to reset for testing)
-    - reformatted db document structure, removed :owner param from api/issues/:owner/:project path
-    - drop db before sending 3 put requests in suiteSetups
