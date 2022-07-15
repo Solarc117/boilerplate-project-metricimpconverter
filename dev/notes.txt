@@ -60,9 +60,10 @@
   📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
 - ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
-  - ✅Create an issue with every field: POST request to /api/issues/:project
-  - commit & push
-  - Create an issue with only required fields: POST request to /api/issues/{project}
+  - ✅ Create an issue with every field: POST request to /api/issues/:project
+  - ✅ commit & push
+  - 🎉 Create an issue with only required fields: POST request to /api/issues/{project}
+    📄 DON'T WORRY ABOUT THIS NOW, but I'm wondering whether I'll just fill in null for any optional fields that are not filled in, or if I will submit undefined - no, I want to fill in null for any unfilled fields. I want to reserve undefined for any properties that the document is NOT supposed to have.
   - commit & push
   - Create an issue with missing required fields: POST request to /api/issues/{project}
   - commit & push
