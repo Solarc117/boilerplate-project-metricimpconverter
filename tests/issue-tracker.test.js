@@ -75,6 +75,13 @@ assert.areObjects = function (...vals) {
 assert.areTrue = function (...vals) {
   for (const v of vals) assert.isTrue(v)
 }
+/**
+ * @description Asserts strict equality for both elements in each array passed.
+ * @param  {...any} pairs Arrays containing values to compare.
+ */
+assert.strictEqualities = function (...pairs) {
+  for (const [v1, v2] of pairs) assert.strictEqual(v1, v2)
+}
 
 chai.use(chaiHttp)
 
@@ -198,6 +205,44 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
 
         done()
       })
+  })
+
+  const newId2 = new ObjectId(),
+    user2 = 'frank_ocean_fan',
+    newProject2 = {
+      _id: newId2,
+      name: 'blonde track list',
+      owner: user2,
+      issues: [
+        {
+          title: 'missing lyrics for "Nikes" track',
+          created_by: user2,
+        },
+      ],
+    },
+    test3Path = `${ISSUES}/${newProject2.name}`
+  test(`3. POST /api/issues/${test3Path} (only required fields)`, done => {
+    chai
+      .request(server)
+      .post(test3Path)
+      .send(newProject2)
+      .end(() =>
+        chai
+          .request(server)
+          .get(test3Path)
+          .end((err, res) => {
+            const { status, ok, body } = res,
+              { _id, name, owner, issues } = body,
+              { title, created_by, text, assigned_to, status_text } = issues[0]
+
+            assert.areNull(err, text, assigned_to, status_text)
+            assert.strictEqualities([status, 200], [_id, newId2.toString()])
+            assert.isTrue(ok)
+            assert.areStrings(name, owner, title, created_by)
+
+            done()
+          })
+      )
   })
 })
 
