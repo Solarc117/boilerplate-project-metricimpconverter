@@ -63,7 +63,7 @@
   - ✅ Create an issue with every field: POST request to /api/issues/:project
   - ✅ commit & push
   - 🎉 Create an issue with only required fields: POST request to /api/issues/{project}
-    📄 DON'T WORRY ABOUT THIS NOW, but I'm wondering whether I'll just fill in null for any optional fields that are not filled in, or if I will submit undefined - no, I want to fill in null for any unfilled fields. I want to reserve undefined for any properties that the document is NOT supposed to have.
+    🎉 Fill in null for any optional fields that are not filled in, and respond with a status of 400 (bad req) and a corresponding message if any required fields are not their respective types.
   - commit & push
   - Create an issue with missing required fields: POST request to /api/issues/{project}
   - commit & push

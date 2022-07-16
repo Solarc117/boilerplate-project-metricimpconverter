@@ -34,7 +34,7 @@ router.route('/convert').get((req, res) => {
 })
 
 // Purely for testing purposes.
-router.route('/issues').delete(IssueHandler.dropTestRequest)
+router.route('/issues').delete(IssueHandler.drop)
 
 router
   .route('/issues/:project')
@@ -42,10 +42,10 @@ router
      equal resources.
      PUT: update a resource, either partially or fully, or create if it doesn't exist. IDEMPOTENT: multiple identical requests will not create a new resource if it was already there, or if the first request created it, and they will not modify the resource more than once.
      PATCH: update a resource partially. IDEMPOTENT: multiple identical requests will not modify the resource more than once, as with PUT requests. */
-  .get(IssueHandler.getProjectRequest)
+  .get(IssueHandler.get)
   // This put request is only for the issue-tracker tests suiteSetup.
-  .put(IssueHandler.putProjectRequest)
-  .post(IssueHandler.postProjectRequest)
+  .put(IssueHandler.put)
+  .post(IssueHandler.post)
   .patch(async (req, res) => {})
   .delete(async (req, res) => {})
 

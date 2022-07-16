@@ -151,10 +151,11 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  test(`1. GET ${ISSUES}/${TEST_DOC1.name}`, done => {
+  const test1Path = `${ISSUES}/${TEST_DOC1.name}`
+  test(`1. GET ${test1Path}`, done => {
     chai
       .request(server)
-      .get(`${ISSUES}/${TEST_DOC1.name}`)
+      .get(test1Path)
       .end((err, res) => {
         const { status, ok, body } = res,
           { issues, owner, name, _id } = body,
@@ -176,7 +177,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
     user = 'johnny123',
     newProject = {
       _id: newId,
-      name: user,
+      name: 'cpp-chess',
       owner: user,
       issues: [
         {
@@ -188,16 +189,15 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         },
       ],
     },
-    postPath = `${ISSUES}/${newProject.name}`
-  test(`2. POST ${postPath} (every field)`, done => {
+    test2Path = `${ISSUES}/${newProject.name}`
+  test(`2. POST ${test2Path} (every field)`, done => {
     chai
       .request(server)
-      .post(postPath)
+      .post(test2Path)
       .send(newProject)
       .end((err, res) => {
         const { status, ok, body } = res,
           { acknowledged, insertedId } = body
-
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.areTrue(ok, acknowledged)
@@ -211,7 +211,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
     user2 = 'frank_ocean_fan',
     newProject2 = {
       _id: newId2,
-      name: 'blonde track list',
+      name: 'blonde-track-list',
       owner: user2,
       issues: [
         {
