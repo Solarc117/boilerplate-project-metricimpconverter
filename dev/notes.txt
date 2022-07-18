@@ -62,11 +62,11 @@
 - ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
   - ✅ Create an issue with every field: POST request to /api/issues/:project
   - ✅ commit & push
-  - 🎉 Create an issue with only required fields: POST request to /api/issues/{project}
-    🎉 Fill in null for any optional fields that are not filled in, and respond with a status of 400 (bad req) and a corresponding message if any required fields are not their respective types.
-  - commit & push
-  - Create an issue with missing required fields: POST request to /api/issues/{project}
-  - commit & push
+  - ✅ Create an issue with only required fields: POST request to /api/issues/{project}
+    - ✅ Fill in null for any optional fields that are not filled in, and respond with a status of 400 (bad req) and a corresponding message if any required fields are not their respective types.
+  - ✅ commit & push
+  - ✅ Create an issue with missing required fields: POST request to /api/issues/{project}
+  - 🎉 commit & push
   - View issues on a project: GET request to /api/issues/{project}
   - commit & push
   - View issues on a project with one filter: GET request to /api/issues/{project}
