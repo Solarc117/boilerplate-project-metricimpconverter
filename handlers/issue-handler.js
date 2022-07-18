@@ -40,7 +40,9 @@ module.exports = class IssueHandler {
       } = req,
       getResult = await IssuesDAO.getProject(project)
 
-    res.status(getResult?.error ? 500 : 200).json(getResult)
+    if (getResult.error) return res.status(500).json(getResult)
+    // Return null if there is no such project; or an array containing however many issues the existing project has.
+    res.status(200).json(getResult === null ? getResult : getResult.issues)
   }
 
   /**
@@ -94,5 +96,5 @@ module.exports = class IssueHandler {
  * @property {string} _id The project's unique identifier.
  * @property {string} name The project's name.
  * @property {string} owner The project owner.
- * @property {[Issue]} issues An array containing
+ * @property {[Issue]} issues An array containing Issue objects for each issue in the project.
  */

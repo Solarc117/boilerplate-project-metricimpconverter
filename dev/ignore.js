@@ -1,8 +1,13 @@
 console.clear()
 const { log, error } = console
 
-function returnLog() {
-  return log('hi')
+function nullOrObj() {
+  const randomNum = Math.random() * 10
+  if (randomNum < 3) return null
+  return { issues: randomNum < 6 ? null : [] }
 }
 
-log(returnLog())
+for (let i = 0; i < 100; i++) {
+  const result = nullOrObj()
+  log(result, result?.issues)
+}

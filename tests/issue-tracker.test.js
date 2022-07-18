@@ -102,14 +102,15 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .get(`${ISSUES}/${TEST_DOC1.name}`)
       .end((err, res) => {
-        const { status, ok, body } = res,
-          { issues, owner, _id } = body,
+        const { status, ok, body: issues } = res,
           { title, assigned_to } = issues[0]
 
-        assert.areNull(err, _id, assigned_to)
-        assert.strictEqual(status, 200)
+        assert.areNull(err, assigned_to)
+        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.isArray(issues)
+        assert.areObjects(...issues)
         assert.isTrue(ok)
-        assert.areStrings(owner, title)
+        assert.isString(title)
 
         done()
       })
@@ -119,13 +120,12 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .get(`${ISSUES}/${TEST_DOC2.name}`)
       .end((err, res) => {
-        const { status, ok, body } = res,
-          { issues, owner, name, _id } = body
+        const { status, ok, body: issues } = res
 
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.areStrings(_id, owner, name)
+        assert.isArray(issues)
         assert.strictEqual(issues.length, 2)
         assert.areObjects(...issues)
 
@@ -137,15 +137,14 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .get(`${ISSUES}/${TEST_DOC3.name}`)
       .end((err, res) => {
-        const { status, ok, body } = res,
-          { issues, owner, name, _id } = body
+        const { status, ok, body: issues } = res
 
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.areStrings(_id, owner, name)
         assert.isArray(issues)
         assert.strictEqual(issues.length, 0)
+        assert.areObjects(...issues)
 
         done()
       })
@@ -157,17 +156,14 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .get(test1Path)
       .end((err, res) => {
-        const { status, ok, body } = res,
-          { issues, owner, name, _id } = body,
+        const { status, ok, body: issues } = res,
           { title, text, created_by, assigned_to, status_text } = issues[0]
 
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-
-        assert.isNull(_id)
-        assert.areStrings(owner, name, title, text, created_by)
-        assert.areNull(_id, assigned_to, status_text)
+        assert.areStrings(title, text, created_by)
+        assert.areNull(assigned_to, status_text)
 
         done()
       })
@@ -231,14 +227,13 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
           .request(server)
           .get(test3Path)
           .end((err, res) => {
-            const { status, ok, body } = res,
-              { _id, name, owner, issues } = body,
+            const { status, ok, body: issues } = res,
               { title, created_by, text, assigned_to, status_text } = issues[0]
 
             assert.areNull(err, text, assigned_to, status_text)
-            assert.strictEqualities([status, 200], [_id, newId2.toString()])
+            assert.strictEqual(status, 200)
             assert.isTrue(ok)
-            assert.areStrings(name, owner, title, created_by)
+            assert.areStrings(title, created_by)
 
             done()
           })
@@ -272,16 +267,19 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
 
   const test5Path = `${ISSUES}/${TEST_DOC1.name}`
   test(`5. GET ${test5Path}`, done => {
-    chai.request(server).get(test5Path).end((err, res) => {
-      const { status, ok, body: issues } = res
+    chai
+      .request(server)
+      .get(test5Path)
+      .end((err, res) => {
+        const { status, ok, body: issues } = res
 
-      assert.isNull(err)
-      assert.strictEqual(status, 200)
-      assert.isTrue(ok)
-      assert.deepStrictEqual(TEST_DOC1.issues, issues)
+        assert.isNull(err)
+        assert.strictEqual(status, 200)
+        assert.isTrue(ok)
+        assert.deepStrictEqual(TEST_DOC1.issues, issues)
 
-      done()
-    })
+        done()
+      })
   })
 })
 
