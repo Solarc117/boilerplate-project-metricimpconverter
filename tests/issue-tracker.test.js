@@ -244,6 +244,31 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
           })
       )
   })
+
+  const newId3 = new ObjectId(),
+    newProject3 = {
+      _id: newId3,
+      name: 'react-calculator',
+      issues: [],
+    },
+    test4Path = `${ISSUES}/${newProject3.name}`
+  test(`4. POST ${test4Path} (missing required fields)`, done => {
+    chai
+      .request(server)
+      .post(test4Path)
+      .send(newProject3)
+      .end((err, res) => {
+        const { status, ok, body } = res,
+          { err: error } = body
+
+        assert.isNull(err)
+        assert.strictEqual(status, 400)
+        assert.isFalse(ok)
+        assert.isString(error)
+
+        done()
+      })
+  })
 })
 
 /**

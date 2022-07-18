@@ -9,7 +9,7 @@ module.exports = class IssueHandler {
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
-  static async dropTestDB(req, res) {
+  static async drop(req, res) {
     const dropResult = await IssuesDAO.dropTest()
 
     res.status(dropResult?.error ? 500 : 200).json(dropResult)
@@ -51,8 +51,11 @@ module.exports = class IssueHandler {
   static async post(req, res) {
     function verifyProps(obj, props) {
       for (const prop of props)
-        if (obj[prop] === undefined)
+        if (obj[prop] === undefined) {
           res.status(400).json({ err: `missing ${prop} field` })
+          return false
+        }
+      return true
     }
     function nullifyUndefProps(obj, props) {
       for (const prop of props) if (obj[prop] === undefined) obj[prop] = null
@@ -64,10 +67,10 @@ module.exports = class IssueHandler {
         optional: ['text', 'assigned_to', 'status_text'],
       }
 
-    verifyProps(project, projectProps)
+    if (!verifyProps(project, projectProps)) return
 
     for (const issue of project.issues) {
-      verifyProps(issue, issueProps.required)
+      if (!verifyProps(issue, issueProps.required)) return
       nullifyUndefProps(issue, issueProps.optional)
     }
 
