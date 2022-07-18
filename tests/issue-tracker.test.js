@@ -269,6 +269,20 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
+
+  const test5Path = `${ISSUES}/${TEST_DOC1.name}`
+  test(`5. GET ${test5Path}`, done => {
+    chai.request(server).get(test5Path).end((err, res) => {
+      const { status, ok, body: issues } = res
+
+      assert.isNull(err)
+      assert.strictEqual(status, 200)
+      assert.isTrue(ok)
+      assert.deepStrictEqual(TEST_DOC1.issues, issues)
+
+      done()
+    })
+  })
 })
 
 /**
