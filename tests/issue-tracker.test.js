@@ -37,6 +37,20 @@ const chaiHttp = require('chai-http'),
         assigned_to: null,
         status_text: null,
       },
+      {
+        title: 'episode 1 typo',
+        text: 'there is a typo on the transcript of episode 1',
+        created_by: 'solarc117',
+        assigned_to: 'solarc117',
+        status_text: 'processing',
+      },
+      {
+        title: 'inaccuracy in episode 30',
+        text: 'in the second chapter, Dr. Huberman makes an inaccurate statement. We should note this in the transcript',
+        created_by: 'coder-coder',
+        assigned_to: 'solarc117',
+        status_text: null,
+      },
     ],
   },
   TEST_DOC3 = {
@@ -123,10 +137,9 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         const { status, ok, body: issues } = res
 
         assert.isNull(err)
-        assert.strictEqual(status, 200)
+        assert.strictEqualities([status, 200], [issues.length, 4])
         assert.isTrue(ok)
         assert.isArray(issues)
-        assert.strictEqual(issues.length, 2)
         assert.areObjects(...issues)
 
         done()
@@ -277,6 +290,24 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
         assert.deepStrictEqual(TEST_DOC1.issues, issues)
+
+        done()
+      })
+  })
+
+  const test6Path = `${ISSUES}/${TEST_DOC2.name}?assigned_to=null`
+  test(`6. GET ${test6Path} (one filter)`, done => {
+    chai
+      .request(server)
+      .get(test6Path)
+      .end((err, res) => {
+        const { status, ok, body: issues } = res,
+          { title, text, created_by, assigned_to, status_text } = issues[0]
+
+        assert.areNull(err, assigned_to, status_text)
+        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.isTrue(ok)
+        assert.areStrings(title, text, created_by)
 
         done()
       })

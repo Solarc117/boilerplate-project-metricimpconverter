@@ -69,8 +69,8 @@
   - ✅ commit & push
   - ✅ View issues on a project: GET request to /api/issues/{project}
     - ✅ modify GET handler to only return the issues array
-  - 🎉 commit & push
-  - View issues on a project with one filter: GET request to /api/issues/{project}
+  - ✅ commit & push
+  - 🎉 View issues on a project with one filter: GET request to /api/issues/{project}
   - commit & push
   - View issues on a project with multiple filters: GET request to /api/issues/{project}
   - commit & push
