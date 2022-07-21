@@ -230,7 +230,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       ],
     },
     test3Path = `${ISSUES}/${newProject2.name}`
-  test(`3. POST /api/issues/${test3Path} (only required fields)`, done => {
+  test(`3. POST ${test3Path} (only required fields)`, done => {
     chai
       .request(server)
       .post(test3Path)
