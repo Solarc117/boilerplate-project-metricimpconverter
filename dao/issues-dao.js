@@ -107,7 +107,12 @@ module.exports = class IssuesDAO {
       return { error: err.message }
     }
 
-    if (result?.issues && Object.keys(issueQueries).length > 0)
+    if (
+      result?.issues &&
+      issueQueries !== null &&
+      typeof issueQueries === 'object' &&
+      Object.keys(issueQueries).length > 0
+    )
       result.issues = filterIssues(result.issues, issueQueries)
 
     return result
