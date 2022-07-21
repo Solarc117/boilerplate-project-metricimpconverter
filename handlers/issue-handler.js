@@ -30,17 +30,22 @@ module.exports = class IssueHandler {
   }
 
   /**
-   * @description Invokes the IssuesDAO getProject method, and responds with the result.
+   * @description Invokes the IssuesDAO getProject method, passing the project and query object, and responds with the project's issues array, if it was found, or null. Sends an object with an error property and status code 500 if MongoDB threw an error.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
   static async get(req, res) {
     const {
-        params: { project },
-      } = req,
-      getResult = await IssuesDAO.getProject(project)
+      params: { project: name },
+      query,
+    } = req
 
-    if (getResult.error) return res.status(500).json(getResult)
+    for (const key of Object.keys(query))
+      if (query[key].match(/^null$/i)) query[key] = null
+
+    const getResult = await IssuesDAO.getProject(name, query)
+
+    if (getResult?.error) return res.status(500).json(getResult)
     // Return null if there is no such project; or an array containing however many issues the existing project has.
     res.status(200).json(getResult === null ? getResult : getResult.issues)
   }

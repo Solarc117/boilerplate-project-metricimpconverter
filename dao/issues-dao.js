@@ -74,10 +74,29 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Attempts to fetch any documents from the connected collection matching the passed filter fields.
-   * @param {string} name The  name of the project.
-   * @returns {object | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
+   * @param {string} name The name of the project.
+   * @param {object} query An object containing the query params from the url.
+   * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
-  static async getProject(name) {
+  static async getProject(name, issueQueries) {
+    /**
+     * @description Returns a new array, containing only the issues that matched all the queries.
+     * @param {array} issues The issues to filter.
+     * @param {object} queries The queries to filter the issues with.
+     */
+    function filterIssues(issues, queries) {
+      const queryKeys = Object.keys(queries)
+      if (!Array.isArray(issues) || !queryKeys.length > 0) return
+
+      // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array.filter method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
+      return [...issues].filter(issue => {
+        for (const key of queryKeys)
+          if (issue[key] !== queries[key]) return false
+
+        return true
+      })
+    }
+    // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
     const query = { name }
     let result
 
@@ -87,6 +106,9 @@ module.exports = class IssuesDAO {
       error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
+
+    if (result?.issues && Object.keys(issueQueries).length > 0)
+      result.issues = filterIssues(result.issues, issueQueries)
 
     return result
   }

@@ -70,8 +70,13 @@
   - ✅ View issues on a project: GET request to /api/issues/{project}
     - ✅ modify GET handler to only return the issues array
   - ✅ commit & push
-  - 🎉 View issues on a project with one filter: GET request to /api/issues/{project}
-  - commit & push
+  - ✅ View issues on a project with one filter: GET request to /api/issues/{project}
+    📄 pseudocode for filtering db response issues:
+      - if response is NOT null ✅, and issueQueries has at LEAST one key ✅, and the response has an issues property of type array ✅:
+        - iterate through each issue in the issues array ✅. For each issue:
+          - map through the keys of issueQueries, ensuring the respective key in the current issue matches the value of the same key in the issueQueries parameter ✅
+        - return the response ✅
+  - 🎉 commit & push
   - View issues on a project with multiple filters: GET request to /api/issues/{project}
   - commit & push
   - Update one field on an issue: PATCH request to /api/issues/{project}
