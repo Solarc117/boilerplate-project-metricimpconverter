@@ -314,6 +314,30 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   })
 })
 
+const urlParams = '?title=podcast&assigned_to=solarc117',
+  test7Path = `${ISSUES}/${TEST_DOC3.name}${urlParams}`
+test(`7. view issues with multiple filters: GET ${test7Path}`, done => {
+  chai
+    .request(server)
+    .get(test7Path)
+    .end((err, res) => {
+      console.log(res.body)
+      const { status, ok, body: issues } = res,
+        // I might want to consider using optional chaining, if destructuring from an undefined value causes my site to crash - ex:
+        // issue = issues?.[0]
+        // assert.isNull(issue?.status_text)
+        { title, text, created_by, assigned_to, status_text } = issues[0]
+
+      assert.areNull(err, status_text)
+      assert.strictEqualities([status, 200], [issues.length, 1])
+      assert.isTrue(ok)
+      assert.isArray(issues)
+      assert.areStrings(title, text, created_by, assigned_to)
+
+      done()
+    })
+})
+
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
  * @property {string} title The title of the issue.
