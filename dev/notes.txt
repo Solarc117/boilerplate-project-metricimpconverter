@@ -77,11 +77,21 @@
           - map through the keys of issueQueries, ensuring the respective key in the current issue matches the value of the same key in the issueQueries parameter ✅
         - return the response ✅
   - ✅ commit & push
-  - 🎉 View issues on a project with multiple filters: GET request to /api/issues/{project}
-  - commit & push
-  - edit handler get method to NOT nullify null strings
+  - ✅ edit handler get method to NOT nullify null strings, or to only nullify EMPTY strings
     📄 instead, empty strings will be nullified, and 'null' strings will literally search for null in strings.
-  - commit & push
+  - ✅ View issues on a project with multiple filters: GET /api/issues/{project}
+    📄 I'm nullifying empty strings, so as long as a value is a string and not null, the DAO should check that the document CONTAINS - doesn't match exactly, but rather CONTAINS - the query string (case insensitive).
+    📄 New DAO filterIssues pseudocode:
+      📄 filterIssues is being passed the issues, and an object of queries to filter the issues with (each value thereof being of type string, OR null). The issues are objects in an array.
+      📄 If a query is null, filterIssues should only keep issues whose respective property is ALSO null. Aka, it should remove all issues whose respective property is NOT null.
+      📄 If a query is not null (aka a string), fitlerIssues should only keep issues that contain said string in the respective property. Aka, it should remove issues that do NOT include the query string.
+      1. Iterate through a COPY of the issues array, using the Array.filter method. For each issue:
+        a) Iterate through the keys of the query object. For each key (and value):
+          i) IF the current query value is NULL, return false (filter out the current issue) if the respective value of the issue is NOT also NULL.
+          ii) IF the current query value is a STRING, return false (filter out the current  issue) if the respective value of the current issue does NOT include the query string. Do NOT check for exact equality (=== or !==).
+      . Return the filtered copy of the issues array. 
+
+  - 🎉 commit & push
   - Update one field on an issue: PATCH request to /api/issues/{project}
   - commit & push
   - Update multiple fields on an issue: PATCH request to /api/issues/{project}

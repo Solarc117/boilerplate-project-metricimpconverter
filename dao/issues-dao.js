@@ -84,15 +84,22 @@ module.exports = class IssuesDAO {
      * @param {array} issues The issues to filter.
      * @param {object} queries The queries to filter the issues with.
      */
-    function filterIssues(issues, queries) {
+    function filterIssues(issues = [], queries = {}) {
       const queryKeys = Object.keys(queries)
-      if (!Array.isArray(issues) || !queryKeys.length > 0) return
-
       // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array.filter method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
       return [...issues].filter(issue => {
-        for (const key of queryKeys)
-          if (issue[key] !== queries[key]) return false
+        for (const key of queryKeys) {
+          const query = queries[key],
+            issueField = issue[key]
 
+          // (typeof query === 'string' && !issueField.includes(query))
+          if (
+            (query === null && issueField !== null) ||
+            (typeof query === 'string' &&
+              !issueField.match(new RegExp(query, 'i')))
+          )
+            return false
+        }
         return true
       })
     }
@@ -108,7 +115,7 @@ module.exports = class IssuesDAO {
     }
 
     if (
-      result?.issues &&
+      Array.isArray(result?.issues) &&
       issueQueries !== null &&
       typeof issueQueries === 'object' &&
       Object.keys(issueQueries).length > 0

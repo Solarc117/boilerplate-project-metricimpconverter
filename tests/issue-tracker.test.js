@@ -295,7 +295,8 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test6Path = `${ISSUES}/${TEST_DOC2.name}?assigned_to=null`
+  const test6Params = '?assigned_to',
+    test6Path = `${ISSUES}/${TEST_DOC2.name}${test6Params}`
   test(`6. GET ${test6Path} (one filter)`, done => {
     chai
       .request(server)
@@ -312,30 +313,29 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
-})
 
-const urlParams = '?title=podcast&assigned_to=solarc117',
-  test7Path = `${ISSUES}/${TEST_DOC3.name}${urlParams}`
-test(`7. view issues with multiple filters: GET ${test7Path}`, done => {
-  chai
-    .request(server)
-    .get(test7Path)
-    .end((err, res) => {
-      console.log(res.body)
-      const { status, ok, body: issues } = res,
+  const test7Params = '?title=podcast&assigned_to=sol',
+    test7Path = `${ISSUES}/${TEST_DOC2.name}${test7Params}`
+  test(`7. view issues with multiple filters: GET ${test7Path}`, done => {
+    chai
+      .request(server)
+      .get(test7Path)
+      .end((err, res) => {
         // I might want to consider using optional chaining, if destructuring from an undefined value causes my site to crash - ex:
         // issue = issues?.[0]
         // assert.isNull(issue?.status_text)
-        { title, text, created_by, assigned_to, status_text } = issues[0]
+        const { status, ok, body: issues } = res,
+          { title, text, created_by, assigned_to, status_text } = issues[0]
 
-      assert.areNull(err, status_text)
-      assert.strictEqualities([status, 200], [issues.length, 1])
-      assert.isTrue(ok)
-      assert.isArray(issues)
-      assert.areStrings(title, text, created_by, assigned_to)
+        assert.areNull(err, status_text)
+        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.isTrue(ok)
+        assert.isArray(issues)
+        assert.areStrings(title, text, created_by, assigned_to)
 
-      done()
-    })
+        done()
+      })
+  })
 })
 
 /**
