@@ -235,22 +235,19 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .post(test3Path)
       .send(newProject2)
-      .end(() =>
-        chai
-          .request(server)
-          .get(test3Path)
-          .end((err, res) => {
-            const { status, ok, body: issues } = res,
-              { title, created_by, text, assigned_to, status_text } = issues[0]
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, insertedId },
+        } = res
 
-            assert.areNull(err, text, assigned_to, status_text)
-            assert.strictEqual(status, 200)
-            assert.isTrue(ok)
-            assert.areStrings(title, created_by)
+        assert.isNull(err)
+        assert.strictEqualities([status, 200], [insertedId, newId2.toString()])
+        assert.isTrue(ok, acknowledged)
 
-            done()
-          })
-      )
+        done()
+      })
   })
 
   const newId3 = new ObjectId(),
@@ -336,6 +333,9 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
+
+  const test8Path = `${ISSUES}/`
+  test(`8. PATCH `)
 })
 
 /**
