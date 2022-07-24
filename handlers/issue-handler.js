@@ -41,7 +41,7 @@ module.exports = class IssueHandler {
     } = req
 
     for (const key of Object.keys(query))
-      if (query[key].match(/^null$/i)) query[key] = null
+      if (query[key].trim().length === 0) query[key] = null
 
     const getResult = await IssuesDAO.getProject(name, query)
 
