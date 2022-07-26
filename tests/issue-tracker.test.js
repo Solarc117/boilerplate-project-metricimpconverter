@@ -104,20 +104,17 @@ chai.use(chaiHttp)
 
 suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   suiteSetup(() => chai.request(server).delete(ISSUES))
-  suiteSetup(() =>
-    chai.request(server).put(`${ISSUES}/${TEST_DOC1.name}`).send(TEST_DOC1)
-  )
-  suiteSetup(() =>
-    chai.request(server).put(`${ISSUES}/${TEST_DOC2.name}`).send(TEST_DOC2)
-  )
-  suiteSetup(() =>
-    chai.request(server).put(`${ISSUES}/${TEST_DOC3.name}`).send(TEST_DOC3)
-  )
+  const setup1Path = `${ISSUES}/${TEST_DOC1.name}`,
+    setup2Path = `${ISSUES}/${TEST_DOC2.name}`,
+    setup3Path = `${ISSUES}/${TEST_DOC3.name}`
+  suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC1))
+  suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC2))
+  suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC3))
 
   test('suite setup 1 successful', done => {
     chai
       .request(server)
-      .get(`${ISSUES}/${TEST_DOC1.name}`)
+      .get(setup1Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res,
           { title, assigned_to } = issues[0]
@@ -136,7 +133,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   test('suite setup 2 successful', done => {
     chai
       .request(server)
-      .get(`${ISSUES}/${TEST_DOC2.name}`)
+      .get(setup2Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res
 
@@ -153,7 +150,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
   test('suite setup 3 successful', done => {
     chai
       .request(server)
-      .get(`${ISSUES}/${TEST_DOC3.name}`)
+      .get(setup3Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res
 
@@ -291,7 +288,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.isTrue(ok)
-        assert.deepStrictEqual(TEST_DOC1.issues, issues)
+        assert.deepStrictEqual(issues, TEST_DOC1.issues)
 
         done()
       })

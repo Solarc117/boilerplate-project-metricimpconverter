@@ -2,6 +2,10 @@ const { log, error } = console,
   { env } = process,
   COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
 let db
+/**
+ * @description A utility function to generate UTC date strings from the current date.
+ * @returns {string} A UTC string of the current date.
+ */
 function now() {
   return new Date().toUTCString()
 }
@@ -68,7 +72,9 @@ module.exports = class IssuesDAO {
       options = { upsert: true }
     if (Array.isArray(project?.issues))
       for (const issue of project.issues) {
-        issue.last_updated = now()
+        const rightNow = now()
+        if (issue.created_on === undefined) issue.created_on = rightNow
+        issue.last_updated = rightNow
       }
     let result
 
