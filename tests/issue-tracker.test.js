@@ -102,7 +102,7 @@ assert.strictEqualPairs = function (...pairs) {
 
 chai.use(chaiHttp)
 
-suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
+suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   suiteSetup(() => chai.request(server).delete(ISSUES))
   const setup1Path = `${ISSUES}/${TEST_DOC1.name}`,
     setup2Path = `${ISSUES}/${TEST_DOC2.name}`,
@@ -283,12 +283,26 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       .request(server)
       .get(test5Path)
       .end((err, res) => {
-        const { status, ok, body: issues } = res
+        const { status, ok, body: issues } = res,
+          issue = issues[0],
+          {
+            assigned_to,
+            created_by,
+            created_on,
+            last_updated,
+            status_text,
+            text,
+            title,
+          } = issue
 
-        assert.isNull(err)
-        assert.strictEqual(status, 200)
+        assert.areNull(err, assigned_to, status_text)
+        assert.strictEqualPairs(
+          [status, 200],
+          [issues.length, 1],
+          [Object.keys(issue).length, 7]
+        )
         assert.isTrue(ok)
-        assert.deepStrictEqual(issues, TEST_DOC1.issues)
+        assert.areStrings(created_by, created_on, last_updated, text, title)
 
         done()
       })
@@ -296,18 +310,26 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
 
   const test6Params = '?assigned_to',
     test6Path = `${ISSUES}/${TEST_DOC2.name}${test6Params}`
-  test(`6. GET ${test6Path} (one filter)`, done => {
+  test(`6. view issues with one filter: GET ${test6Path}`, done => {
     chai
       .request(server)
       .get(test6Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res,
-          { title, text, created_by, assigned_to, status_text } = issues[0]
+          {
+            title,
+            text,
+            created_by,
+            created_on,
+            last_updated,
+            assigned_to,
+            status_text,
+          } = issues[0]
 
         assert.areNull(err, assigned_to, status_text)
         assert.strictEqualPairs([status, 200], [issues.length, 1])
         assert.isTrue(ok)
-        assert.areStrings(title, text, created_by)
+        assert.areStrings(title, text, created_by, created_on, last_updated)
 
         done()
       })
@@ -348,12 +370,14 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
- * @property {Date} date The date the issue was submitted.
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
+ * .
  * @property {string} [text] Text describing in further detail the issue.
  * @property {string | null} [assigned_to] The user responsible for addressing the issue.
  * @property {string | null} [status_text] Brief describtion the current state of the issue.
+ * @property {string} created_on The date the issue was created, in UTC.
+ * @property {string} last_updated The date the issue was last updated, in UTC.
  */
 
 /**

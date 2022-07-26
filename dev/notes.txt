@@ -91,11 +91,11 @@
           ii) IF the current query value is a STRING, return false (filter out the current  issue) if the respective value of the current issue does NOT include the query string. Do NOT check for exact equality (=== or !==).
       . Return the filtered copy of the issues array. 
   - ✅ commit & push
-  - 🎉 Automatically add a date property to each issue
+  - ✅ Automatically add a date property to each new issue
     ✅ Add a date instance in every new document in the DAO
-
+    ✅ pass currently failing test
     📄 I will add UTC date strings to the db, and if I need date functionality, I will convert those strings back into date instances.
-  - commit & push
+  - 🎉 commit & push
   - Update one field on an issue: PATCH request to /api/issues/{project}
     📄 Before updating an issue, I need to know WHICH issue to update. 
       One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
