@@ -91,8 +91,18 @@
           ii) IF the current query value is a STRING, return false (filter out the current  issue) if the respective value of the current issue does NOT include the query string. Do NOT check for exact equality (=== or !==).
       . Return the filtered copy of the issues array. 
 
-  - 🎉 commit & push
+  - ✅ commit & push
+  - 🎉 Automatically add a date property to each issue
+    🎉 Add a date instance in every new document in the DAO
+    📄 Should I add date instances to the db, or date strings, and convert those strings back to dates when I'm filtering issues to update?
+  - commit & push
   - Update one field on an issue: PATCH request to /api/issues/{project}
+    📄 Before updating an issue, I need to know WHICH issue to update. 
+      One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
+      ❌ Another way could be to simply send an object containing query fields to filter out the issue to be updated, as well as another object containing the field(s) and value(s) to be updated.
+      ✨ Another way could be to give each issue in a project's array its own _id - maybe add a date property to each issue, and organize them chronologically? Or simply add an index to each?
+
+    📄 I'll send an object with the _id to update, and whatever fields are to be updated.
   - commit & push
   - Update multiple fields on an issue: PATCH request to /api/issues/{project}
   - commit & push
@@ -114,6 +124,7 @@
   - PATCH
   - delete 
 
+- should putProject really do an upsert? Or simply a post call?
 - check if _id should be a required, or optional property of Project objects.
 - ensure method documentation return types are consistent with the actual return types
 - style issue-tracker's index page

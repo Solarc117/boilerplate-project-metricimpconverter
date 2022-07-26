@@ -90,8 +90,10 @@ module.exports = class IssueHandler {
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
  * @property {string} title The title of the issue.
- * @property {string} created_by The user that created the issue.
- * @property {string} [text] Text describing in further detail the issue.
+ * @property {string} [created_by] The user that created the issue.
+ * @property {string} [created_on] The UTC date the issue was created on.
+ * @property {string} [last_updated] The UTC date the issue was last updated.
+ * @property {string | null} [text] Text describing in further detail the issue.
  * @property {string | null} [assigned_to] The user responsible for addressing the issue.
  * @property {string | null} [status_text] Brief describtion the current state of the issue.
  */

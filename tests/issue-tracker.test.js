@@ -1,4 +1,7 @@
 'use strict'
+function now() {
+  return new Date().toUTCString()
+}
 
 const chaiHttp = require('chai-http'),
   { ObjectId } = require('mongodb'),
@@ -93,7 +96,7 @@ assert.areTrue = function (...vals) {
  * @description Asserts strict equality for both elements in each array passed.
  * @param  {...any} pairs Arrays containing values to compare.
  */
-assert.strictEqualities = function (...pairs) {
+assert.strictEqualPairs = function (...pairs) {
   for (const [v1, v2] of pairs) assert.strictEqual(v1, v2)
 }
 
@@ -120,7 +123,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
           { title, assigned_to } = issues[0]
 
         assert.areNull(err, assigned_to)
-        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.strictEqualPairs([status, 200], [issues.length, 1])
         assert.isArray(issues)
         assert.areObjects(...issues)
         assert.isTrue(ok)
@@ -129,6 +132,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
+
   test('suite setup 2 successful', done => {
     chai
       .request(server)
@@ -137,7 +141,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         const { status, ok, body: issues } = res
 
         assert.isNull(err)
-        assert.strictEqualities([status, 200], [issues.length, 4])
+        assert.strictEqualPairs([status, 200], [issues.length, 4])
         assert.isTrue(ok)
         assert.isArray(issues)
         assert.areObjects(...issues)
@@ -145,6 +149,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
+
   test('suite setup 3 successful', done => {
     chai
       .request(server)
@@ -243,7 +248,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
         } = res
 
         assert.isNull(err)
-        assert.strictEqualities([status, 200], [insertedId, newId2.toString()])
+        assert.strictEqualPairs([status, 200], [insertedId, newId2.toString()])
         assert.isTrue(ok, acknowledged)
 
         done()
@@ -303,7 +308,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
           { title, text, created_by, assigned_to, status_text } = issues[0]
 
         assert.areNull(err, assigned_to, status_text)
-        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.strictEqualPairs([status, 200], [issues.length, 1])
         assert.isTrue(ok)
         assert.areStrings(title, text, created_by)
 
@@ -325,7 +330,7 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
           { title, text, created_by, assigned_to, status_text } = issues[0]
 
         assert.areNull(err, status_text)
-        assert.strictEqualities([status, 200], [issues.length, 1])
+        assert.strictEqualPairs([status, 200], [issues.length, 1])
         assert.isTrue(ok)
         assert.isArray(issues)
         assert.areStrings(title, text, created_by, assigned_to)
@@ -334,12 +339,19 @@ suite('🧪\x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test8Path = `${ISSUES}/`
-  test(`8. PATCH `)
+  const test8Path = `${ISSUES}/${TEST_DOC1.name}`
+  test(`8. update one field: PATCH ${test8Path}`, done => {
+    const updateObj = {
+      _id: TEST_DOC1._id,
+    }
+    done()
+    // chai.request(server).patch(test8Path).send()
+  })
 })
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
+ * @property {Date} date The date the issue was submitted.
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
  * @property {string} [text] Text describing in further detail the issue.

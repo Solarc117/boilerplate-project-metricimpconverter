@@ -101,7 +101,7 @@
         const [{ value: owner }, { value: project }] =
           $('#testForm0').serializeArray()
         $.ajax({
-          url: `/api/issues/${owner}/${project}`,
+          url: `/api/issues/${project}`,
           type: 'get',
           data: $('#testForm0').serialize(),
           success: data => stringify(data)
