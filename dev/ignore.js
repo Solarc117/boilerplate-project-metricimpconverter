@@ -29,7 +29,12 @@ let dateFromStr
 
 // I'm hoping that dateFromStr will be the same as date; this would mean I can switch from date instances to date strings, and back.
 
-log(date)
-log(date.toDateString())
-log(date.toTimeString())
-log(date.toUTCString())
+// log(date)
+// log(date.toDateString())
+// log(date.toTimeString())
+// log(date.toUTCString())
+
+const { ObjectId } = require('mongodb'),
+  _id0 = new ObjectId()
+
+log(typeof _id0, _id0)

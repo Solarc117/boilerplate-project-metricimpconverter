@@ -68,7 +68,7 @@ module.exports = class IssueHandler {
       for (const prop of props) if (obj[prop] === undefined) obj[prop] = null
     }
     const { body: project } = req,
-      projectProps = ['_id', 'name', 'owner', 'issues'],
+      projectProps = ['name', 'owner', 'issues'],
       issueProps = {
         required: ['title', 'created_by'],
         optional: ['text', 'assigned_to', 'status_text'],

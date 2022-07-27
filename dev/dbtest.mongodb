@@ -9,11 +9,13 @@ use('issue-tracker');
 // The drop() command destroys all data from a collection.
 // Make sure you run it against the correct database and collection.
 // db.test.findOne({ _id: '0000000197d9af3844c5dc92' })
-db.test.updateOne(
-  { _id: '0000000197d9af3844c5dc92' }, 
-  { $set: { name: 'python-ALGORITHMS' } }, 
-  { upsert: true },
-)
+// db.test.updateOne(
+//   { _id: '0000000197d9af3844c5dc92' }, 
+//   { $set: { name: 'python-ALGORITHMS' } }, 
+//   { upsert: true },
+// )
+
+db.test.findOne({ owner: '' }, { _id: 0, issues: 1, name: 1 })
 
 // // Insert a few documents into the sales collection.
 // db.sales.insertMany([

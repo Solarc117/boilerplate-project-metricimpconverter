@@ -184,10 +184,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const newId = new ObjectId(),
-    user = 'johnny123',
+  const user = 'johnny123',
     newProject = {
-      _id: newId,
       name: 'cpp-chess',
       owner: user,
       issues: [
@@ -209,19 +207,18 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       .end((err, res) => {
         const { status, ok, body } = res,
           { acknowledged, insertedId } = body
+
         assert.isNull(err)
         assert.strictEqual(status, 200)
         assert.areTrue(ok, acknowledged)
-        assert.strictEqual(insertedId, newId.toString())
+        assert.isString(insertedId)
 
         done()
       })
   })
 
-  const newId2 = new ObjectId(),
-    user2 = 'frank_ocean_fan',
+  const user2 = 'frank_ocean_fan',
     newProject2 = {
-      _id: newId2,
       name: 'blonde-track-list',
       owner: user2,
       issues: [
@@ -245,16 +242,15 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
         } = res
 
         assert.isNull(err)
-        assert.strictEqualPairs([status, 200], [insertedId, newId2.toString()])
+        assert.strictEqual(status, 200)
         assert.isTrue(ok, acknowledged)
+        assert.isString(insertedId)
 
         done()
       })
   })
 
-  const newId3 = new ObjectId(),
-    newProject3 = {
-      _id: newId3,
+  const newProject3 = {
       name: 'react-calculator',
       issues: [],
     },

@@ -1,5 +1,7 @@
-const { log, error } = console,
-  { env } = process,
+const { log, warn, error } = console,
+  { env } = process
+
+const { ObjectId } = require('mongodb'),
   COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
 let db
 /**
@@ -153,6 +155,11 @@ module.exports = class IssuesDAO {
     if (Array.isArray(project?.issues))
       for (const issue of project.issues)
         issue.created_on = new Date().toUTCString()
+
+    if (project._id !== undefined)
+      warn(`overriding _id property on project of type ${typeof project._id}`)
+    project._id = new ObjectId()
+
     let result
 
     try {
