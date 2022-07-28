@@ -98,6 +98,9 @@
   - ✅ commit & push
   - ✅ check if a new post request generates a document with an ObjectId, or if not, how we can configure the db to handle that itself. If not, I can add the property automatically.
   - ✅ fix failing tests
+  - 🎉 edit hndler nd dao methods
+    📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
+    📄 consider using middlewar
   - 🎉 finish fixing _id functionality on the api
   - Update one field on an issue: PATCH request to /api/issues/{project}
     📄 Before updating an issue, I need to know WHICH issue to update. 
