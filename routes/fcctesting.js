@@ -47,11 +47,11 @@ module.exports = function (app) {
     })
   })
   app
-    .route('/_api/controllers/convertHandler.js')
+    .route('/_api/controllers/convert-handler.js')
     .get(function (req, res, next) {
       console.log('requested')
       fs.readFile(
-        __dirname + '/controllers/convertHandler.js',
+        __dirname + '/controllers/convert-handler.js',
         function (err, data) {
           if (err) return next(err)
           res.type('txt').send(data.toString())

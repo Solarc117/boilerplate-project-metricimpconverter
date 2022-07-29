@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title>Issue Tracker</title>
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png"
-    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png" />
     <link rel="stylesheet" href="../../public/all.css" />
     <link rel="stylesheet" href="../../public/issue-tracker.css" />
   </head>
+
   <body>
     <header>
       <h1>Issue Tracker</h1>
@@ -47,42 +45,19 @@
       <a href="/api/issues/apitest/"><code>/api/issues/apitest/</code></a>
       project
       <h2 style="text-align: left">API Tests</h2>
+      <h3>Get issues</h3>
+      <form id="testForm0" class="border">
+        <input type="text" name="owner" placeholder="*Owner" style="width: 100px" required /><br />
+        <input type="text" name="project" placeholder="*Project" style="width: 100px" required></input /><br />
+        <button type="submit">Get Project Issues</button>
+      </form>
       <h3>Submit issue on <i>apitest</i></h3>
-      <form id="testForm" class="border">
-        <input
-          type="text"
-          name="issue_title"
-          placeholder="*Title"
-          style="width: 100px"
-          required=""
-        /><br />
-        <textarea
-          type="text"
-          name="issue_text"
-          placeholder="*Text"
-          style="width: 100px"
-          required
-        ></textarea
-        ><br />
-        <input
-          type="text"
-          name="created_by"
-          placeholder="*Created by"
-          style="width: 100px"
-          required
-        /><br />
-        <input
-          type="text"
-          name="assigned_to"
-          placeholder="(opt)Assigned to"
-          style="width: 100px"
-        /><br />
-        <input
-          type="text"
-          name="status_text"
-          placeholder="(opt)Status text"
-          style="width: 100px"
-        /><br />
+      <form id="testForm1" class="border">
+        <input type="text" name="issue_title" placeholder="*Title" style="width: 100px" required /><br />
+        <textarea type="text" name="issue_text" placeholder="*Text" style="width: 100px" required></textarea><br />
+        <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required /><br />
+        <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px" /><br />
+        <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px" /><br />
         <button type="submit">Submit Issue</button>
       </form>
       <br />
@@ -91,120 +66,76 @@
         _id supplied)
       </h3>
       <form id="testForm2" class="border">
-        <input
-          type="text"
-          name="_id"
-          placeholder="*_id"
-          style="width: 100px"
-          required=""
-        /><br />
-        <input
-          type="text"
-          name="issue_title"
-          placeholder="(opt)Title"
-          style="width: 100px"
-        /><br />
-        <textarea
-          type="text"
-          name="issue_text"
-          placeholder="(opt)Text"
-          style="width: 100px"
-        ></textarea
-        ><br />
-        <input
-          type="text"
-          name="created_by"
-          placeholder="(opt)Created by"
-          style="width: 100px"
-        /><br />
-        <input
-          type="text"
-          name="assigned_to"
-          placeholder="(opt)Assigned to"
-          style="width: 100px"
-        /><br />
-        <input
-          type="text"
-          name="status_text"
-          placeholder="(opt)Status text"
-          style="width: 100px"
-        /><br />
-        <label
-          ><input type="checkbox" name="open" value="false" /> Check to close
-          issue</label
-        ><br />
+        <input type="text" name="_id" placeholder="*_id" style="width: 100px" required /><br />
+        <input type="text" name="issue_title" placeholder="(opt)Title" style="width: 100px" /><br />
+        <textarea type="text" name="issue_text" placeholder="(opt)Text" style="width: 100px"></textarea><br />
+        <input type="text" name="created_by" placeholder="(opt)Created by" style="width: 100px" /><br />
+        <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px" /><br />
+        <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px" /><br />
+        <label><input type="checkbox" name="open" value="false" /> Check to close
+          issue</label><br />
         <button type="submit">Submit Issue</button>
       </form>
       <br />
       <h3>Delete issue on <i>apitest</i></h3>
       <form id="testForm3" class="border">
-        <input
-          type="text"
-          name="_id"
-          placeholder="_id"
-          style="width: 100px"
-          required=""
-        /><br />
+        <input type="text" name="_id" placeholder="_id" style="width: 100px" required /><br />
         <button type="submit">Delete Issue</button>
       </form>
       <code id="jsonResult"></code>
     </section>
     <hr style="margin: 50px; margin-top: 200px" />
-    <!-- Your web-app is https, so your scripts need to be too -->
-    <script
-      src="https://code.jquery.com/jquery-2.2.1.min.js"
-      integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      $(() => {
-        function ajax(formId, method) {
-          $(formId).submit(e => {
-            e.preventDefault()
-            $.ajax({
-              url: '/api/issues/apitest',
-              method,
-              data: $(formId).serialize(),
-              success: data => $('#jsonResult').text(JSON.stringify(data)),
-            })
-          })
-        }
-        const formIdsAndMethods = [
-          ['#testForm', 'post'],
-          ['#testForm2', 'put'],
-          ['#testForm3', 'delete'],
-        ]
-
-        for (const [formId, method] of formIdsAndMethods) ajax(formId, method)
-
-        // $('#testForm').submit(e => {
-        //   e.preventDefault()
-        // $.ajax({
-        //   url: '/api/issues/apitest',
-        //   type: 'post',
-        //   data: $('#testForm').serialize(),
-        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
-        // })
-        // })
-        // $('#testForm2').submit(e => {
-        //   e.preventDefault()
-        // $.ajax({
-        //   url: '/api/issues/apitest',
-        //   type: 'put',
-        //   data: $('#testForm2').serialize(),
-        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
-        // })
-        // })
-        // $('#testForm3').submit(e => {
-        //   e.preventDefault()
-        // $.ajax({
-        //   url: '/api/issues/apitest',
-        //   type: 'delete',
-        //   data: $('#testForm3').serialize(),
-        //   success: data => $('#jsonResult').text(JSON.stringify(data)),
-        // })
-        // })
-      })
-    </script>
   </body>
+
+  <!-- Your web-app is https, so your scripts need to be too -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="module">
+    const { log, error } = console
+    function stringify(data) {
+      $('#jsonResult').text(JSON.stringify(data))
+    }
+
+    $(() => {
+      $('#testForm0').on('submit', async e => {
+        e.preventDefault()
+        const [{ value: owner }, { value: project }] =
+          $('#testForm0').serializeArray()
+        $.ajax({
+          url: `/api/issues/${project}`,
+          type: 'get',
+          data: $('#testForm0').serialize(),
+          success: data => stringify(data)
+        })
+      })
+      $('#testForm1').on('submit', e => {
+        e.preventDefault()
+        $.ajax({
+          url: '/api/issues/apitest',
+          type: 'post',
+          data: $('#testForm1').serialize(),
+          success: data => stringify(data),
+        })
+      })
+      $('#testForm2').on('submit', e => {
+        e.preventDefault()
+        $.ajax({
+          url: '/api/issues/apitest',
+          type: 'put',
+          data: $('#testForm2').serialize(),
+          success: data => stringify(data),
+        })
+      })
+      $('#testForm3').on('submit', e => {
+        e.preventDefault()
+        $.ajax({
+          url: '/api/issues/apitest',
+          type: 'delete',
+          data: $('#testForm3').serialize(),
+          success: data => stringify(data),
+        })
+      })
+
+    })
+  </script>
+
 </html>

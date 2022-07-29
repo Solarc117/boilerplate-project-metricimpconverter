@@ -1,3 +1,1 @@
-# GET https://issue-tracker.freecodecamp.rocks/api/issues/apitest/
-
-GET https://api.github.com/users/solarc117/repos
+GET http://localhost:3000/issue-tracker

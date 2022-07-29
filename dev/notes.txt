@@ -37,53 +37,102 @@
 <!-------------------- END ------------------------->
 
 
-📄⬇️ play around with different properties of res to use to verify a proper response
-📄It would be neat to have a "full response" method in ConvertHandler that draws from its own methods to return all the properties that a response object would be expected to have, and call THAT method in the api file, instead of defining each property individually and returning an anonymous object with all of those properties.
-📄I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
-📄I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. Therefore, I should make verifying fcctesting.js works my last task - still would be nice to get that certification, though, so I do still wanna see if it's doable within a reasonable amount of time.
-📄Should look up diff. betw. res' sendFile & render.
-📄Should look up what my brother said about views being automatic, & why it doesn't work on this project.
-📄Might wanna consider isolating separate api method handlers to their own files, and just invoke them all in the api.js file (ex. issue-tracker-api.js, metric-imperial-api.js, and require them)
-📄In order to continue doing TDD, I should have a sign-in form, and set up tests for the database, form, & api
+📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
+📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
+📄 render works with templates, like pug. The sendFile method sends file as is.
+📄 should consider looking up what my brother said about views being automatic, & why it doesn't work on this project.
+📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
+📄 do I need to drop the collection? Or would it be simpler to send a put request for every document that I will need (e.g. if there are two DELETE tests, I can send two PUT requests for every DELETE test)? I think the second will be easier.
 
-- ✅think of a possible solution for allowing users to add/edit/remove issues to their repos
-  📄i can only see a PAT being useful for myself; to allow users to add/edit/remove issues from their repositories, I think OAuth would be more suitable.
-  
+✨ ways to optimize learning that I should remember:
+  - take short, mind-wandering breaks apart from ultradian breaks
+  - use bedtime to estimate ultradian breaks for the day
+  - angle screen upward to trigger alertness
+  - consciously try to blink less
+  - do productive breaks during ultradian breaks (raise adrenalin, then: NSDR, walk, talk to someone, etc.)
+  - implement perceptible, non-intrusive white noise during learning
+  - MINIMIZE DISTRACTIONS
+  - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
-✅I should check that the GH api allows for issue edits/deletes as well.
-  📄Using the GH api, we can create, update, get & lock/unlock issues
+- ✅ what is the difference between req.body, req.query, and req.params?
+  📄 req.body is what usually contains the majority of information relevant to the request
+  📄 query contains the '...?KEY=VALUE' pairs of a path
+  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
-- ⚒️revisit advanced back end code to re-implement github OAuth
-  📄do I need to store user information in mDB? I'll just do what I was doing in adv-node-express
-  - ✅fix failing tests throughout this process
-  - ⚒️set up routes/api so that only the functionality that depends on the db fails when there is a db connection err
-    - 
-  - ✅create a cluster for the quality-assurance projects, and a collection for issue-tracker users 
-  - 
+- ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
+  - ✅ Create an issue with every field: POST request to /api/issues/:project
+  - ✅ commit & push
+  - ✅ Create an issue with only required fields: POST request to /api/issues/{project}
+    - ✅ Fill in null for any optional fields that are not filled in, and respond with a status of 400 (bad req) and a corresponding message if any required fields are not their respective types.
+  - ✅ commit & push
+  - ✅ Create an issue with missing required fields: POST request to /api/issues/{project}
+  - ✅ commit & push
+  - ✅ View issues on a project: GET request to /api/issues/{project}
+    - ✅ modify GET handler to only return the issues array
+  - ✅ commit & push
+  - ✅ View issues on a project with one filter: GET request to /api/issues/{project}
+    📄 pseudocode for filtering db response issues:
+      - if response is NOT null ✅, and issueQueries has at LEAST one key ✅, and the response has an issues property of type array ✅:
+        - iterate through each issue in the issues array ✅. For each issue:
+          - map through the keys of issueQueries, ensuring the respective key in the current issue matches the value of the same key in the issueQueries parameter ✅
+        - return the response ✅
+  - ✅ commit & push
+  - ✅ edit handler get method to NOT nullify null strings, or to only nullify EMPTY strings
+    📄 instead, empty strings will be nullified, and 'null' strings will literally search for null in strings.
+  - ✅ View issues on a project with multiple filters: GET /api/issues/{project}
+    📄 I'm nullifying empty strings, so as long as a value is a string and not null, the DAO should check that the document CONTAINS - doesn't match exactly, but rather CONTAINS - the query string (case insensitive).
+    📄 New DAO filterIssues pseudocode:
+      📄 filterIssues is being passed the issues, and an object of queries to filter the issues with (each value thereof being of type string, OR null). The issues are objects in an array.
+      📄 If a query is null, filterIssues should only keep issues whose respective property is ALSO null. Aka, it should remove all issues whose respective property is NOT null.
+      📄 If a query is not null (aka a string), fitlerIssues should only keep issues that contain said string in the respective property. Aka, it should remove issues that do NOT include the query string.
+      1. Iterate through a COPY of the issues array, using the Array.filter method. For each issue:
+        a) Iterate through the keys of the query object. For each key (and value):
+          i) IF the current query value is NULL, return false (filter out the current issue) if the respective value of the issue is NOT also NULL.
+          ii) IF the current query value is a STRING, return false (filter out the current  issue) if the respective value of the current issue does NOT include the query string. Do NOT check for exact equality (=== or !==).
+      . Return the filtered copy of the issues array. 
+  - ✅ commit & push
+  - ✅ Automatically add a date property to each new issue
+    ✅ Add a date instance in every new document in the DAO
+    ✅ pass currently failing test
+    📄 I will add UTC date strings to the db, and if I need date functionality, I will convert those strings back into date instances.
+  - ✅ commit & push
+  - ✅ check if a new post request generates a document with an ObjectId, or if not, how we can configure the db to handle that itself. If not, I can add the property automatically.
+  - ✅ fix failing tests
+  - 🎉 edit hndler nd dao methods
+    📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
+    📄 consider using middlewar
+  - 🎉 finish fixing _id functionality on the api
+  - Update one field on an issue: PATCH request to /api/issues/{project}
+    📄 Before updating an issue, I need to know WHICH issue to update. 
+      One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
+      ❌ Another way could be to simply send an object containing query fields to filter out the issue to be updated, as well as another object containing the field(s) and value(s) to be updated.
+      ✨ Another way could be to give each issue in a project's array its own _id - maybe add a date property to each issue, and organize them chronologically? Or simply add an index to each?
 
-
-fcc tasks:
-- ⚒️Complete the necessary routes in /routes/api.js:
-  - get
-  - post
-  - put
-  - delete
-- ⚒️Create all of the functional tests in tests/issue-tracker.test.js:
-  - Create an issue with every field: POST request to /api/issues/{project}
-  - Create an issue with only required fields: POST request to /api/issues/{project}
-  - Create an issue with missing required fields: POST request to /api/issues/{project}
-  - View issues on a project: GET request to /api/issues/{project}
-  - View issues on a project with one filter: GET request to /api/issues/{project}
-  - View issues on a project with multiple filters: GET request to /api/issues/{project}
-  - Update one field on an issue: PUT request to /api/issues/{project}
-  - Update multiple fields on an issue: PUT request to /api/issues/{project}
-  - Update an issue with missing _id: PUT request to /api/issues/{project}
-  - Update an issue with no fields to update: PUT request to /api/issues/{project}
-  - Update an issue with an invalid _id: PUT request to /api/issues/{project}
+    📄 I'll send an object with the _id to update, and whatever fields are to be updated.
+  - commit & push
+  - Update multiple fields on an issue: PATCH request to /api/issues/{project}
+  - commit & push
+  - Update an issue with missing _id: PATCH request to /api/issues/{project}
+  - commit & push
+  - Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  - commit & push
+  - Update an issue with an invalid _id: PATCH request to /api/issues/{project}
+  - commit & push
   - Delete an issue: DELETE request to /api/issues/{project}
+  - commit & push
   - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
+  - commit & push
   - Delete an issue with missing _id: DELETE request to /api/issues/{project}
 
+- ⚒️ Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
+  - get an issue, with the option to filter using asignees, reactions, or other things
+  - post
+  - PATCH
+  - delete 
+
+- should putProject really do an upsert? Or simply a post call?
+- check if _id should be a required, or optional property of Project objects.
+- ensure method documentation return types are consistent with the actual return types
 - style issue-tracker's index page
 - add navbar to issue-tracker
 - compare fccTestingRoutes

@@ -1,36 +1,40 @@
-require('dotenv').config()
-;('use strict')
 console.clear()
-const { log, error } = console,
-  { Octokit } = require('@octokit/core'),
-  { createOAuthDeviceAuth } = require('@octokit/auth-oauth-device'),
-  octokit = new Octokit({
-    authStrategy: createOAuthDeviceAuth,
-    auth: {
-      clientType: 'oauth-app',
-      clientId: process.env.CLIENT_ID,
-      scopes: ['public_repo'],
-      onVerification(verification) {
-        // verification example
-        // {
-        //   device_code: "3584d83530557fdd1f46af8289938c8ef79f9dc5",
-        //   user_code: "WDJB-MJHT",
-        //   verification_uri: "https://github.com/login/device",
-        //   expires_in: 900,
-        //   interval: 5,
-        // };
+const { log, error } = console
 
-        console.log('Open %s', verification.verification_uri)
-        console.log('Enter code: %s', verification.user_code)
-      },
-    },
-  })
+function isWholeNum(num) {
+  return num % 1 === 0
+}
 
-;(async () => {
-  const response = octokit.request('GET /repos/{owner}/{repo}/issues', {
-    owner: 'solarc117',
-    repo: 'quality-assurance-projects',
-  })
+// Iterate from 1 to the number passed, rounded down.
+// For each of those numbers, log the number divided by that number as well.
+function factor(num, sum) {
+  for (let denom = 1; denom < Math.floor(num / 2); denom++) {
+    const rem = num / denom
 
-  log((await response).data)
-})()
+    if (!isWholeNum(rem)) continue
+
+    log(denom, rem)
+  }
+}
+
+const date = new Date(),
+  strFromDate = date.toString()
+let dateFromStr
+// setTimeout(() => {
+//   dateFromStr = new Date(strFromDate)
+//   log(date)
+//   log(strFromDate)
+//   log(dateFromStr)
+// }, 2000)
+
+// I'm hoping that dateFromStr will be the same as date; this would mean I can switch from date instances to date strings, and back.
+
+// log(date)
+// log(date.toDateString())
+// log(date.toTimeString())
+// log(date.toUTCString())
+
+const { ObjectId } = require('mongodb'),
+  _id0 = new ObjectId()
+
+log(typeof _id0, _id0)
