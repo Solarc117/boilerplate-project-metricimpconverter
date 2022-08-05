@@ -116,6 +116,10 @@
       📄 I'll respond with a bad request (http code 400) with a message "_id property supplied"
     - code for the functionality above (including put requests)
     - write a post test, with an object containing an _id property, and assert an object containing an error property with a value of type string is returned
+  - 🎉 edit hndler nd dao methods
+    📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
+    📄 consider using middlewar
+  - 🎉 finish fixing _id functionality on the api
   - Update one field on an issue: PATCH request to /api/issues/{project}
     📄 Before updating an issue, I need to know WHICH issue to update. 
       One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
