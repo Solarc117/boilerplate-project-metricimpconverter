@@ -66,8 +66,6 @@ module.exports = class IssuesDAO {
       options = { upsert: true }
     let result
 
-    log(query, operators, options)
-
     try {
       result = await db.updateOne(query, operators, options)
     } catch (err) {
@@ -100,24 +98,12 @@ module.exports = class IssuesDAO {
   }
 
   /**
-   * @description Attempts to post (update) the passed object to the connected collection.
+   * @description Attempts to post (upload) the passed object to the connected collection.
    * @async
    * @param {Project} project The object to post to the respective collection.
    * @returns {null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }}
    */
   static async postProject(project) {
-    const { _id } = project
-
-    if (_id !== undefined)
-      return {
-        error: `unexpected _id property of type ${typeof _id} on project argument - _id is automatically supplied`,
-      }
-    project._id = new ObjectId()
-
-    if (Array.isArray(project?.issues))
-      for (const issue of project.issues)
-        issue.created_on = new Date().toUTCString()
-
     let result
 
     try {

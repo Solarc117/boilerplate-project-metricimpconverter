@@ -1,7 +1,8 @@
 'use strict'
 const { log, warn } = console
 
-const IssuesDAO = require('../dao/issues-dao.js')
+const { ObjectId } = require('mongodb'),
+  IssuesDAO = require('../dao/issues-dao.js')
 
 module.exports = class IssueHandler {
   /**
@@ -22,7 +23,7 @@ module.exports = class IssueHandler {
    * @param {Function} next The Express function to invoke the next middleware.
    */
   static async put(req, res) {
-    function updateIssueDates(project) {
+    function updateAllIssueDates(project) {
       if (!Array.isArray(project?.issues)) return
 
       const now = new Date().toUTCString()
@@ -34,7 +35,7 @@ module.exports = class IssueHandler {
     const { body: project } = req
     let putResult
 
-    updateIssueDates(project)
+    updateAllIssueDates(project)
 
     // Do not require a trycatch block for the following asynchronous method, because it itself will handle errors returned by the db and return an object with an error property.
     putResult = await IssuesDAO.putProject(project)
@@ -79,6 +80,8 @@ module.exports = class IssueHandler {
     function nullifyEmptyStringProps(obj) {
       for (const key of Object.keys(obj))
         if (obj[key]?.trim?.().length === 0) obj[key] = null
+
+      return obj
     }
     const {
       params: { project: name },
@@ -100,29 +103,34 @@ module.exports = class IssueHandler {
   }
 
   /**
-   * @description Invokes the IssuesDAO postProject method, and responds with the result.
+   * @description Attempts to post the received project to the database. Automatically assigns a new ObjectId to new projects.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
   static async post(req, res) {
-    // , unacceptableProps = []
-    function verifyProps(obj = {}, requiredProps = []) {
-      for (const prop of requiredProps)
+    function objHasProps(obj, props) {
+      for (const prop of props)
         if (obj[prop] === undefined) {
           res.status(400).json({ error: `missing ${prop} field` })
           return false
         }
-      // for (const prop of unacceptableProps)
-      //   if (obj[prop] !== undefined) {
-      //     res
-      //       .status(400)
-      //       .json({ error: `cannot post a document with a(n) ${prop} field` })
-      //     return false
-      //   }
+
       return true
     }
     function nullifyUndefProps(obj, props) {
       for (const prop of props) if (obj[prop] === undefined) obj[prop] = null
+    }
+    function verifyAndFormatIssues(proj) {
+      if (!Array.isArray(proj?.issues)) return true
+
+      const now = new Date().toUTCString()
+      for (const issue of proj.issues) {
+        if (!objHasProps(issue, issueProps.required)) return false
+        issue.created_on = now
+        nullifyUndefProps(issue, issueProps.optional)
+      }
+
+      return true
     }
     const { body: project } = req,
       projectProps = ['name', 'owner', 'issues'],
@@ -132,12 +140,15 @@ module.exports = class IssueHandler {
       }
     let postResult
 
-    if (!verifyProps(project, projectProps, '_id')) return
+    if (!objHasProps(project, projectProps)) return
 
-    for (const issue of project.issues) {
-      if (!verifyProps(issue, issueProps.required)) return
-      nullifyUndefProps(issue, issueProps.optional)
-    }
+    if (project._id !== undefined)
+      return res.status(400).json({
+        error: `unexpected _id property of type ${typeof project._id} on project argument - _id is automatically supplied`,
+      })
+    project._id = new ObjectId()
+
+    if (!verifyAndFormatIssues(project)) return
 
     postResult = await IssuesDAO.postProject(project)
 

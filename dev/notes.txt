@@ -59,18 +59,12 @@
   📄 query contains the '...?KEY=VALUE' pairs of a path
   📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
-- ⚒️🎉 integrate all the changes from repl.it
+- ✅ integrate all the changes from repl.it
   📄 these are meant to ensure the DAO ONLY makes DB requests, and that the handler does data formatting/manipulating (e.g. responding with the desired structure)
-  - ✅ check if the PUT request tests are passing
-    📄 suiteSetup 2 & 3 tests are FAILING
-  - ✅ check what is going wrong in each failing test
-    📄 suiteSetup 2 is reading the length property of NULL
-    📄 suiteSetup 3 is receiving NULL where it expected an ARRAY
-  - ⚒️✅ fix the issues listed above
-    - ✅ suiteSetup2:
-    - ✅ suiteSetup 3:
-  - 🎉 verify the DAO methods are not doing any data handling
+  - ✅ verify the DAO methods are not doing any data handling
     📄 should I keep the filterIssues function in the getProject method? I guess not, since I decided to make the DAO method ONLY make db requests; filtering out data is data handling, which will for now go in the handler.
+  - ✅ implement the data handling that was previously in the DAO, in the Handler
+    📄 Note for future self: be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
 
 - ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ Create an issue with every field: POST request to /api/issues/:project
@@ -111,15 +105,11 @@
   - ✅ commit & push
   - ✅ check if a new post request generates a document with an ObjectId, or if not, how we can configure the db to handle that itself. If not, I can add the property automatically.
   - ✅ fix failing tests
-  - finish fixing _id functionality on the api
+  - ✅ finish fixing _id functionality on the api
     - ✅ decide what should be done when a post request document contains an _id property
       📄 I'll respond with a bad request (http code 400) with a message "_id property supplied"
-    - code for the functionality above (including put requests)
-    - write a post test, with an object containing an _id property, and assert an object containing an error property with a value of type string is returned
-  - 🎉 edit hndler nd dao methods
     📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
-    📄 consider using middlewar
-  - 🎉 finish fixing _id functionality on the api
+  - 🎉 commit, push, merge with main, deploy to heroku
   - Update one field on an issue: PATCH request to /api/issues/{project}
     📄 Before updating an issue, I need to know WHICH issue to update. 
       One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
