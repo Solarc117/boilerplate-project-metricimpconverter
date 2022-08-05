@@ -1,7 +1,15 @@
 'use strict'
 const { log, warn } = console
 
-const IssuesDAO = require('../dao/issues-dao.js')
+const { ObjectId } = require('mongodb'),
+  IssuesDAO = require('../dao/issues-dao.js')
+/**
+ * @description A utility function to generate UTC date strings from the current date.
+ * @returns {string} A UTC string of the current date.
+ */
+function now() {
+  return new Date().toUTCString()
+}
 
 module.exports = class IssueHandler {
   /**
@@ -22,42 +30,42 @@ module.exports = class IssueHandler {
    * @param {Function} next The Express function to invoke the next middleware.
    */
   static async put(req, res) {
-    function updateIssueDates(project) {
-      if (!Array.isArray(project?.issues)) return
-
-      const now = new Date().toUTCString()
-      for (const issue of project.issues) {
-        if (issue.created_on === undefined) issue.created_on = now
-        issue.last_updated = now
-      }
-    }
     const { body: project } = req
-    let putResult
+    function updateIssueDates(project) {
+      if (Array.isArray(project?.issues))
+        for (const issue of project.issues) {
+          const rightNow = now()
+          if (issue.created_on === undefined) issue.created_on = rightNow
+          issue.last_updated = rightNow
+        }
+    }
 
     updateIssueDates(project)
 
-    // Do not require a trycatch block for the following asynchronous method, because it itself will handle errors returned by the db and return an object with an error property.
-    putResult = await IssuesDAO.putProject(project)
+    // Do not require a trycatch block for the following asynchronous method, because it itself will handle errors returned by the db.
+    const putResult = await IssuesDAO.putProject(project)
 
-    // Remember to verify that all error properties the DAO returns are SERVER, and not CLIENT errors. DAO should only be dealing with server errors at this point; client errors (bad requests) should be handled by the handler.
     res.status(putResult?.error ? 500 : 200).json(putResult)
   }
 
   /**
-   * @description Fetches a project from the database using its title. Responds with null if no match was found, or otherwise with the project's issues. Filters the issues array if any queries were passed. Responds with an error object and status code 500 if a server error is encountered.
+   * @description Invokes the IssuesDAO getProject method, passing the project name, and responds with the project's issues array (if it was found) or null. Sends an object with an error property and status code 500 if MongoDB threw an error.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
   static async get(req, res) {
+    const {
+      params: { project: name },
+      query,
+    } = req
     function filterIssues(issues = [], queries = {}) {
       const queryKeys = Object.keys(queries)
-      // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array.filter method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
+      // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array filter() method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
       return [...issues].filter(issue => {
         for (const key of queryKeys) {
           const query = queries[key],
             issueField = issue[key]
 
-          // (typeof query === 'string' && !issueField.includes(query))
           if (
             (query === null && issueField !== null) ||
             (typeof query === 'string' &&
@@ -77,25 +85,23 @@ module.exports = class IssueHandler {
       )
     }
     function nullifyEmptyStringProps(obj) {
-      for (const key of Object.keys(obj))
-        if (obj[key]?.trim?.().length === 0) obj[key] = null
+      for (const key of Object.keys(obj)) {
+        const val = obj[key]
+        if (typeof val === 'string' && val.trim().length === 0) obj[key] = null
+      }
     }
-    const {
-      params: { project: name },
-      query,
-    } = req
-    let getResult
 
-    getResult = await IssuesDAO.getProject(name)
+    nullifyEmptyStringProps(query)
 
-    if (queryAndIssuesValid(getResult, query))
-      getResult.issues = filterIssues(
-        getResult.issues,
-        nullifyEmptyStringProps(query)
-      )
+    const getResult = await IssuesDAO.getProject(name)
 
     if (getResult?.error) return res.status(500).json(getResult)
-    // Return null if there is no such project; or an array containing however many issues the existing project has.
+
+    // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
+    if (queryAndIssuesValid(getResult, query))
+      getResult.issues = filterIssues(getResult.issues, query)
+
+    // Return null if there is no such project, or an array containing however many issues the existing project has.
     res.status(200).json(getResult === null ? getResult : getResult.issues)
   }
 
@@ -105,20 +111,12 @@ module.exports = class IssueHandler {
    * @param {object} res The Express response object.
    */
   static async post(req, res) {
-    // , unacceptableProps = []
-    function verifyProps(obj = {}, requiredProps = []) {
-      for (const prop of requiredProps)
+    function verifyProps(obj, props) {
+      for (const prop of props)
         if (obj[prop] === undefined) {
-          res.status(400).json({ error: `missing ${prop} field` })
+          res.status(400).json({ err: `missing ${prop} field` })
           return false
         }
-      // for (const prop of unacceptableProps)
-      //   if (obj[prop] !== undefined) {
-      //     res
-      //       .status(400)
-      //       .json({ error: `cannot post a document with a(n) ${prop} field` })
-      //     return false
-      //   }
       return true
     }
     function nullifyUndefProps(obj, props) {
@@ -130,16 +128,22 @@ module.exports = class IssueHandler {
         required: ['title', 'created_by'],
         optional: ['text', 'assigned_to', 'status_text'],
       }
-    let postResult
 
-    if (!verifyProps(project, projectProps, '_id')) return
+    if (!verifyProps(project, projectProps)) return
 
     for (const issue of project.issues) {
       if (!verifyProps(issue, issueProps.required)) return
       nullifyUndefProps(issue, issueProps.optional)
     }
 
-    postResult = await IssuesDAO.postProject(project)
+    if (Array.isArray(project?.issues))
+      for (const issue of project.issues) issue.created_on = now()
+
+    if (project._id !== undefined)
+      warn(`overriding _id property on project of type ${typeof project._id}`)
+    project._id = new ObjectId()
+
+    const postResult = await IssuesDAO.postProject(project)
 
     res.status(postResult?.error ? 500 : 200).json(postResult)
   }

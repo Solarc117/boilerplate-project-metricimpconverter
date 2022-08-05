@@ -1,10 +1,9 @@
 'use strict'
+const { log } = console
 function now() {
   return new Date().toUTCString()
 }
-
 const chaiHttp = require('chai-http'),
-  { ObjectId } = require('mongodb'),
   chai = require('chai'),
   server = require('../server.js'),
   { assert } = chai,
@@ -22,7 +21,6 @@ const chaiHttp = require('chai-http'),
     ],
   },
   TEST_DOC2 = {
-    _id: '12345',
     name: 'huberman_lab_transcripts',
     owner: 'solarc117',
     issues: [
@@ -57,7 +55,6 @@ const chaiHttp = require('chai-http'),
     ],
   },
   TEST_DOC3 = {
-    _id: new ObjectId('0000000197d9af3844c5dc92'),
     name: 'python-algs',
     owner: 'fcc_learner_:)',
     issues: [],
@@ -136,6 +133,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       .get(setup2Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res
+
+        log(issues)
 
         assert.isNull(err)
         assert.strictEqualPairs([status, 200], [issues.length, 4])
