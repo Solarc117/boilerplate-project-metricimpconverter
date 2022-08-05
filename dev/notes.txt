@@ -59,7 +59,14 @@
   📄 query contains the '...?KEY=VALUE' pairs of a path
   📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
 
-- ⚒️🎉 Red, green, refactor; all of the functional tests in tests/issue-tracker.test.js:
+- ✅ integrate all the changes from repl.it
+  📄 these are meant to ensure the DAO ONLY makes DB requests, and that the handler does data formatting/manipulating (e.g. responding with the desired structure)
+  - ✅ verify the DAO methods are not doing any data handling
+    📄 should I keep the filterIssues function in the getProject method? I guess not, since I decided to make the DAO method ONLY make db requests; filtering out data is data handling, which will for now go in the handler.
+  - ✅ implement the data handling that was previously in the DAO, in the Handler
+    📄 Note for future self: be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
+
+- ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ Create an issue with every field: POST request to /api/issues/:project
   - ✅ commit & push
   - ✅ Create an issue with only required fields: POST request to /api/issues/{project}
@@ -71,7 +78,7 @@
     - ✅ modify GET handler to only return the issues array
   - ✅ commit & push
   - ✅ View issues on a project with one filter: GET request to /api/issues/{project}
-    📄 pseudocode for filtering db response issues:
+    -✅ pseudocode for filtering db response issues:
       - if response is NOT null ✅, and issueQueries has at LEAST one key ✅, and the response has an issues property of type array ✅:
         - iterate through each issue in the issues array ✅. For each issue:
           - map through the keys of issueQueries, ensuring the respective key in the current issue matches the value of the same key in the issueQueries parameter ✅
@@ -98,10 +105,11 @@
   - ✅ commit & push
   - ✅ check if a new post request generates a document with an ObjectId, or if not, how we can configure the db to handle that itself. If not, I can add the property automatically.
   - ✅ fix failing tests
-  - 🎉 edit hndler nd dao methods
+  - ✅ finish fixing _id functionality on the api
+    - ✅ decide what should be done when a post request document contains an _id property
+      📄 I'll respond with a bad request (http code 400) with a message "_id property supplied"
     📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
-    📄 consider using middlewar
-  - 🎉 finish fixing _id functionality on the api
+  - 🎉 commit, push, merge with main, deploy to heroku
   - Update one field on an issue: PATCH request to /api/issues/{project}
     📄 Before updating an issue, I need to know WHICH issue to update. 
       One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
@@ -123,6 +131,10 @@
   - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
   - commit & push
   - Delete an issue with missing _id: DELETE request to /api/issues/{project}
+
+- verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
+
+- rename the document property "name" to "project"
 
 - ⚒️ Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
   - get an issue, with the option to filter using asignees, reactions, or other things

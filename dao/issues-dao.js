@@ -1,18 +1,8 @@
 const { log, warn, error } = console,
   { env } = process
-
 const { ObjectId } = require('mongodb'),
   COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
 let db
-/**
- * @description A utility function to generate UTC date strings from the current date.
- * @returns {string} A UTC string of the current date.
- */
-function now() {
-  return new Date().toUTCString()
-}
-
-// Test comment for push.
 
 // 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
 module.exports = class IssuesDAO {
@@ -68,22 +58,16 @@ module.exports = class IssuesDAO {
    * @description Creates an upsert call to the db with the project argument passed. For testing purposes.
    * @async
    * @param {Project} project The document to be upserted into the collection.
-   * @returns {object | null} The collection.updateOne response object, if the attempt was successful, or an object containing an error property if the attempt failed.
+   * @returns {object | null} The collection.updateOne response, or an object containing an error property if the attempt failed.
    */
   static async putProject(project) {
-    const filter = { _id: project._id },
+    const query = { name: project.name },
       operators = { $set: { ...project } },
       options = { upsert: true }
-    if (Array.isArray(project?.issues))
-      for (const issue of project.issues) {
-        const rightNow = now()
-        if (issue.created_on === undefined) issue.created_on = rightNow
-        issue.last_updated = rightNow
-      }
     let result
 
     try {
-      result = await db.updateOne(filter, operators, options)
+      result = await db.updateOne(query, operators, options)
     } catch (err) {
       error(`\x1b[31m\nerror updating ${COLLECTION} collection:`, err)
       return { error: err.message }
@@ -93,37 +77,12 @@ module.exports = class IssuesDAO {
   }
 
   /**
-   * @description Attempts to fetch any documents from the connected collection matching the passed filter fields.
+   * @description Attempts to fetch a single Project document matching the passed project name.
    * @async
    * @param {string} name The name of the project.
-   * @param {object} query An object containing the query params from the url.
    * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
-  static async getProject(name, issueQueries) {
-    /**
-     * @description Returns a new array, containing only the issues that matched all the queries.
-     * @param {array} issues The issues to filter.
-     * @param {object} queries The queries to filter the issues with.
-     */
-    function filterIssues(issues = [], queries = {}) {
-      const queryKeys = Object.keys(queries)
-      // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array.filter method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
-      return [...issues].filter(issue => {
-        for (const key of queryKeys) {
-          const query = queries[key],
-            issueField = issue[key]
-
-          // (typeof query === 'string' && !issueField.includes(query))
-          if (
-            (query === null && issueField !== null) ||
-            (typeof query === 'string' &&
-              !issueField.match(new RegExp(query, 'i')))
-          )
-            return false
-        }
-        return true
-      })
-    }
+  static async getProject(name) {
     // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
     const query = { name }
     let result
@@ -135,31 +94,16 @@ module.exports = class IssuesDAO {
       return { error: err.message }
     }
 
-    if (
-      Array.isArray(result?.issues) &&
-      issueQueries !== null &&
-      typeof issueQueries === 'object' &&
-      Object.keys(issueQueries).length > 0
-    )
-      result.issues = filterIssues(result.issues, issueQueries)
-
     return result
   }
 
   /**
-   * @description Attempts to post (update) the passed object to the connected collection.
+   * @description Attempts to post (upload) the passed object to the connected collection.
    * @async
    * @param {Project} project The object to post to the respective collection.
+   * @returns {null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }}
    */
   static async postProject(project) {
-    if (Array.isArray(project?.issues))
-      for (const issue of project.issues)
-        issue.created_on = new Date().toUTCString()
-
-    if (project._id !== undefined)
-      warn(`overriding _id property on project of type ${typeof project._id}`)
-    project._id = new ObjectId()
-
     let result
 
     try {

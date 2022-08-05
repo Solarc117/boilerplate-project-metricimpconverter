@@ -1,10 +1,9 @@
 'use strict'
+const { log } = console
 function now() {
   return new Date().toUTCString()
 }
-
 const chaiHttp = require('chai-http'),
-  { ObjectId } = require('mongodb'),
   chai = require('chai'),
   server = require('../server.js'),
   { assert } = chai,
@@ -22,7 +21,6 @@ const chaiHttp = require('chai-http'),
     ],
   },
   TEST_DOC2 = {
-    _id: '12345',
     name: 'huberman_lab_transcripts',
     owner: 'solarc117',
     issues: [
@@ -57,7 +55,6 @@ const chaiHttp = require('chai-http'),
     ],
   },
   TEST_DOC3 = {
-    _id: new ObjectId('0000000197d9af3844c5dc92'),
     name: 'python-algs',
     owner: 'fcc_learner_:)',
     issues: [],
@@ -199,7 +196,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       ],
     },
     test2Path = `${ISSUES}/${newProject.name}`
-  test(`2. POST ${test2Path} (every field)`, done => {
+  test(`2. create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
       .post(test2Path)
@@ -229,7 +226,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       ],
     },
     test3Path = `${ISSUES}/${newProject2.name}`
-  test(`3. POST ${test3Path} (only required fields)`, done => {
+  test(`3. create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
       .post(test3Path)
@@ -250,19 +247,19 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const newProject3 = {
+  const newProject4 = {
       name: 'react-calculator',
       issues: [],
     },
-    test4Path = `${ISSUES}/${newProject3.name}`
-  test(`4. POST ${test4Path} (missing required fields)`, done => {
+    test4Path = `${ISSUES}/${newProject4.name}`
+  test(`4. create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
       .post(test4Path)
-      .send(newProject3)
+      .send(newProject4)
       .end((err, res) => {
         const { status, ok, body } = res,
-          { err: error } = body
+          { error } = body
 
         assert.isNull(err)
         assert.strictEqual(status, 400)
@@ -273,11 +270,38 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test5Path = `${ISSUES}/${TEST_DOC1.name}`
-  test(`5. GET ${test5Path}`, done => {
+  const user5 = 'random_coder',
+    newProject5 = {
+      _id: 123456,
+      name: 'js website',
+      owner: user5,
+      issues: [],
+    },
+    test5Path = `${ISSUES}/${newProject5.name}`
+  test(`5. include _id: POST ${test5Path}`, done => {
     chai
       .request(server)
-      .get(test5Path)
+      .post(test5Path)
+      .send(newProject5)
+      .end((err, res) => {
+        const { status, ok, body } = res,
+          { error } = body
+
+        assert.isNull(err)
+        assert.strictEqual(status, 400)
+        assert.isFalse(ok)
+        assert.isString(error)
+        assert.include(error, '_id')
+
+        done()
+      })
+  })
+
+  const test6Path = `${ISSUES}/${TEST_DOC1.name}`
+  test(`6. GET ${test6Path}`, done => {
+    chai
+      .request(server)
+      .get(test6Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res,
           issue = issues[0],
@@ -304,12 +328,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test6Params = '?assigned_to',
-    test6Path = `${ISSUES}/${TEST_DOC2.name}${test6Params}`
-  test(`6. view issues with one filter: GET ${test6Path}`, done => {
+  const test7Params = '?assigned_to',
+    test7Path = `${ISSUES}/${TEST_DOC2.name}${test7Params}`
+  test(`7. view issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
-      .get(test6Path)
+      .get(test7Path)
       .end((err, res) => {
         const { status, ok, body: issues } = res,
           {
@@ -331,12 +355,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test7Params = '?title=podcast&assigned_to=sol',
-    test7Path = `${ISSUES}/${TEST_DOC2.name}${test7Params}`
-  test(`7. view issues with multiple filters: GET ${test7Path}`, done => {
+  const test8Params = '?title=podcast&assigned_to=sol',
+    test8Path = `${ISSUES}/${TEST_DOC2.name}${test8Params}`
+  test(`8. view issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
-      .get(test7Path)
+      .get(test8Path)
       .end((err, res) => {
         // I might want to consider using optional chaining, if destructuring from an undefined value causes my site to crash - ex:
         // issue = issues?.[0]
@@ -354,8 +378,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test8Path = `${ISSUES}/${TEST_DOC1.name}`
-  test(`8. update one field: PATCH ${test8Path}`, done => {
+  const test9Path = `${ISSUES}/${TEST_DOC1.name}`
+  test(`9. update one field: PATCH ${test9Path}`, done => {
     const updateObj = {
       _id: TEST_DOC1._id,
     }
