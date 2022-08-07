@@ -1,15 +1,13 @@
 console.clear()
 const { log, error } = console
 
+const propName = 'inventory'
+
 const obj = {
-  _id: 'abc',
-  b: 'b  ',
-  c: null,
-  d: 2,
+  propName: {
+    apples: 0,
+    'milk cartons': 2,
+  }
 }
 
-log(obj, 'BEFORE')
-
-delete obj._id
-
-log(obj, 'AFTER')
+log(obj)

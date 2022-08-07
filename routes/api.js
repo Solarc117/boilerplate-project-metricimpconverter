@@ -46,7 +46,7 @@ router
   // This put request is only for the issue-tracker tests suiteSetup.
   .put(IssueHandler.put)
   .post(IssueHandler.post)
-  .patch(async (req, res) => {})
+  .patch(IssueHandler.patch)
   .delete(async (req, res) => {})
 
 module.exports = router

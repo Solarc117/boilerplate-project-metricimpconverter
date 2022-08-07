@@ -36,13 +36,15 @@
 
 <!-------------------- END ------------------------->
 
-
 📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
 📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
 📄 render works with templates, like pug. The sendFile method sends file as is.
-📄 should consider looking up what my brother said about views being automatic, & why it doesn't work on this project.
 📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
-📄 do I need to drop the collection? Or would it be simpler to send a put request for every document that I will need (e.g. if there are two DELETE tests, I can send two PUT requests for every DELETE test)? I think the second will be easier.
+📄 difference between req.body, req.query, and req.params:
+  📄 req.body is what usually contains the majority of information relevant to the request
+  📄 query contains the '...?KEY=VALUE' pairs of a path
+  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
+📄 be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
 
 ✨ ways to optimize learning that I should remember:
   - take short, mind-wandering breaks apart from ultradian breaks
@@ -54,97 +56,57 @@
   - MINIMIZE DISTRACTIONS
   - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
-- ✅ what is the difference between req.body, req.query, and req.params?
-  📄 req.body is what usually contains the majority of information relevant to the request
-  📄 query contains the '...?KEY=VALUE' pairs of a path
-  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
+-------------- August 5 (YESTERDAY) ------------------
 
-- ✅ integrate all the changes from repl.it
-  📄 these are meant to ensure the DAO ONLY makes DB requests, and that the handler does data formatting/manipulating (e.g. responding with the desired structure)
-  - ✅ verify the DAO methods are not doing any data handling
-    📄 should I keep the filterIssues function in the getProject method? I guess not, since I decided to make the DAO method ONLY make db requests; filtering out data is data handling, which will for now go in the handler.
-  - ✅ implement the data handling that was previously in the DAO, in the Handler
-    📄 Note for future self: be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
+- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+  - 🎉⚒️ (1) Update one field on an issue: PATCH request to /api/issues/{project}
+    - ✅ figure out how the data will be sent to the handler method
+      📄 for the issue text, I might have to use string literals to conserve new lines
+    - ✅ address the checkbox's weird behaviour (is undefined or on - turn into a boolean)
+    - ✅ create a test that submits a POST request with the project name, and the index of the issue to update, as well as a single field to update. Expect a status of 200, an ok value of true, and for the body to be an object with at least one key value pair. 
+    - ✅ log the req.body in the api patch callback
+    - ✅ create in issueHandler patch method
+    - ✅ link the issuehandler patch method to the api router
+    - ✅ create a DAO update method
+    - ✅ call the DAO update method in the handler
+    - ✅ iterate through the fieldsToUpdate parameter. For each field to update:
+    - ✅ find a way to communicate the project name, and issue index, from the issueIndexForm to the updateForm, once the latter is submitted
+    - ✅ I have access to the fields to update now; just gotta get access to the index of the issue. Figure out how
+    - ✅ on submit, create a patch request with:
+      - ✅ the issue index 
+      - ✅ the fields to be updated    
+    - ✅ verify the patch request does not contain un-modifiable fields
+      📄 index, created_by, created_on, or last_updated
+    - ✅ edit the test to ensure the exact property was updated to the exact new value, or at least ensure "acknowledged" and "updated_count": 1 are returned
+  - (0) commit & push
+
+--------------- August 6 (TODAY) ------------------
 
 - ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - ✅ Create an issue with every field: POST request to /api/issues/:project
-  - ✅ commit & push
-  - ✅ Create an issue with only required fields: POST request to /api/issues/{project}
-    - ✅ Fill in null for any optional fields that are not filled in, and respond with a status of 400 (bad req) and a corresponding message if any required fields are not their respective types.
-  - ✅ commit & push
-  - ✅ Create an issue with missing required fields: POST request to /api/issues/{project}
-  - ✅ commit & push
-  - ✅ View issues on a project: GET request to /api/issues/{project}
-    - ✅ modify GET handler to only return the issues array
-  - ✅ commit & push
-  - ✅ View issues on a project with one filter: GET request to /api/issues/{project}
-    -✅ pseudocode for filtering db response issues:
-      - if response is NOT null ✅, and issueQueries has at LEAST one key ✅, and the response has an issues property of type array ✅:
-        - iterate through each issue in the issues array ✅. For each issue:
-          - map through the keys of issueQueries, ensuring the respective key in the current issue matches the value of the same key in the issueQueries parameter ✅
-        - return the response ✅
-  - ✅ commit & push
-  - ✅ edit handler get method to NOT nullify null strings, or to only nullify EMPTY strings
-    📄 instead, empty strings will be nullified, and 'null' strings will literally search for null in strings.
-  - ✅ View issues on a project with multiple filters: GET /api/issues/{project}
-    📄 I'm nullifying empty strings, so as long as a value is a string and not null, the DAO should check that the document CONTAINS - doesn't match exactly, but rather CONTAINS - the query string (case insensitive).
-    📄 New DAO filterIssues pseudocode:
-      📄 filterIssues is being passed the issues, and an object of queries to filter the issues with (each value thereof being of type string, OR null). The issues are objects in an array.
-      📄 If a query is null, filterIssues should only keep issues whose respective property is ALSO null. Aka, it should remove all issues whose respective property is NOT null.
-      📄 If a query is not null (aka a string), fitlerIssues should only keep issues that contain said string in the respective property. Aka, it should remove issues that do NOT include the query string.
-      1. Iterate through a COPY of the issues array, using the Array.filter method. For each issue:
-        a) Iterate through the keys of the query object. For each key (and value):
-          i) IF the current query value is NULL, return false (filter out the current issue) if the respective value of the issue is NOT also NULL.
-          ii) IF the current query value is a STRING, return false (filter out the current  issue) if the respective value of the current issue does NOT include the query string. Do NOT check for exact equality (=== or !==).
-      . Return the filtered copy of the issues array. 
-  - ✅ commit & push
-  - ✅ Automatically add a date property to each new issue
-    ✅ Add a date instance in every new document in the DAO
-    ✅ pass currently failing test
-    📄 I will add UTC date strings to the db, and if I need date functionality, I will convert those strings back into date instances.
-  - ✅ commit & push
-  - ✅ check if a new post request generates a document with an ObjectId, or if not, how we can configure the db to handle that itself. If not, I can add the property automatically.
-  - ✅ fix failing tests
-  - ✅ finish fixing _id functionality on the api
-    - ✅ decide what should be done when a post request document contains an _id property
-      📄 I'll respond with a bad request (http code 400) with a message "_id property supplied"
-    📄 any data shaping should be handled by the handler, and the DAO will simply make a request to the database with the document passed.
-  - 🎉 commit, push, merge with main, deploy to heroku
-  - Update one field on an issue: PATCH request to /api/issues/{project}
-    📄 Before updating an issue, I need to know WHICH issue to update. 
-      One way to do this is to reformat my db to store only SINGLE issues, in collections that pertain to different projects.
-      ❌ Another way could be to simply send an object containing query fields to filter out the issue to be updated, as well as another object containing the field(s) and value(s) to be updated.
-      ✨ Another way could be to give each issue in a project's array its own _id - maybe add a date property to each issue, and organize them chronologically? Or simply add an index to each?
+  - (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
+  - (0) commit & push
+  - (1) Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  - (0) commit & push
+  - (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
 
-    📄 I'll send an object with the _id to update, and whatever fields are to be updated.
-  - commit & push
-  - Update multiple fields on an issue: PATCH request to /api/issues/{project}
-  - commit & push
-  - Update an issue with missing _id: PATCH request to /api/issues/{project}
-  - commit & push
-  - Update an issue with no fields to update: PATCH request to /api/issues/{project}
-  - commit & push
-  - Update an issue with an invalid _id: PATCH request to /api/issues/{project}
-  - commit & push
-  - Delete an issue: DELETE request to /api/issues/{project}
-  - commit & push
-  - Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
-  - commit & push
-  - Delete an issue with missing _id: DELETE request to /api/issues/{project}
+------------------ August 7 ------------------- 
 
-- verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
+- ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+  - (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
+  - (0) commit & push
+- (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
+- (1) add navbar to issue-tracker
 
-- rename the document property "name" to "project"
+---------------------- August 8 -------------------
 
-- ⚒️ Complete the necessary routes in /routes/api.js for the /api/issues/{project}?open=true&assigned_to=Joe route:
-  - get an issue, with the option to filter using asignees, reactions, or other things
-  - post
-  - PATCH
-  - delete 
+- (1) edit put requests to handle _id properties as well - use them to query, if supplied, but DO NOT OVERWRITE.
+- (0) commit, push
+- (1) remove tests directory from production; they are for development, after all
+- commit & push
 
-- should putProject really do an upsert? Or simply a post call?
-- check if _id should be a required, or optional property of Project objects.
-- ensure method documentation return types are consistent with the actual return types
-- style issue-tracker's index page
-- add navbar to issue-tracker
-- compare fccTestingRoutes
+------------------------ August 9 (DEADLINE) ------------------------
+
+- (1) review all method documentation
+- (0.5) style issue-tracker's index page
+- (0.5) verify all issues posted have created_on and last_updated properties
+- commit & push

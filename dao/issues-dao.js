@@ -55,13 +55,34 @@ module.exports = class IssuesDAO {
   }
 
   /**
+   * @description Attempts to fetch a single Project document matching the passed project name.
+   * @async
+   * @param {string} name The name of the project.
+   * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
+   */
+  static async fetchProject(project) {
+    // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
+    const query = { project }
+    let result
+
+    try {
+      result = await db.findOne(query)
+    } catch (err) {
+      error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
+      return { error: err.message }
+    }
+
+    return result
+  }
+
+  /**
    * @description Creates an upsert call to the db with the project argument passed. For testing purposes.
    * @async
    * @param {Project} project The document to be upserted into the collection.
    * @returns {object | null} The collection.updateOne response, or an object containing an error property if the attempt failed.
    */
-  static async putProject(project) {
-    const query = { name: project.name },
+  static async upsertProject(project) {
+    const query = { project: project.project },
       operators = { $set: { ...project } },
       options = { upsert: true }
     let result
@@ -77,33 +98,12 @@ module.exports = class IssuesDAO {
   }
 
   /**
-   * @description Attempts to fetch a single Project document matching the passed project name.
-   * @async
-   * @param {string} name The name of the project.
-   * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
-   */
-  static async getProject(name) {
-    // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
-    const query = { name }
-    let result
-
-    try {
-      result = await db.findOne(query)
-    } catch (err) {
-      error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
-      return { error: err.message }
-    }
-
-    return result
-  }
-
-  /**
    * @description Attempts to post (upload) the passed object to the connected collection.
    * @async
    * @param {Project} project The object to post to the respective collection.
    * @returns {null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }}
    */
-  static async postProject(project) {
+  static async createProject(project) {
     let result
 
     try {
@@ -118,23 +118,55 @@ module.exports = class IssuesDAO {
 
     return result
   }
+
+  /**
+   * @description Attempts to update a single issue in the database.
+   * @param {object} query An object containing the index of the issue to update, and the title of the project that the issue pertains to.
+   * @param {object} fieldsToUpdate The fields of the issue to update, containing their new values.
+   */
+  static async updateProject(query, fieldsToUpdate) {
+    const { project, index } = query,
+      filter = { project },
+      command = {
+        $set: {},
+      }
+
+    for (const key of Object.keys(fieldsToUpdate))
+      command.$set[`issues.${index}.${key}`] = fieldsToUpdate[key]
+
+    let result
+
+    try {
+      result = await db.updateOne(filter, command)
+    } catch (err) {
+      error(
+        `\x1b[31m\nunable to update document in ${COLLECTION} collection:`,
+        err
+      )
+      return { error: err.message }
+    }
+
+    return result
+  }
 }
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
+ * @property {number} index A number unique to the issue (within its parent project).
  * @property {string} title The title of the issue.
- * @property {string} [created_by] The user that created the issue.
- * @property {string} [created_on] The UTC date the issue was created on.
- * @property {string} [last_updated] The UTC date the issue was last updated.
- * @property {string | null} [text] Text describing in further detail the issue.
- * @property {string | null} [assigned_to] The user responsible for addressing the issue.
- * @property {string | null} [status_text] Brief describtion the current state of the issue.
+ * @property {string} created_by The user that created the issue.
+ * @property {string | null} text Text describing in further detail the issue.
+ * @property {string | null} assigned_to The user responsible for addressing the issue.
+ * @property {string | null} status_text Brief describtion the current state of the issue.
+ * @property {boolean} open A boolean indicating whether the issue is open (to be addressed) or closed (resolved).
+ * @property {string} created_on The UTC date the issue was created on.
+ * @property {string} last_updated The UTC date the issue was last updated.
  */
 
 /**
  * @typedef Project The document structure in the database projects collection.
  * @property {string} _id The project's unique identifier.
- * @property {string} name The project's name.
+ * @property {string} project The project's title.
  * @property {string} owner The project owner.
  * @property {[Issue]} issues An array containing Issue objects for each issue in the project.
  */

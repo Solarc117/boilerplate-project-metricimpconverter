@@ -21,3 +21,7 @@ body {
 .id {
   font-size: 10.5px;
 }
+
+.hidden {
+  display: none;
+}

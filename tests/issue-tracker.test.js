@@ -1,14 +1,12 @@
 'use strict'
 const { log } = console
-function now() {
-  return new Date().toUTCString()
-}
+
 const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../server.js'),
   { assert } = chai,
   TEST_DOC1 = {
-    name: 'jsPomodoro',
+    project: 'jsPomodoro',
     owner: 'cool_user_33',
     issues: [
       {
@@ -17,11 +15,12 @@ const chaiHttp = require('chai-http'),
         created_by: 'pom0doro_user',
         assigned_to: null,
         status_text: null,
+        open: true,
       },
     ],
   },
   TEST_DOC2 = {
-    name: 'huberman_lab_transcripts',
+    project: 'huberman_lab_transcripts',
     owner: 'solarc117',
     issues: [
       {
@@ -30,6 +29,7 @@ const chaiHttp = require('chai-http'),
         created_by: 'keenLearner139',
         assigned_to: 'solarc117',
         status_text: null,
+        open: true,
       },
       {
         title: 'episode 22 typos',
@@ -37,6 +37,7 @@ const chaiHttp = require('chai-http'),
         created_by: 'abg112',
         assigned_to: null,
         status_text: null,
+        open: true,
       },
       {
         title: 'episode 1 typo',
@@ -44,6 +45,7 @@ const chaiHttp = require('chai-http'),
         created_by: 'solarc117',
         assigned_to: 'solarc117',
         status_text: 'processing',
+        open: true,
       },
       {
         title: 'inaccuracy in episode 30',
@@ -51,11 +53,12 @@ const chaiHttp = require('chai-http'),
         created_by: 'coder-coder',
         assigned_to: 'solarc117',
         status_text: null,
+        open: true,
       },
     ],
   },
   TEST_DOC3 = {
-    name: 'python-algs',
+    project: 'python-algs',
     owner: 'fcc_learner_:)',
     issues: [],
   },
@@ -100,10 +103,10 @@ assert.strictEqualPairs = function (...pairs) {
 chai.use(chaiHttp)
 
 suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
+  const setup1Path = `${ISSUES}/${TEST_DOC1.project}`,
+    setup2Path = `${ISSUES}/${TEST_DOC2.project}`,
+    setup3Path = `${ISSUES}/${TEST_DOC3.project}`
   suiteSetup(() => chai.request(server).delete(ISSUES))
-  const setup1Path = `${ISSUES}/${TEST_DOC1.name}`,
-    setup2Path = `${ISSUES}/${TEST_DOC2.name}`,
-    setup3Path = `${ISSUES}/${TEST_DOC3.name}`
   suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC1))
   suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC2))
   suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC3))
@@ -162,7 +165,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test1Path = `${ISSUES}/${TEST_DOC1.name}`
+  const test1Path = `${ISSUES}/${TEST_DOC1.project}`
   test(`1. GET ${test1Path}`, done => {
     chai
       .request(server)
@@ -183,7 +186,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
 
   const user = 'johnny123',
     newProject = {
-      name: 'cpp-chess',
+      project: 'cpp-chess',
       owner: user,
       issues: [
         {
@@ -192,10 +195,11 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
           text: 'the knight is unable to jump over pawns at the beginning of a game',
           assigned_to: 'anyone',
           status_text: 'under development',
+          open: true,
         },
       ],
     },
-    test2Path = `${ISSUES}/${newProject.name}`
+    test2Path = `${ISSUES}/${newProject.project}`
   test(`2. create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
@@ -216,7 +220,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
 
   const user2 = 'frank_ocean_fan',
     newProject2 = {
-      name: 'blonde-track-list',
+      project: 'blonde-track-list',
       owner: user2,
       issues: [
         {
@@ -225,7 +229,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
         },
       ],
     },
-    test3Path = `${ISSUES}/${newProject2.name}`
+    test3Path = `${ISSUES}/${newProject2.project}`
   test(`3. create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
@@ -248,10 +252,10 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const newProject4 = {
-      name: 'react-calculator',
+      project: 'react-calculator',
       issues: [],
     },
-    test4Path = `${ISSUES}/${newProject4.name}`
+    test4Path = `${ISSUES}/${newProject4.project}`
   test(`4. create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
@@ -273,11 +277,11 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   const user5 = 'random_coder',
     newProject5 = {
       _id: 123456,
-      name: 'js website',
+      project: 'js website',
       owner: user5,
       issues: [],
     },
-    test5Path = `${ISSUES}/${newProject5.name}`
+    test5Path = `${ISSUES}/${newProject5.project}`
   test(`5. include _id: POST ${test5Path}`, done => {
     chai
       .request(server)
@@ -297,7 +301,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test6Path = `${ISSUES}/${TEST_DOC1.name}`
+  const test6Path = `${ISSUES}/${TEST_DOC1.project}`
   test(`6. GET ${test6Path}`, done => {
     chai
       .request(server)
@@ -313,15 +317,18 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
             status_text,
             text,
             title,
+            open,
+            index,
           } = issue
 
         assert.areNull(err, assigned_to, status_text)
         assert.strictEqualPairs(
           [status, 200],
           [issues.length, 1],
-          [Object.keys(issue).length, 7]
+          [Object.keys(issue).length, 9],
+          [index, 0]
         )
-        assert.isTrue(ok)
+        assert.areTrue(ok, open)
         assert.areStrings(created_by, created_on, last_updated, text, title)
 
         done()
@@ -329,7 +336,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test7Params = '?assigned_to',
-    test7Path = `${ISSUES}/${TEST_DOC2.name}${test7Params}`
+    test7Path = `${ISSUES}/${TEST_DOC2.project}${test7Params}`
   test(`7. view issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
@@ -356,7 +363,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test8Params = '?title=podcast&assigned_to=sol',
-    test8Path = `${ISSUES}/${TEST_DOC2.name}${test8Params}`
+    test8Path = `${ISSUES}/${TEST_DOC2.project}${test8Params}`
   test(`8. view issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
@@ -378,32 +385,50 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test9Path = `${ISSUES}/${TEST_DOC1.name}`
-  test(`9. update one field: PATCH ${test9Path}`, done => {
-    const updateObj = {
-      _id: TEST_DOC1._id,
+  const test9Params = '?index=0',
+    test9Path = `${ISSUES}/${TEST_DOC1.project}${test9Params}`
+  test(`9. update one field on an issue: PATCH ${test9Path}`, done => {
+    const requestBody = {
+      assigned_to: TEST_DOC1.owner,
     }
-    done()
-    // chai.request(server).patch(test8Path).send()
+
+    chai
+      .request(server)
+      .patch(test9Path)
+      .send(requestBody)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
+
+        done()
+      })
   })
 })
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
+ * @property {number} index A number unique to the issue (within its parent project).
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
- * .
- * @property {string} [text] Text describing in further detail the issue.
- * @property {string | null} [assigned_to] The user responsible for addressing the issue.
- * @property {string | null} [status_text] Brief describtion the current state of the issue.
- * @property {string} created_on The date the issue was created, in UTC.
- * @property {string} last_updated The date the issue was last updated, in UTC.
+ * @property {string | null} text Text describing in further detail the issue.
+ * @property {string | null} assigned_to The user responsible for addressing the issue.
+ * @property {string | null} status_text Brief describtion the current state of the issue.
+ * @property {boolean} open A boolean indicating whether the issue is open (to be addressed) or closed (resolved).
+ * @property {string} created_on The UTC date the issue was created on.
+ * @property {string} last_updated The UTC date the issue was last updated.
  */
 
 /**
  * @typedef Project The document structure in the database projects collection.
  * @property {string} _id The project's unique identifier.
- * @property {string} name The project's name.
+ * @property {string} project The project's title.
  * @property {string} owner The project owner.
- * @property {[Issue]} issues An array containing
+ * @property {[Issue]} issues An array containing Issue objects for each issue in the project.
  */
