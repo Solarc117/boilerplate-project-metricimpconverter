@@ -198,11 +198,9 @@ module.exports = class IssueHandler {
 
     for (const prop of ['index', 'created_by', 'created_on', 'last_updated'])
       if (body.prop !== undefined)
-        return res
-          .status(400)
-          .json({
-            error: `unexpected property ${prop} on issue update - this property cannot be updated`,
-          })
+        return res.status(400).json({
+          error: `unexpected property ${prop} on issue update - this property cannot be updated`,
+        })
 
     patchResult = await IssuesDAO.updateProject(query, body)
 

@@ -83,19 +83,21 @@
 --------------- August 6 (YESTERDAY) ------------------
 
 - 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - 🎉 (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
-  - (0) commit & push
+  - ✅ ⚒️ (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
+  - 🎉 (0) commit & push
   - (1) Update an issue with no fields to update: PATCH request to /api/issues/{project}
   - (0) commit & push
-  - (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
+  - export test documents, and import them into the required test file - have ONLY tests in the test file.
+  - (0.5) (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
 
 ------------------ August 7 ------------------- 
 
 - ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
+  - (0.5) (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
   - (0) commit & push
 - (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
 - (1) add navbar to issue-tracker
+- commit & push
 
 ---------------------- August 8 -------------------
 

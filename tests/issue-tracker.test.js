@@ -388,14 +388,41 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   const test9Params = '?index=0',
     test9Path = `${ISSUES}/${TEST_DOC1.project}${test9Params}`
   test(`9. update one field on an issue: PATCH ${test9Path}`, done => {
-    const requestBody = {
+    const fieldsToUpdate = {
       assigned_to: TEST_DOC1.owner,
     }
 
     chai
       .request(server)
       .patch(test9Path)
-      .send(requestBody)
+      .send(fieldsToUpdate)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
+
+        done()
+      })
+  })
+
+  const test10Params = '?index=2',
+    test10Path = `${ISSUES}/${TEST_DOC2.project}${test10Params}`
+  test(`10. Update multiple fields: PATCH ${test10Path}`, done => {
+    const fieldsToUpdate = {
+      status_text: 'finished',
+      open: false,
+    }
+
+    chai
+      .request(server)
+      .patch(test10Path)
+      .send(fieldsToUpdate)
       .end((err, res) => {
         const {
           status,
