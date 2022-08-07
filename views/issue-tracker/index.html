@@ -217,8 +217,6 @@
           .replace(/new-/g, '')
           .replace(/-/g, '_')}`
 
-        log('index:', index)
-
         $.ajax({
           url: `/api/issues/${project}?index=${index}`,
           type: 'patch',

@@ -58,7 +58,7 @@
 
 -------------- August 5 (YESTERDAY) ------------------
 
-- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - 🎉⚒️ (1) Update one field on an issue: PATCH request to /api/issues/{project}
     - ✅ figure out how the data will be sent to the handler method
       📄 for the issue text, I might have to use string literals to conserve new lines
@@ -78,12 +78,12 @@
     - ✅ verify the patch request does not contain un-modifiable fields
       📄 index, created_by, created_on, or last_updated
     - ✅ edit the test to ensure the exact property was updated to the exact new value, or at least ensure "acknowledged" and "updated_count": 1 are returned
-  - (0) commit & push
+  - ✅ (0) commit & push
 
---------------- August 6 (TODAY) ------------------
+--------------- August 6 (YESTERDAY) ------------------
 
-- ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
+- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+  - 🎉 (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
   - (0) commit & push
   - (1) Update an issue with no fields to update: PATCH request to /api/issues/{project}
   - (0) commit & push
