@@ -5,63 +5,16 @@ const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../server.js'),
   { assert } = chai,
-  TEST_DOC1 = {
-    project: 'jsPomodoro',
-    owner: 'cool_user_33',
-    issues: [
-      {
-        title: 'dysfunctional timer',
-        text: 'timer does not proceed after first focus session',
-        created_by: 'pom0doro_user',
-        assigned_to: null,
-        status_text: null,
-        open: true,
-      },
-    ],
-  },
-  TEST_DOC2 = {
-    project: 'huberman_lab_transcripts',
-    owner: 'solarc117',
-    issues: [
-      {
-        title: 'podcast 37 missing',
-        text: 'solarc please add the transcripts from episode 37',
-        created_by: 'keenLearner139',
-        assigned_to: 'solarc117',
-        status_text: null,
-        open: true,
-      },
-      {
-        title: 'episode 22 typos',
-        text: "i've read this episode for 10s and already found 30 typos, someone please fix",
-        created_by: 'abg112',
-        assigned_to: null,
-        status_text: null,
-        open: true,
-      },
-      {
-        title: 'episode 1 typo',
-        text: 'there is a typo on the transcript of episode 1',
-        created_by: 'solarc117',
-        assigned_to: 'solarc117',
-        status_text: 'processing',
-        open: true,
-      },
-      {
-        title: 'inaccuracy in episode 30',
-        text: 'in the second chapter, Dr. Huberman makes an inaccurate statement. We should note this in the transcript',
-        created_by: 'coder-coder',
-        assigned_to: 'solarc117',
-        status_text: null,
-        open: true,
-      },
-    ],
-  },
-  TEST_DOC3 = {
-    project: 'python-algs',
-    owner: 'fcc_learner_:)',
-    issues: [],
-  },
+  {
+    TEST_DOC_1,
+    TEST_DOC_2,
+    TEST_DOC_3,
+    TEST_DOC_4,
+    TEST_DOC_5,
+    TEST_DOC_6,
+    TEST_DOC_7,
+    TEST_DOC_8,
+  } = require('../tests/issue-tracker-test-docs.json'),
   ISSUES = '/api/issues'
 
 /**
@@ -103,13 +56,13 @@ assert.strictEqualPairs = function (...pairs) {
 chai.use(chaiHttp)
 
 suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
-  const setup1Path = `${ISSUES}/${TEST_DOC1.project}`,
-    setup2Path = `${ISSUES}/${TEST_DOC2.project}`,
-    setup3Path = `${ISSUES}/${TEST_DOC3.project}`
+  const setup1Path = `${ISSUES}/${TEST_DOC_1.project}`,
+    setup2Path = `${ISSUES}/${TEST_DOC_2.project}`,
+    setup3Path = `${ISSUES}/${TEST_DOC_3.project}`
   suiteSetup(() => chai.request(server).delete(ISSUES))
-  suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC1))
-  suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC2))
-  suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC3))
+  suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC_1))
+  suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC_2))
+  suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC_3))
 
   test('suite setup 1 successful', done => {
     chai
@@ -165,7 +118,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test1Path = `${ISSUES}/${TEST_DOC1.project}`
+  const test1Path = `${ISSUES}/${TEST_DOC_1.project}`
   test(`1. GET ${test1Path}`, done => {
     chai
       .request(server)
@@ -184,27 +137,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user = 'johnny123',
-    newProject = {
-      project: 'cpp-chess',
-      owner: user,
-      issues: [
-        {
-          title: "knight doesn't jump over other pieces",
-          created_by: user,
-          text: 'the knight is unable to jump over pawns at the beginning of a game',
-          assigned_to: 'anyone',
-          status_text: 'under development',
-          open: true,
-        },
-      ],
-    },
-    test2Path = `${ISSUES}/${newProject.project}`
+  const test2Path = `${ISSUES}/${TEST_DOC_4.project}`
   test(`2. create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
       .post(test2Path)
-      .send(newProject)
+      .send(TEST_DOC_4)
       .end((err, res) => {
         const { status, ok, body } = res,
           { acknowledged, insertedId } = body
@@ -218,23 +156,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user2 = 'frank_ocean_fan',
-    newProject2 = {
-      project: 'blonde-track-list',
-      owner: user2,
-      issues: [
-        {
-          title: 'missing lyrics for "Nikes" track',
-          created_by: user2,
-        },
-      ],
-    },
-    test3Path = `${ISSUES}/${newProject2.project}`
+  const test3Path = `${ISSUES}/${TEST_DOC_5.project}`
   test(`3. create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
       .post(test3Path)
-      .send(newProject2)
+      .send(TEST_DOC_5)
       .end((err, res) => {
         const {
           status,
@@ -251,16 +178,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const newProject4 = {
-      project: 'react-calculator',
-      issues: [],
-    },
-    test4Path = `${ISSUES}/${newProject4.project}`
+  const test4Path = `${ISSUES}/${TEST_DOC_6.project}`
   test(`4. create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
       .post(test4Path)
-      .send(newProject4)
+      .send(TEST_DOC_6)
       .end((err, res) => {
         const { status, ok, body } = res,
           { error } = body
@@ -274,19 +197,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user5 = 'random_coder',
-    newProject5 = {
-      _id: 123456,
-      project: 'js website',
-      owner: user5,
-      issues: [],
-    },
-    test5Path = `${ISSUES}/${newProject5.project}`
+  const test5Path = `${ISSUES}/${TEST_DOC_7.project}`
   test(`5. include _id: POST ${test5Path}`, done => {
     chai
       .request(server)
       .post(test5Path)
-      .send(newProject5)
+      .send(TEST_DOC_7)
       .end((err, res) => {
         const { status, ok, body } = res,
           { error } = body
@@ -301,7 +217,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test6Path = `${ISSUES}/${TEST_DOC1.project}`
+  const test6Path = `${ISSUES}/${TEST_DOC_1.project}`
   test(`6. GET ${test6Path}`, done => {
     chai
       .request(server)
@@ -336,7 +252,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test7Params = '?assigned_to',
-    test7Path = `${ISSUES}/${TEST_DOC2.project}${test7Params}`
+    test7Path = `${ISSUES}/${TEST_DOC_2.project}${test7Params}`
   test(`7. view issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
@@ -363,7 +279,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test8Params = '?title=podcast&assigned_to=sol',
-    test8Path = `${ISSUES}/${TEST_DOC2.project}${test8Params}`
+    test8Path = `${ISSUES}/${TEST_DOC_2.project}${test8Params}`
   test(`8. view issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
@@ -386,10 +302,10 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test9Params = '?index=0',
-    test9Path = `${ISSUES}/${TEST_DOC1.project}${test9Params}`
+    test9Path = `${ISSUES}/${TEST_DOC_1.project}${test9Params}`
   test(`9. update one field on an issue: PATCH ${test9Path}`, done => {
     const fieldsToUpdate = {
-      assigned_to: TEST_DOC1.owner,
+      assigned_to: TEST_DOC_1.owner,
     }
 
     chai
@@ -412,7 +328,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test10Params = '?index=2',
-    test10Path = `${ISSUES}/${TEST_DOC2.project}${test10Params}`
+    test10Path = `${ISSUES}/${TEST_DOC_2.project}${test10Params}`
   test(`10. Update multiple fields: PATCH ${test10Path}`, done => {
     const fieldsToUpdate = {
       status_text: 'finished',
@@ -438,23 +354,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user6 = 'chris',
-    newProject6 = {
-      project: 'mr-beast-video-transcripts',
-      owner: user6,
-      issues: [
-        {
-          title: 'Missing 100,000,000 subscriber island video',
-          text: 'can someone please add the transcript from the video mentioned in the title :(',
-          created_by: user6,
-          assigned_to: null,
-          status_text: null,
-          open: true,
-        },
-      ],
-    },
-    test11Params = '?index=0',
-    test11Path = `${ISSUES}/${newProject6.project}${test11Params}`
+  const test11Params = '?index=0',
+    test11Path = `${ISSUES}/${TEST_DOC_8.project}${test11Params}`
   test(`11. Update with no fields: PATCH ${test11Path}`, done => {
     chai
       .request(server)
