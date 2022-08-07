@@ -84,9 +84,9 @@
 
 - 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ ⚒️ (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
-  - 🎉 (0) commit & push
-  - (1) Update an issue with no fields to update: PATCH request to /api/issues/{project}
-  - (0) commit & push
+  - ✅ (0) commit & push
+  - ✅ Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  - 🎉 commit & push
   - export test documents, and import them into the required test file - have ONLY tests in the test file.
   - (0.5) (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
 

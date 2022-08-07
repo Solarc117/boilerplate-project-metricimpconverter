@@ -193,14 +193,19 @@ module.exports = class IssueHandler {
         query: { index },
       } = req,
       query = { project }
-    let patchResult
     query.index = +index
+    let patchResult
 
     for (const prop of ['index', 'created_by', 'created_on', 'last_updated'])
       if (body.prop !== undefined)
         return res.status(400).json({
           error: `unexpected property ${prop} on issue update - this property cannot be updated`,
         })
+
+    if (Object.keys(body).length === 0)
+      return res.status(400).json({
+        error: 'no update fields passed - please include at least one field',
+      })
 
     patchResult = await IssuesDAO.updateProject(query, body)
 

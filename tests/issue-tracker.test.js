@@ -437,6 +437,43 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
         done()
       })
   })
+
+  const user6 = 'chris',
+    newProject6 = {
+      project: 'mr-beast-video-transcripts',
+      owner: user6,
+      issues: [
+        {
+          title: 'Missing 100,000,000 subscriber island video',
+          text: 'can someone please add the transcript from the video mentioned in the title :(',
+          created_by: user6,
+          assigned_to: null,
+          status_text: null,
+          open: true,
+        },
+      ],
+    },
+    test11Params = '?index=0',
+    test11Path = `${ISSUES}/${newProject6.project}${test11Params}`
+  test(`11. Update with no fields: PATCH ${test11Path}`, done => {
+    chai
+      .request(server)
+      .patch(test11Path)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { error },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqual(status, 400)
+        assert.isFalse(ok)
+        assert.isString(error)
+
+        done()
+      })
+  })
 })
 
 /**
