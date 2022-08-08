@@ -243,7 +243,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test5Path = `${ISSUES}/${TEST_DOC_7.project}`
-  test(`5. Include _id field: POST ${test5Path}`, done => {
+  test(`5. Include _id field in project: POST ${test5Path}`, done => {
     chai
       .request(server)
       .post(test5Path)
