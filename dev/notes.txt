@@ -82,7 +82,7 @@
 
 --------------- August 6 (YESTERDAY) ------------------
 
-- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ ⚒️ (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
   - ✅ (0) commit & push
   - ✅ Update an issue with no fields to update: PATCH request to /api/issues/{project}
@@ -108,19 +108,23 @@
 - ✅ (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
 - ✅ (0.5) add navbar to issue-tracker
 - ✅ (0.5) move script tags out of body tags
-- 🎉 commit & push
+- ✅ commit & push
 
 ---------------------- August 8 -------------------
 
-- (1) edit put requests to handle _id properties as well - use them to query, if supplied, but DO NOT OVERWRITE.
+- 🎉 (1) edit put requests to handle _id properties as well 
+  📄 use them to query, if supplied, but DO NOT OVERWRITE.
 - (0) commit, push
 - (1) remove tests directory from production; they are for development, after all
+- commit & push
+- (1) reset all index values in the deleted issue's parent array, instead of the current indexEdit update
 - commit & push
 
 ------------------------ August 9 (DEADLINE) ------------------------
 
 - (1) review all method documentation
+- commit & push
 - (0.5) style issue-tracker's index page
+- commit & push
 - (0.5) verify all issues posted have created_on and last_updated properties
-- (1) reset all index values in the deleted issue's parent array, instead of the current indexEdit update
 - commit & push
