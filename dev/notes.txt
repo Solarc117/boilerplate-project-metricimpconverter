@@ -128,3 +128,6 @@
 - commit & push
 - (0.5) verify all issues posted have created_on and last_updated properties
 - commit & push
+- verify heroku local works; debug if it doesn't
+- commit & push any changes from the fix above
+- merge dev with main; ensure heroku site deployed & works fine
