@@ -5,9 +5,9 @@ const cors = require('cors'),
   bodyParser = require('body-parser'),
   express = require('express'),
   // @ts-ignore
-  apiRouter = require('./routes/api.js'),
-  fccTestingRoutes = require('./routes/fcctesting.js'),
-  htmlRouter = require('./routes/html-router.js'),
+  apiRouter = require('./src/routes/api.js'),
+  fccTestingRoutes = require('./src/routes/fcctesting.js'),
+  htmlRouter = require('./src/routes/html-router.js'),
   app = express()
 if (env.NODE_ENV === 'dev') require('./dev/live-reload.js')(app)
 
