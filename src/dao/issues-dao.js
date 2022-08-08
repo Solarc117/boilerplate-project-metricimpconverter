@@ -1,7 +1,6 @@
-const { log, warn, error } = console,
+const { log } = console,
   { env } = process
-const { ObjectId } = require('mongodb'),
-  COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
+const COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
 let db
 
 // 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
