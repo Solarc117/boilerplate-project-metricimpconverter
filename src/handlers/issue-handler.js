@@ -1,6 +1,6 @@
 'use strict'
 const { ObjectId } = require('mongodb'),
-  IssuesDAO = require('../src/dao/issues-dao.js')
+  IssuesDAO = require('../dao/issues-dao.js')
 
 module.exports = class IssueHandler {
   /**

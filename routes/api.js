@@ -1,9 +1,7 @@
 'use strict'
-const { log, error } = console
-
 const { Router } = require('express'),
-  cH = require('../handlers/convert-handler.js'),
-  IssueHandler = require('../handlers/issue-handler'),
+  cH = require('../src/handlers/convert-handler.js'),
+  IssueHandler = require('../src/handlers/issue-handler.js'),
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),
