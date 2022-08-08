@@ -211,6 +211,24 @@ module.exports = class IssueHandler {
 
     res.status(patchResult?.error ? 500 : 200).json(patchResult)
   }
+
+  /**
+   * @description Attempts to delete the specified issue of the specified project from the database.
+   * @param {object} req The Express request object.
+   * @param {object} res The Express response object.
+   */
+  static async delete(req, res) {
+    const {
+        query,
+        params: { project },
+      } = req,
+      index = +query.index
+    let deleteResult
+
+    deleteResult = await IssuesDAO.deleteProject(project, index)
+
+    return res.status(deleteResult?.error ? 500 : 200).json(deleteResult)
+  }
 }
 
 /**

@@ -47,6 +47,6 @@ router
   .put(IssueHandler.put)
   .post(IssueHandler.post)
   .patch(IssueHandler.patch)
-  .delete(async (req, res) => {})
+  .delete(IssueHandler.delete)
 
 module.exports = router

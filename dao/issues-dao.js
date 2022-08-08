@@ -148,6 +148,67 @@ module.exports = class IssuesDAO {
 
     return result
   }
+
+  /**
+   * @description Deletes a single issue from a project using its index.
+   * @param {number} index The index of the issue to delete.
+   */
+  static async deleteProject(project, index) {
+    const filter = { project },
+      deleteCommand = {
+        $pull: {
+          issues: {
+            index,
+          },
+        },
+      },
+      indexEditCommand = {
+        $inc: {
+          'issues.$[issue].index': -1,
+        },
+      },
+      indexEditOptions = {
+        arrayFilters: [
+          {
+            'issue.index': {
+              $gt: index,
+            },
+          },
+        ],
+      }
+    let deleteResult, indexEditResult
+
+    try {
+      // I am aware that this could result in buggy behaviour, if one call succeeds and another doesn't. I could look into using an aggreagation pipeline, OR even making another http call that simply resets ALL index values in the given project's issues array, IF this delete call is successful. I think the latter is more do-able.
+      deleteResult = await db.updateOne(filter, deleteCommand)
+      // Attempt to edit the issue indexes only if the delete operation succeeded.
+      if (deleteResult?.modifiedCount === 1)
+        indexEditResult = await db.updateOne(
+          filter,
+          indexEditCommand,
+          indexEditOptions
+        )
+    } catch (err) {
+      error(
+        `\x1b[31m\nunable to delete issue in ${COLLECTION} collection:`,
+        err
+      )
+      return { error: err.message }
+    }
+
+    if (deleteResult === null) return null
+    if (indexEditResult === null) {
+      error(
+        `\x1b[31m\n⚠️ could not update ${project} indexes - need to reset index values`
+      )
+      return {
+        error:
+          'successful delete operation, but unsuccessful index update operation',
+      }
+    }
+
+    return deleteResult
+  }
 }
 
 /**

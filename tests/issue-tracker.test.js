@@ -58,13 +58,15 @@ chai.use(chaiHttp)
 suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   const setup1Path = `${ISSUES}/${TEST_DOC_1.project}`,
     setup2Path = `${ISSUES}/${TEST_DOC_2.project}`,
-    setup3Path = `${ISSUES}/${TEST_DOC_3.project}`
+    setup3Path = `${ISSUES}/${TEST_DOC_3.project}`,
+    setup4Path = `${ISSUES}/${TEST_DOC_8.project}`
   suiteSetup(() => chai.request(server).delete(ISSUES))
   suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC_1))
   suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC_2))
   suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC_3))
+  suiteSetup(() => chai.request(server).put(setup4Path).send(TEST_DOC_8))
 
-  test('suite setup 1 successful', done => {
+  test('Suite setup 1 successful', done => {
     chai
       .request(server)
       .get(setup1Path)
@@ -83,7 +85,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  test('suite setup 2 successful', done => {
+  test('Suite setup 2 successful', done => {
     chai
       .request(server)
       .get(setup2Path)
@@ -100,7 +102,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  test('suite setup 3 successful', done => {
+  test('Suite setup 3 successful', done => {
     chai
       .request(server)
       .get(setup3Path)
@@ -113,6 +115,49 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
         assert.isArray(issues)
         assert.strictEqual(issues.length, 0)
         assert.areObjects(...issues)
+
+        done()
+      })
+  })
+
+  test('Suite setup 4 successful', done => {
+    chai
+      .request(server)
+      .get(setup4Path)
+      .end((err, res) => {
+        const { status, ok, body: issues } = res
+
+        assert.isArray(issues)
+        assert.areObjects(...issues)
+        assert.strictEqualPairs(
+          [status, 200],
+          [issues.length, 3],
+          [Object.keys(issues[0]).length, 9]
+        )
+
+        const {
+          title, // s
+          text, // s
+          created_by, // chris
+          assigned_to, // null
+          status_text, // null
+          open, // true
+          created_on, // new date
+          last_updated, // new date
+          index, // 0
+        } = issues[0]
+
+        assert.areNull(err, assigned_to, status_text)
+        assert.areTrue(ok, open)
+        assert.areStrings(title, text, created_by)
+        assert.strictEqual(index, 0)
+        // Assert created_on and last_updated within 2s of the current date.
+        for (const dateStr of [created_on, last_updated])
+          assert.approximately(
+            new Date(dateStr).valueOf(),
+            new Date().valueOf(),
+            2000
+          )
 
         done()
       })
@@ -138,7 +183,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test2Path = `${ISSUES}/${TEST_DOC_4.project}`
-  test(`2. create with every field except _id: POST ${test2Path}`, done => {
+  test(`2. Create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
       .post(test2Path)
@@ -157,7 +202,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test3Path = `${ISSUES}/${TEST_DOC_5.project}`
-  test(`3. create with only required fields: POST ${test3Path}`, done => {
+  test(`3. Create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
       .post(test3Path)
@@ -179,7 +224,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test4Path = `${ISSUES}/${TEST_DOC_6.project}`
-  test(`4. create with missing required fields: POST ${test4Path}`, done => {
+  test(`4. Create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
       .post(test4Path)
@@ -198,7 +243,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test5Path = `${ISSUES}/${TEST_DOC_7.project}`
-  test(`5. include _id: POST ${test5Path}`, done => {
+  test(`5. Include _id field: POST ${test5Path}`, done => {
     chai
       .request(server)
       .post(test5Path)
@@ -253,7 +298,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
 
   const test7Params = '?assigned_to',
     test7Path = `${ISSUES}/${TEST_DOC_2.project}${test7Params}`
-  test(`7. view issues with one filter: GET ${test7Path}`, done => {
+  test(`7. View issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
       .get(test7Path)
@@ -280,7 +325,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
 
   const test8Params = '?title=podcast&assigned_to=sol',
     test8Path = `${ISSUES}/${TEST_DOC_2.project}${test8Params}`
-  test(`8. view issues with multiple filters: GET ${test8Path}`, done => {
+  test(`8. View issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
       .get(test8Path)
@@ -303,7 +348,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
 
   const test9Params = '?index=0',
     test9Path = `${ISSUES}/${TEST_DOC_1.project}${test9Params}`
-  test(`9. update one field on an issue: PATCH ${test9Path}`, done => {
+  test(`9. Update one field on an issue: PATCH ${test9Path}`, done => {
     const fieldsToUpdate = {
       assigned_to: TEST_DOC_1.owner,
     }
@@ -371,6 +416,27 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
         assert.strictEqual(status, 400)
         assert.isFalse(ok)
         assert.isString(error)
+
+        done()
+      })
+  })
+
+  const test12Params = '?index=1',
+    test12Path = `${ISSUES}/${TEST_DOC_8.project}${test12Params}`
+  test(`12. DELETE ${test12Path}`, done => {
+    chai
+      .request(server)
+      .delete(test12Path)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
 
         done()
       })

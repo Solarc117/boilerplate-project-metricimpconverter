@@ -88,14 +88,23 @@
   - ✅ Update an issue with no fields to update: PATCH request to /api/issues/{project}
   - ✅ commit & push
   - ✅ export test documents, and import them into the required test file - have ONLY tests in the test file.
+  - ✅ commit & push
+  - ✅⚒️ (0.5) (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
+    - ✅ create a test 
+    - ✅ create a handler delete method
+    - ✅ create a dao delete method
+    - ✅ link up the methdods to the api
+    - ✅ fix test 11 & 12 (should be attempting a patch/delete on an EXISTING document, but TEST_DOC_8 was never posted to the database)
+    - ✅⚒️ code the DAO delete method
+      - ✅ reset the rest of the issue indexes in the current project
+        📄 I will use an update (or aggregation) to fetch ALL issues whose index is GREATER than the index passed, and set their indexes to their current value + 1
+        📄 Ideally, the delete action would ONLY execute if I was able to update the rest of the indexes, because if only one or the other operation executes, I'll end up with a bug-prone database structure with certain index values skipped
+
+------------------ August 7(TODAY) ------------------- 
+
+- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+  - ✅ (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
   - 🎉 commit & push
-  - (0.5) (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
-
------------------- August 7 ------------------- 
-
-- ⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - (0.5) (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
-  - (0) commit & push
 - (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
 - (1) add navbar to issue-tracker
 - commit & push
@@ -112,4 +121,5 @@
 - (1) review all method documentation
 - (0.5) style issue-tracker's index page
 - (0.5) verify all issues posted have created_on and last_updated properties
+- (1) reset all index values in the deleted issue's parent array, instead of the current indexEdit update
 - commit & push

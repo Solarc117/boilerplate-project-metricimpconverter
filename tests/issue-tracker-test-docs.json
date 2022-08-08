@@ -101,6 +101,22 @@
         "assigned_to": null,
         "status_text": null,
         "open": true
+      },
+      {
+        "title": "typo on the squid game transcript",
+        "text": "the text in the squid game video transcript is wrong, I'll review it",
+        "created_by": "chris",
+        "assigned_to": "chris",
+        "status_text": "working on it",
+        "open": true
+      },
+      {
+        "title": "incorrect video title",
+        "text": "the 12th video transcript had an incorrect title, so it was deleted",
+        "created_by": "chris",
+        "assigned_to": null,
+        "status_text": "completed",
+        "open": false
       }
     ]
   }
