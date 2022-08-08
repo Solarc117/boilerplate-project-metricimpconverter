@@ -102,12 +102,13 @@
 
 ------------------ August 7(TODAY) ------------------- 
 
-- 🎉⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
+- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
-  - 🎉 commit & push
-- (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
-- (1) add navbar to issue-tracker
-- commit & push
+  -  commit & push
+- ✅ (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
+- ✅ (0.5) add navbar to issue-tracker
+- ✅ (0.5) move script tags out of body tags
+- 🎉 commit & push
 
 ---------------------- August 8 -------------------
 

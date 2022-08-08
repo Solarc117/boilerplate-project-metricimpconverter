@@ -19,13 +19,14 @@ module.exports = class IssuesDAO {
 
     try {
       db = await client.db('issue-tracker').collection(COLLECTION)
-      log(`\x1b[32m\n🍃 connected to ${COLLECTION} collection`)
     } catch (err) {
       error(
         `\x1b[31m\nunable to establish a collection handle in IssuesDAO:`,
         err
       )
     }
+
+    log(`\x1b[32m\n🍃 connected to ${COLLECTION} collection`)
   }
 
   /**
@@ -90,7 +91,7 @@ module.exports = class IssuesDAO {
     try {
       result = await db.updateOne(query, operators, options)
     } catch (err) {
-      error(`\x1b[31m\nerror updating ${COLLECTION} collection:`, err)
+      error(`\x1b[31m\nerror upserting ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
 
@@ -121,6 +122,7 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Attempts to update a single issue in the database.
+   * @async
    * @param {object} query An object containing the index of the issue to update, and the title of the project that the issue pertains to.
    * @param {object} fieldsToUpdate The fields of the issue to update, containing their new values.
    */
@@ -150,7 +152,8 @@ module.exports = class IssuesDAO {
   }
 
   /**
-   * @description Deletes a single issue from a project using its index.
+   * @description Deletes a single issue from a project using its index
+   * @async.
    * @param {number} index The index of the issue to delete.
    */
   static async deleteProject(project, index) {

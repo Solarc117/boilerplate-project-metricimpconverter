@@ -17,138 +17,175 @@
   <body>
     <header>
       <h1>Issue Tracker</h1>
+      <nav>
+        <ul>
+          <li class="current"><a href="/">Home</a></li>
+          <li>
+            <a href="/metric-imperial">Metric-Imperial Converter</a>
+          </li>
+          <li><a href="/issue-tracker">Issue Tracker</a></li>
+          <li><a href="/personal-library">Personal Library</a></li>
+          <li><a href="/sudoku-solver">Sudoku Solver</a></li>
+          <li><a href="/american-british">American British Translator</a></li>
+        </ul>
+      </nav>
     </header>
-    <section style="margin: 0 50px">
-      <h3>Example <code>GET</code> Usage</h3>
-      <code>/api/issues/{project}</code><br />
-      <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br />
-      <h3>Example Return</h3>
-      <pre>
-<code>[
-  { 
-    "_id": "5871dda29faedc3491ff93bb",
-    "issue_title": "Fix error in posting data",
-    "issue_text": "When we post data it has an error.",
-    "created_on": "2017-01-08T06:35:14.240Z",
-    "updated_on": "2017-01-08T06:35:14.240Z",
-    "created_by": "Joe",
-    "assigned_to": "Joe",
-    "open": true,
-    "status_text": "In QA"
-  },
-  ...
- ]
-</code>
-</pre>
-    </section>
-    <hr style="margin: 0 50px" />
-    <section id="testui" style="margin-left: 50px">
-      <h2 style="text-align: left">API Tests</h2>
-      <h3>Get issues</h3>
-      <form id="getForm" class="border">
-        <input
-          type="text"
-          name="owner"
-          placeholder="*Owner"
-          style="width: 100px"
-          required
-        /><br />
-        <input
-          type="text"
-          name="project"
-          placeholder="*Project"
-          style="width: 100px"
-          required
-        /><br />
-        <button type="submit">Get Project Issues</button>
-      </form>
-      <h3>Submit issue</h3>
-      <form id="submitForm" class="border">
-        <input
-          type="text"
-          name="issue_title"
-          placeholder="*Title"
-          style="width: 100px"
-          required
-        /><br />
-        <textarea
-          type="text"
-          name="issue_text"
-          placeholder="*Text"
-          style="width: 100px"
-          required
-        ></textarea
-        ><br />
-        <input
-          type="text"
-          name="created_by"
-          placeholder="*Created by"
-          style="width: 100px"
-          required
-        /><br />
-        <input
-          type="text"
-          name="assigned_to"
-          placeholder="(opt)Assigned to"
-          style="width: 100px"
-        /><br />
-        <input
-          type="text"
-          name="status_text"
-          placeholder="(opt)Status text"
-          style="width: 100px"
-        /><br />
-        <button type="submit">Submit Issue</button>
-      </form>
-      <br />
-      <h3>Update Single Issue</h3>
-      <br />
-      <form id="issueIndexForm" class="border">
-        <input type="text" name="project" placeholder="*Project" required />
+    <hr />
+    <main>
+      <section style="margin: 0 50px">
+        <h3>Example <code>GET</code> Usage</h3>
+        <code>/api/issues/{project}</code><br />
+        <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br />
+        <h3>Example Return</h3>
+        <pre>
+  <code>[
+    { 
+      "_id": "5871dda29faedc3491ff93bb",
+      "issue_title": "Fix error in posting data",
+      "issue_text": "When we post data it has an error.",
+      "created_on": "2017-01-08T06:35:14.240Z",
+      "updated_on": "2017-01-08T06:35:14.240Z",
+      "created_by": "Joe",
+      "assigned_to": "Joe",
+      "open": true,
+      "status_text": "In QA"
+    },
+    ...
+   ]
+  </code>
+  </pre>
+      </section>
+      <hr style="margin: 0 50px" />
+      <section id="testui" style="margin-left: 50px">
+        <h2 style="text-align: left">API Tests</h2>
+        <h3>Get issues</h3>
+        <form id="getForm" class="border">
+          <input
+            type="text"
+            name="owner"
+            placeholder="*Owner"
+            style="width: 100px"
+            required
+          /><br />
+          <input
+            type="text"
+            name="project"
+            placeholder="*Project"
+            style="width: 100px"
+            required
+          /><br />
+          <button type="submit">Get Project Issues</button>
+        </form>
+        <h3>Submit issue</h3>
+        <form id="submitForm" class="border">
+          <input
+            type="text"
+            name="issue_title"
+            placeholder="*Title"
+            style="width: 100px"
+            required
+          /><br />
+          <textarea
+            type="text"
+            name="issue_text"
+            placeholder="*Text"
+            style="width: 100px"
+            required
+          ></textarea
+          ><br />
+          <input
+            type="text"
+            name="created_by"
+            placeholder="*Created by"
+            style="width: 100px"
+            required
+          /><br />
+          <input
+            type="text"
+            name="assigned_to"
+            placeholder="(opt)Assigned to"
+            style="width: 100px"
+          /><br />
+          <input
+            type="text"
+            name="status_text"
+            placeholder="(opt)Status text"
+            style="width: 100px"
+          /><br />
+          <button type="submit">Submit Issue</button>
+        </form>
         <br />
-        <input
-          type="number"
-          min="0"
-          step="1"
-          name="issue-name"
-          placeholder="*Issue index"
-          required
-        />
+        <h3>Update Single Issue</h3>
         <br />
-        <button type="submit">Fetch Issue To Update</button>
-      </form>
-      <form id="updateForm" class="hidden">
-        <h4>Issue Fields to Update</h4>
-        <input type="text" name="new-title" placeholder="title" />
+        <form id="issueIndexForm" class="border">
+          <input type="text" name="project" placeholder="*Project" required />
+          <br />
+          <input
+            type="number"
+            min="0"
+            step="1"
+            name="issue-name"
+            placeholder="*Issue index"
+            required
+          />
+          <br />
+          <button type="submit">Fetch Issue To Update</button>
+        </form>
+        <form id="updateForm" class="hidden">
+          <h4>Issue Fields to Update</h4>
+          <input type="text" name="new-title" placeholder="title" />
+          <br />
+          <textarea type="text" name="new-text" placeholder="text"></textarea>
+          <br />
+          <input type="text" name="new-assigned-to" placeholder="assigned to" />
+          <br />
+          <input
+            type="text"
+            name="new-status-text"
+            placeholder="status text"
+          /><br />
+          <label><input type="checkbox" name="new-open" checked /> Open</label
+          ><br />
+          <button type="submit">Update Issue</button>
+        </form>
         <br />
-        <textarea type="text" name="new-text" placeholder="text"></textarea>
-        <br />
-        <input type="text" name="new-assigned-to" placeholder="assigned to" />
-        <br />
-        <input
-          type="text"
-          name="new-status-text"
-          placeholder="status text"
-        /><br />
-        <label><input type="checkbox" name="new-open" checked /> Open</label
-        ><br />
-        <button type="submit">Update Issue</button>
-      </form>
-      <br />
-      <h3>Delete Issue</h3>
-      <form id="deleteForm" class="border">
-        <input
-          type="text"
-          name="_id"
-          placeholder="_id"
-          style="width: 100px"
-          required
-        /><br />
-        <button type="submit">Delete Issue</button>
-      </form>
-      <code id="jsonResult"></code>
-    </section>
+        <h3>Delete Issue</h3>
+        <form id="deleteForm" class="border">
+          <input
+            type="text"
+            name="_id"
+            placeholder="_id"
+            style="width: 100px"
+            required
+          /><br />
+          <button type="submit">Delete Issue</button>
+        </form>
+        <code id="jsonResult"></code>
+      </section>
+    </main>
     <hr style="margin: 50px; margin-top: 200px" />
+    <footer>
+      <ul>
+        <li>
+          <p>By Carlos Bernal.</p>
+        </li>
+        <li>
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/carlos-jonathan-bernal-torres-07b90a1b1/"
+            >My LinkedIn</a
+          >.
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/Solarc117">My Github</a>.
+        </li>
+        <li>
+          <a target="_blank" href="https://www.freecodecamp.org/solarc"
+            >My freeCodeCamp</a
+          >.
+        </li>
+      </ul>
+    </footer>
   </body>
 
   <!-- Your web-app is https, so your scripts need to be too -->
