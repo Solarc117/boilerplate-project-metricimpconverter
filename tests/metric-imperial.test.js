@@ -1,6 +1,6 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
-  server = require('../server.js'),
+  server = require('../src/server.js'),
   cH = require('../src/handlers/convert-handler.js'),
   { assert } = chai,
   { IMP_MET_PAIRS } = cH,

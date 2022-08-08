@@ -5,11 +5,11 @@ const cors = require('cors'),
   bodyParser = require('body-parser'),
   express = require('express'),
   // @ts-ignore
-  apiRouter = require('./src/routes/api.js'),
-  fccTestingRoutes = require('./src/routes/fcctesting.js'),
-  htmlRouter = require('./src/routes/html-router.js'),
+  apiRouter = require('./routes/api.js'),
+  fccTestingRoutes = require('./routes/fcctesting.js'),
+  htmlRouter = require('./routes/html-router.js'),
   app = express()
-if (env.NODE_ENV === 'dev') require('./dev/live-reload.js')(app)
+if (env.NODE_ENV === 'dev') require('../dev/live-reload.js')(app)
 
 app.use('/public', express.static(process.cwd() + '/public'))
 app.use(cors({ origin: '*' })) // For FCC testing purposes only.
