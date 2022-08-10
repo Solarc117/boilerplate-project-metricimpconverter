@@ -22,6 +22,9 @@ module.exports = class IssueHandler {
   static async get(req, res) {
     function filterIssues(issues = [], queries = {}) {
       const queryKeys = Object.keys(queries)
+
+      console.log(issues, queries)
+
       // To prevent data mutation and keep this function "pure", we create a copy of issues with the spread operator instead of acting on the parameter, since the Array.filter method creates a shallow copy of the array argument, which can lead to unexpected behaviour.
       return [...issues].filter(issue => {
         for (const key of queryKeys) {
@@ -64,11 +67,14 @@ module.exports = class IssueHandler {
 
     getResult = await IssuesDAO.fetchProject(project)
 
+    console.log(nullifyEmptyStringProps(query))
+
     if (queryAndIssuesValid(getResult, query))
       getResult.issues = filterIssues(
         getResult.issues,
         nullifyEmptyStringProps(query)
       )
+
 
     if (getResult?.error) return res.status(500).json(getResult)
     // Return null if there is no such project; or an array containing however many issues the existing project has.
@@ -231,7 +237,6 @@ module.exports = class IssueHandler {
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
- * @property {number} index A number unique to the issue (within its parent project).
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
  * @property {string | null} text Text describing in further detail the issue.

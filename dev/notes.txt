@@ -124,7 +124,8 @@
       - implement that pipeline when index is 0, AND the length 
     - ✅ project issues array length is 0 (as this will make the last element in the $slice operator 0, thus returning an error)
   - ✅ ensure delete test passes
-  - 🎉 commit & push
+  - ✅ commit & push
+  - make 
   - remove index properties from documents
   - create a test that deletes the FIRST, and LAST element of a document
 - commit & push

@@ -222,7 +222,6 @@ module.exports = class IssuesDAO {
 
 /**
  * @typedef Issue The element structure maintained in the database issues arrays.
- * @property {number} index A number unique to the issue (within its parent project).
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
  * @property {string | null} text Text describing in further detail the issue.

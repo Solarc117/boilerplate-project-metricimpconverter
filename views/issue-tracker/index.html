@@ -62,13 +62,6 @@
         <form id="getForm" class="border">
           <input
             type="text"
-            name="owner"
-            placeholder="*Owner"
-            style="width: 100px"
-            required
-          /><br />
-          <input
-            type="text"
             name="project"
             placeholder="*Project"
             style="width: 100px"
@@ -199,12 +192,11 @@
     $(() => {
       $('#getForm').on('submit', e => {
         e.preventDefault()
-        const [{ value: owner }, { value: project }] =
+        const [{ value: project }] =
           $('#getForm').serializeArray()
         $.ajax({
           url: `/api/issues/${project}`,
           type: 'get',
-          data: $('#getForm').serialize(),
           success: data => stringify(data),
         })
       })
@@ -258,7 +250,7 @@
           url: `/api/issues/${project}?index=${index}`,
           type: 'patch',
           data,
-          success: data => log(data),
+          success: data => stringify(data),
         })
       })
 
