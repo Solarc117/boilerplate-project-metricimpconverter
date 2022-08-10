@@ -1,3 +1,5 @@
+“The most difficult thing is the decision to act; the rest is merely tenacity.” - Amelia Earhart
+
 <------ Problem Solving Steps from Fireship --------->
 
 1. Identify 
@@ -56,10 +58,10 @@
   - MINIMIZE DISTRACTIONS
   - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
--------------- August 5 (YESTERDAY) ------------------
+-------------- August 5 ------------------
 
 - ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - 🎉⚒️ (1) Update one field on an issue: PATCH request to /api/issues/{project}
+  - ✅⚒️ (1) Update one field on an issue: PATCH request to /api/issues/{project}
     - ✅ figure out how the data will be sent to the handler method
       📄 for the issue text, I might have to use string literals to conserve new lines
     - ✅ address the checkbox's weird behaviour (is undefined or on - turn into a boolean)
@@ -80,7 +82,7 @@
     - ✅ edit the test to ensure the exact property was updated to the exact new value, or at least ensure "acknowledged" and "updated_count": 1 are returned
   - ✅ (0) commit & push
 
---------------- August 6 (YESTERDAY) ------------------
+--------------- August 6 -----------------
 
 - ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ ⚒️ (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
@@ -100,7 +102,7 @@
         📄 I will use an update (or aggregation) to fetch ALL issues whose index is GREATER than the index passed, and set their indexes to their current value + 1
         📄 Ideally, the delete action would ONLY execute if I was able to update the rest of the indexes, because if only one or the other operation executes, I'll end up with a bug-prone database structure with certain index values skipped
 
------------------- August 7(TODAY) ------------------- 
+------------------ August 7 ------------------- 
 
 - ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
   - ✅ (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
@@ -112,9 +114,19 @@
 
 ---------------------- August 8 -------------------
 
-- (1) remove tests directory from production; they are for development, after all
-- commit & push
-- (1) reset all index values in the deleted issue's parent array, instead of the current indexEdit update
+- 🎉⚒️ instead of using my manual index property, use mdb aggregation to return the index when the user queries using a field, and to locate the right issue to delete when the user passes an index, respectively
+  - ✅⚒️ aggregation stages and operators:
+    - ✅ $replaceWith
+      📄 might be able to use slice here; I can replace the issues array with the issues array spliced in such a way that it excludes the issue matching the passed index
+  - ⚒️✅ figure out what to do when: 
+    - ✅ index is 0
+      - ✅ create a pipeline that removes the first element from the issues field
+      - implement that pipeline when index is 0, AND the length 
+    - ✅ project issues array length is 0 (as this will make the last element in the $slice operator 0, thus returning an error)
+  - ✅ ensure delete test passes
+  - 🎉 commit & push
+  - remove index properties from documents
+  - create a test that deletes the FIRST, and LAST element of a document
 - commit & push
 
 ------------------------ August 9 (DEADLINE) ------------------------

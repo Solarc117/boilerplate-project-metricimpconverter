@@ -205,7 +205,7 @@ module.exports = class IssueHandler {
         error: 'no update fields passed - please include at least one field',
       })
 
-    patchResult = await IssuesDAO.updateProject(query, body)
+    patchResult = await IssuesDAO.updateIssue(query, body)
 
     res.status(patchResult?.error ? 500 : 200).json(patchResult)
   }
@@ -223,7 +223,7 @@ module.exports = class IssueHandler {
       index = +query.index
     let deleteResult
 
-    deleteResult = await IssuesDAO.deleteProject(project, index)
+    deleteResult = await IssuesDAO.deleteIssue(project, index)
 
     return res.status(deleteResult?.error ? 500 : 200).json(deleteResult)
   }
