@@ -4,8 +4,8 @@ const { log, error, clear } = console,
 clear()
 
 const { MongoClient } = require('mongodb'),
-  app = require('./server.js'),
-  IssuesDAO = require('./dao/issues-dao.js')
+  app = require('./src/server.js'),
+  IssuesDAO = require('./src/dao/issues-dao.js')
 
 MongoClient.connect(env.MONGO_URI, {
   useNewUrlParser: true,

@@ -1,4 +1,6 @@
 .env
 node_modules
 .vscode
-.mongodb
+*.mongodb
+ignore.js
+dev/ignore.js

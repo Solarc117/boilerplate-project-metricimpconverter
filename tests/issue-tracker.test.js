@@ -1,64 +1,18 @@
 'use strict'
-const { log } = console
-function now() {
-  return new Date().toUTCString()
-}
 const chaiHttp = require('chai-http'),
   chai = require('chai'),
-  server = require('../server.js'),
+  server = require('../src/server.js'),
   { assert } = chai,
-  TEST_DOC1 = {
-    name: 'jsPomodoro',
-    owner: 'cool_user_33',
-    issues: [
-      {
-        title: 'dysfunctional timer',
-        text: 'timer does not proceed after first focus session',
-        created_by: 'pom0doro_user',
-        assigned_to: null,
-        status_text: null,
-      },
-    ],
-  },
-  TEST_DOC2 = {
-    name: 'huberman_lab_transcripts',
-    owner: 'solarc117',
-    issues: [
-      {
-        title: 'podcast 37 missing',
-        text: 'solarc please add the transcripts from episode 37',
-        created_by: 'keenLearner139',
-        assigned_to: 'solarc117',
-        status_text: null,
-      },
-      {
-        title: 'episode 22 typos',
-        text: "i've read this episode for 10s and already found 30 typos, someone please fix",
-        created_by: 'abg112',
-        assigned_to: null,
-        status_text: null,
-      },
-      {
-        title: 'episode 1 typo',
-        text: 'there is a typo on the transcript of episode 1',
-        created_by: 'solarc117',
-        assigned_to: 'solarc117',
-        status_text: 'processing',
-      },
-      {
-        title: 'inaccuracy in episode 30',
-        text: 'in the second chapter, Dr. Huberman makes an inaccurate statement. We should note this in the transcript',
-        created_by: 'coder-coder',
-        assigned_to: 'solarc117',
-        status_text: null,
-      },
-    ],
-  },
-  TEST_DOC3 = {
-    name: 'python-algs',
-    owner: 'fcc_learner_:)',
-    issues: [],
-  },
+  {
+    TEST_DOC_1,
+    TEST_DOC_2,
+    TEST_DOC_3,
+    TEST_DOC_4,
+    TEST_DOC_5,
+    TEST_DOC_6,
+    TEST_DOC_7,
+    TEST_DOC_8,
+  } = require('./issue-tracker-test-docs.json'),
   ISSUES = '/api/issues'
 
 /**
@@ -100,15 +54,17 @@ assert.strictEqualPairs = function (...pairs) {
 chai.use(chaiHttp)
 
 suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
+  const setup1Path = `${ISSUES}/${TEST_DOC_1.project}`,
+    setup2Path = `${ISSUES}/${TEST_DOC_2.project}`,
+    setup3Path = `${ISSUES}/${TEST_DOC_3.project}`,
+    setup4Path = `${ISSUES}/${TEST_DOC_8.project}`
   suiteSetup(() => chai.request(server).delete(ISSUES))
-  const setup1Path = `${ISSUES}/${TEST_DOC1.name}`,
-    setup2Path = `${ISSUES}/${TEST_DOC2.name}`,
-    setup3Path = `${ISSUES}/${TEST_DOC3.name}`
-  suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC1))
-  suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC2))
-  suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC3))
+  suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC_1))
+  suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC_2))
+  suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC_3))
+  suiteSetup(() => chai.request(server).put(setup4Path).send(TEST_DOC_8))
 
-  test('suite setup 1 successful', done => {
+  test('Suite setup 1 successful', done => {
     chai
       .request(server)
       .get(setup1Path)
@@ -127,7 +83,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  test('suite setup 2 successful', done => {
+  test('Suite setup 2 successful', done => {
     chai
       .request(server)
       .get(setup2Path)
@@ -144,7 +100,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  test('suite setup 3 successful', done => {
+  test('Suite setup 3 successful', done => {
     chai
       .request(server)
       .get(setup3Path)
@@ -162,7 +118,50 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test1Path = `${ISSUES}/${TEST_DOC1.name}`
+  test('Suite setup 4 successful', done => {
+    chai
+      .request(server)
+      .get(setup4Path)
+      .end((err, res) => {
+        const { status, ok, body: issues } = res
+
+        assert.isArray(issues)
+        assert.areObjects(...issues)
+        assert.strictEqualPairs(
+          [status, 200],
+          [issues.length, 3],
+          [Object.keys(issues[0]).length, 9]
+        )
+
+        const {
+          title, // s
+          text, // s
+          created_by, // chris
+          assigned_to, // null
+          status_text, // null
+          open, // true
+          created_on, // new date
+          last_updated, // new date
+          index, // 0
+        } = issues[0]
+
+        assert.areNull(err, assigned_to, status_text)
+        assert.areTrue(ok, open)
+        assert.areStrings(title, text, created_by)
+        assert.strictEqual(index, 0)
+        // Assert created_on and last_updated within 2s of the current date.
+        for (const dateStr of [created_on, last_updated])
+          assert.approximately(
+            new Date(dateStr).valueOf(),
+            new Date().valueOf(),
+            2000
+          )
+
+        done()
+      })
+  })
+
+  const test1Path = `${ISSUES}/${TEST_DOC_1.project}`
   test(`1. GET ${test1Path}`, done => {
     chai
       .request(server)
@@ -181,26 +180,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user = 'johnny123',
-    newProject = {
-      name: 'cpp-chess',
-      owner: user,
-      issues: [
-        {
-          title: "knight doesn't jump over other pieces",
-          created_by: user,
-          text: 'the knight is unable to jump over pawns at the beginning of a game',
-          assigned_to: 'anyone',
-          status_text: 'under development',
-        },
-      ],
-    },
-    test2Path = `${ISSUES}/${newProject.name}`
-  test(`2. create with every field except _id: POST ${test2Path}`, done => {
+  const test2Path = `${ISSUES}/${TEST_DOC_4.project}`
+  test(`2. Create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
       .post(test2Path)
-      .send(newProject)
+      .send(TEST_DOC_4)
       .end((err, res) => {
         const { status, ok, body } = res,
           { acknowledged, insertedId } = body
@@ -214,23 +199,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user2 = 'frank_ocean_fan',
-    newProject2 = {
-      name: 'blonde-track-list',
-      owner: user2,
-      issues: [
-        {
-          title: 'missing lyrics for "Nikes" track',
-          created_by: user2,
-        },
-      ],
-    },
-    test3Path = `${ISSUES}/${newProject2.name}`
-  test(`3. create with only required fields: POST ${test3Path}`, done => {
+  const test3Path = `${ISSUES}/${TEST_DOC_5.project}`
+  test(`3. Create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
       .post(test3Path)
-      .send(newProject2)
+      .send(TEST_DOC_5)
       .end((err, res) => {
         const {
           status,
@@ -247,16 +221,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const newProject4 = {
-      name: 'react-calculator',
-      issues: [],
-    },
-    test4Path = `${ISSUES}/${newProject4.name}`
-  test(`4. create with missing required fields: POST ${test4Path}`, done => {
+  const test4Path = `${ISSUES}/${TEST_DOC_6.project}`
+  test(`4. Create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
       .post(test4Path)
-      .send(newProject4)
+      .send(TEST_DOC_6)
       .end((err, res) => {
         const { status, ok, body } = res,
           { error } = body
@@ -270,19 +240,12 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const user5 = 'random_coder',
-    newProject5 = {
-      _id: 123456,
-      name: 'js website',
-      owner: user5,
-      issues: [],
-    },
-    test5Path = `${ISSUES}/${newProject5.name}`
-  test(`5. include _id: POST ${test5Path}`, done => {
+  const test5Path = `${ISSUES}/${TEST_DOC_7.project}`
+  test(`5. Include _id field in project: POST ${test5Path}`, done => {
     chai
       .request(server)
       .post(test5Path)
-      .send(newProject5)
+      .send(TEST_DOC_7)
       .end((err, res) => {
         const { status, ok, body } = res,
           { error } = body
@@ -297,7 +260,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test6Path = `${ISSUES}/${TEST_DOC1.name}`
+  const test6Path = `${ISSUES}/${TEST_DOC_1.project}`
   test(`6. GET ${test6Path}`, done => {
     chai
       .request(server)
@@ -313,15 +276,18 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
             status_text,
             text,
             title,
+            open,
+            index,
           } = issue
 
         assert.areNull(err, assigned_to, status_text)
         assert.strictEqualPairs(
           [status, 200],
           [issues.length, 1],
-          [Object.keys(issue).length, 7]
+          [Object.keys(issue).length, 9],
+          [index, 0]
         )
-        assert.isTrue(ok)
+        assert.areTrue(ok, open)
         assert.areStrings(created_by, created_on, last_updated, text, title)
 
         done()
@@ -329,8 +295,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test7Params = '?assigned_to',
-    test7Path = `${ISSUES}/${TEST_DOC2.name}${test7Params}`
-  test(`7. view issues with one filter: GET ${test7Path}`, done => {
+    test7Path = `${ISSUES}/${TEST_DOC_2.project}${test7Params}`
+  test(`7. View issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
       .get(test7Path)
@@ -356,8 +322,8 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
   })
 
   const test8Params = '?title=podcast&assigned_to=sol',
-    test8Path = `${ISSUES}/${TEST_DOC2.name}${test8Params}`
-  test(`8. view issues with multiple filters: GET ${test8Path}`, done => {
+    test8Path = `${ISSUES}/${TEST_DOC_2.project}${test8Params}`
+  test(`8. View issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
       .get(test8Path)
@@ -378,13 +344,100 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
       })
   })
 
-  const test9Path = `${ISSUES}/${TEST_DOC1.name}`
-  test(`9. update one field: PATCH ${test9Path}`, done => {
-    const updateObj = {
-      _id: TEST_DOC1._id,
+  const test9Params = '?index=0',
+    test9Path = `${ISSUES}/${TEST_DOC_1.project}${test9Params}`
+  test(`9. Update one field on an issue: PATCH ${test9Path}`, done => {
+    const fieldsToUpdate = {
+      assigned_to: TEST_DOC_1.owner,
     }
-    done()
-    // chai.request(server).patch(test8Path).send()
+
+    chai
+      .request(server)
+      .patch(test9Path)
+      .send(fieldsToUpdate)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
+
+        done()
+      })
+  })
+
+  const test10Params = '?index=2',
+    test10Path = `${ISSUES}/${TEST_DOC_2.project}${test10Params}`
+  test(`10. Update multiple fields: PATCH ${test10Path}`, done => {
+    const fieldsToUpdate = {
+      status_text: 'finished',
+      open: false,
+    }
+
+    chai
+      .request(server)
+      .patch(test10Path)
+      .send(fieldsToUpdate)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
+
+        done()
+      })
+  })
+
+  const test11Params = '?index=0',
+    test11Path = `${ISSUES}/${TEST_DOC_8.project}${test11Params}`
+  test(`11. Update with no fields: PATCH ${test11Path}`, done => {
+    chai
+      .request(server)
+      .patch(test11Path)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { error },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqual(status, 400)
+        assert.isFalse(ok)
+        assert.isString(error)
+
+        done()
+      })
+  })
+
+  const test12Params = '?index=1',
+    test12Path = `${ISSUES}/${TEST_DOC_8.project}${test12Params}`
+  test(`12. DELETE ${test12Path}`, done => {
+    chai
+      .request(server)
+      .delete(test12Path)
+      .end((err, res) => {
+        const {
+          status,
+          ok,
+          body: { acknowledged, modifiedCount },
+        } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [modifiedCount, 1])
+        assert.areTrue(ok, acknowledged)
+
+        done()
+      })
   })
 })
 
@@ -392,18 +445,18 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
  * @typedef Issue The element structure maintained in the database issues arrays.
  * @property {string} title The title of the issue.
  * @property {string} created_by The user that created the issue.
- * .
- * @property {string} [text] Text describing in further detail the issue.
- * @property {string | null} [assigned_to] The user responsible for addressing the issue.
- * @property {string | null} [status_text] Brief describtion the current state of the issue.
- * @property {string} created_on The date the issue was created, in UTC.
- * @property {string} last_updated The date the issue was last updated, in UTC.
+ * @property {string | null} text Text describing in further detail the issue.
+ * @property {string | null} assigned_to The user responsible for addressing the issue.
+ * @property {string | null} status_text Brief describtion the current state of the issue.
+ * @property {boolean} open A boolean indicating whether the issue is open (to be addressed) or closed (resolved).
+ * @property {string} created_on The UTC date the issue was created on.
+ * @property {string} last_updated The UTC date the issue was last updated.
  */
 
 /**
  * @typedef Project The document structure in the database projects collection.
  * @property {string} _id The project's unique identifier.
- * @property {string} name The project's name.
+ * @property {string} project The project's title.
  * @property {string} owner The project owner.
- * @property {[Issue]} issues An array containing
+ * @property {[Issue]} issues An array containing Issue objects for each issue in the project.
  */

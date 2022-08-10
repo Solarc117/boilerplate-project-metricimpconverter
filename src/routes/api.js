@@ -1,9 +1,7 @@
 'use strict'
-const { log, error } = console
-
 const { Router } = require('express'),
   cH = require('../handlers/convert-handler.js'),
-  IssueHandler = require('../handlers/issue-handler'),
+  IssueHandler = require('../handlers/issue-handler.js'),
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),
@@ -46,7 +44,7 @@ router
   // This put request is only for the issue-tracker tests suiteSetup.
   .put(IssueHandler.put)
   .post(IssueHandler.post)
-  .patch(async (req, res) => {})
-  .delete(async (req, res) => {})
+  .patch(IssueHandler.patch)
+  .delete(IssueHandler.delete)
 
 module.exports = router

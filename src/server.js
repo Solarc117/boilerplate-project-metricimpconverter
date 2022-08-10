@@ -9,7 +9,7 @@ const cors = require('cors'),
   fccTestingRoutes = require('./routes/fcctesting.js'),
   htmlRouter = require('./routes/html-router.js'),
   app = express()
-if (env.NODE_ENV === 'dev') require('./dev/live-reload.js')(app)
+if (env.NODE_ENV === 'dev') require('../dev/live-reload.js')(app)
 
 app.use('/public', express.static(process.cwd() + '/public'))
 app.use(cors({ origin: '*' })) // For FCC testing purposes only.

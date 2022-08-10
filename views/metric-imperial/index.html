@@ -19,6 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Your web-app is https, so your scripts need to be too -->
   </head>
+
   <body>
     <header>
       <h1>Metric-Imperial Converter</h1>
@@ -67,29 +68,52 @@
         </div>
       </section>
     </main>
+    <hr />
+    <footer>
+      <ul>
+        <li>
+          <p>By Carlos Bernal.</p>
+        </li>
+        <li>
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/carlos-jonathan-bernal-torres-07b90a1b1/"
+            >My LinkedIn</a
+          >.
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/Solarc117">My Github</a>.
+        </li>
+        <li>
+          <a target="_blank" href="https://www.freecodecamp.org/solarc"
+            >My freeCodeCamp</a
+          >.
+        </li>
+      </ul>
+    </footer>
+  </body>
 
-    <script
-      src="https://code.jquery.com/jquery-2.2.1.min.js"
-      integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      $(() => {
-        $('#convertForm').submit(event => {
-          event.preventDefault()
-          $.ajax({
-            url: '/api/convert',
-            type: 'get',
-            data: $('#convertForm').serialize(),
-            success: data => {
-              $('#result').text(data.string || data)
-              $('#jsonResult').text(JSON.stringify(data, null, 2))
-            },
-            error: data =>
-              $('#jsonResult').text(JSON.stringify(data.responseJSON, null, 2)),
-          })
+  <script
+    src="https://code.jquery.com/jquery-2.2.1.min.js"
+    integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $(() => {
+      $('#convertForm').submit(e => {
+        e.preventDefault()
+        $.ajax({
+          url: '/api/convert',
+          type: 'get',
+          data: $('#convertForm').serialize(),
+          success: data => {
+            $('#result').text(data.string || data)
+            $('#jsonResult').text(JSON.stringify(data, null, 2))
+          },
+          error: data =>
+            $('#jsonResult').text(JSON.stringify(data.responseJSON, null, 2)),
         })
       })
-    </script>
-  </body>
+    })
+  </script>
 </html>
