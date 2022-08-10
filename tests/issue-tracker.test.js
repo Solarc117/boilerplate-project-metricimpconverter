@@ -1,6 +1,4 @@
 'use strict'
-const { log } = console
-
 const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../src/server.js'),
