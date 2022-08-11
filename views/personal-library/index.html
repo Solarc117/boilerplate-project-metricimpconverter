@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <title>Personal Library</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png"
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../public/all.css" />
+    <link rel="stylesheet" href="../../public/personal-library.css" />
+    <script
+      defer
+      src="https://code.jquery.com/jquery-2.2.1.min.js"
+      integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+      crossorigin="anonymous"
+    ></script>
+    <script defer src="../../public/p-l-client.js"></script>
+    <script defer src="../../public/personal-library.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Personal Library</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>
+            <a href="/metric-imperial">Metric-Imperial Converter</a>
+          </li>
+          <li><a href="/issue-tracker">Issue Tracker</a></li>
+          <li class="current">
+            <a href="/personal-library">Personal Library</a>
+          </li>
+          <li><a href="/sudoku-solver">Sudoku Solver</a></li>
+          <li><a href="/american-british">American British Translator</a></li>
+        </ul>
+      </nav>
+    </header>
+    <hr />
+    <main>
+      <div id="sampleposting">
+        <h2>Test API responses</h2>
+        <form action="/api/books" method="post" class="border">
+          <h4>Test post to /api/books</h4>
+          <label for="title">Book Title</label>
+          <input type="text" id="title" name="title" value="" /><br />
+          <input type="submit" value="Submit" />
+        </form>
+        <form action="" method="post" id="commentTest" class="border">
+          <h4>Test post to /api/books/:_id</h4>
+          <label for="idinputtest">BookId to comment on</label>
+          <input type="text" name="id" value="" id="idinputtest" /><br />
+          <label for="comment">Comment</label>
+          <input type="text" id="comment" name="comment" value="" /><br />
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+      <hr />
+      <div id="sampleui">
+        <h2>Sample Front-End</h2>
+        <form id="newBookForm" class="border">
+          <label for="bookTitleToAdd">New Book Title</label>
+          <input
+            type="text"
+            id="bookTitleToAdd"
+            name="title"
+            placeholder="Moby Dick"
+          />
+          <button type="submit" value="Submit" id="newBook">
+            Submit New Book!
+          </button>
+        </form>
+        <div id="display"></div>
+        <div id="bookDetail" class="border">
+          <p id="detailTitle">Select a book to see its details and comments</p>
+          <ol id="detailComments"></ol>
+        </div>
+        <button id="deleteAllBooks">Delete all books...</button>
+      </div>
+    </main>
+    <hr />
+    <footer>
+      <ul>
+        <li>
+          <p>By Carlos Bernal.</p>
+        </li>
+        <li>
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/carlos-jonathan-bernal-torres-07b90a1b1/"
+            >My LinkedIn</a
+          >.
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/Solarc117">My Github</a>.
+        </li>
+        <li>
+          <a target="_blank" href="https://www.freecodecamp.org/solarc"
+            >My freeCodeCamp</a
+          >.
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>

@@ -73,6 +73,20 @@ book document schema: {
   comments: [string],
 }
 
+Functionality:
+  API:
+  - respond to GET requests to /api/books with an array containing ALL book documents
+  - respond to POST requests to /api/books, with a body containing the book's title, with the book's title and _id
+  - respond to POST requests to /api/books/:_id (with a body containing the comment text) with the updated book document
+
+  HTML 1:
+  - ensure the Test post /api/books form redirects to the same path, and returns { _id, title }
+  - ensure the Test post /api/books/_id form redirects to the same path, and returns { _id, title, commentscount, comments }
+  HTML 2:
+  - ensure the ul below the second Post Book form is always showing the updated list of books, and the number of comments per book
+  - ensure clicking on a li element changes the bookDetail div from "select a book" to illustrating all of the book's info, including a form to add comments OR delete the book
+  - ensure the "delete all books" button at the very bottom works
+
 ------------------ Thu, Aug 11 (TODAY) ------------------
 
 - 🎉 Setup main HTML page
