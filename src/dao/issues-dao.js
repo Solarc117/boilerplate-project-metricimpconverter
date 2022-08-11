@@ -8,7 +8,7 @@ module.exports = class IssuesDAO {
   /**
    * @description Impure; attempts to assign the "issue-tracker" db's "owners" collection to the global "owners" variable, if the global variable is undefined; logs a message if a connection is already established.
    * @async
-   * @param {object} client The MongoDB project under which the issue-tracker database and owners collection are located.
+   * @param {object} client The MongoDB project under which the issue-tracker database and test/owners collection are located.
    */
   static async injectDB(client) {
     if (db)
@@ -25,7 +25,7 @@ module.exports = class IssuesDAO {
       )
     }
 
-    log(`\x1b[32m\n🍃 connected to ${COLLECTION} collection`)
+    log(`\x1b[32m\n📌 IssuesDAO connected to ${COLLECTION} collection`)
   }
 
   /**

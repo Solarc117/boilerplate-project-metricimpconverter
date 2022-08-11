@@ -2,6 +2,7 @@
 const { Router } = require('express'),
   cH = require('../handlers/convert-handler.js'),
   IssueHandler = require('../handlers/issue-handler.js'),
+  LibraryHandler = require('../handlers/library-handler.js'),
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),

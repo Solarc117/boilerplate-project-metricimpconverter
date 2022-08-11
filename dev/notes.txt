@@ -89,13 +89,13 @@ Functionality:
 
 ------------------ Thu, Aug 11 (TODAY) ------------------
 
-- 🎉 Setup main HTML page
-- Setup Handler file
+- ✅ Setup main HTML page
+- ✅ Setup Handler file
 
 ------------------ Fri, Aug 12 -----------------------
 
-- Setup DAO file (and database)
-- commit & push
+- ✅ Setup DAO file (and database)
+- 📌 commit & push
 - create mongodb book schema
 - commit & push
 
