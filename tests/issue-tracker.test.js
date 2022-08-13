@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../src/server.js'),
   { assert } = chai,
-  {
+  [
     TEST_DOC_1,
     TEST_DOC_2,
     TEST_DOC_3,
@@ -12,7 +12,7 @@ const chaiHttp = require('chai-http'),
     TEST_DOC_6,
     TEST_DOC_7,
     TEST_DOC_8,
-  } = require('./issue-tracker-test-docs.json'),
+  ] = require('./issue-tracker-test-docs.json'),
   ISSUES = '/api/issues'
 
 /**

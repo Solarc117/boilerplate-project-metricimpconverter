@@ -3,6 +3,7 @@ const { Router } = require('express'),
   cH = require('../handlers/convert-handler.js'),
   IssueHandler = require('../handlers/issue-handler.js'),
   LibraryHandler = require('../handlers/library-handler.js'),
+  // Base route: /api
   // @ts-ignore
   router = new Router(),
   getNum = cH.getNum.bind(cH),
@@ -11,7 +12,6 @@ const { Router } = require('express'),
   getReturnUnit = cH.getReturnUnit.bind(cH),
   getString = cH.getString.bind(cH)
 
-// Base route: /api
 router.route('/convert').get((req, res) => {
   const { input } = req.query,
     { err: err0, initNum } = getNum(input),
@@ -47,5 +47,10 @@ router
   .post(IssueHandler.post)
   .patch(IssueHandler.patch)
   .delete(IssueHandler.delete)
+
+router.route('/books')
+  .get(LibraryHandler.get)
+  .post(LibraryHandler.post)
+  .delete(LibraryHandler.delete)
 
 module.exports = router

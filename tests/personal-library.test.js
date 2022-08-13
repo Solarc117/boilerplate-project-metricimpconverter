@@ -1,6 +1,13 @@
+const { log } = console
+
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
   server = require('../src/server.js'),
+  [
+    TEST_DOC_1,
+    TEST_DOC_2,
+    TEST_DOC_3,
+  ] = require('./personal-library-test-docs.json'),
   { assert } = chai,
   BOOKS = '/api/books'
 
@@ -43,16 +50,23 @@ assert.strictEqualPairs = function (...pairs) {
 chai.use(chaiHttp)
 
 suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
-  test(`1. GET ${BOOKS}`, done => {
-    chai.request(server).get(BOOKS).end((err, res) => {
-      const { status, ok, body } = res
-      
-      assert.isNull(err)
-      assert.strictEqual(status, 200)
-      assert.isTrue(ok)
-      assert.isAtLeast(Array.isArray(body) ? body.length : Object.keys(body).length, 1)
+  suiteSetup(() => chai.request(server).delete(BOOKS))
+  suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_1))
+  suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_2))
+  suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_3))
 
-      done()
-    })
+  test(`1. GET ${BOOKS}`, done => {
+    chai
+      .request(server)
+      .get(BOOKS)
+      .end((err, res) => {
+        const { status, ok, body: books } = res
+
+        assert.isNull(err)
+        assert.strictEqualPairs([status, 200], [books.length, 3])
+        assert.isTrue(ok)
+
+        done()
+      })
   })
 })

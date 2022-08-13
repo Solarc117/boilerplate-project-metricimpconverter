@@ -101,9 +101,9 @@ Functionality:
 ------------------ Sat, Aug 13 -----------------------
 
 - ✅ create GET /api/books test
-- 🎉 commit & push
-- pass test above
-- commit & push
+- ✅ commit & push
+- ✅ pass test above
+- 📌 commit & push
 - create POST /api/books test
 - commit & push
 
