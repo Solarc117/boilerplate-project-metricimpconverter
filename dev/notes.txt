@@ -105,12 +105,12 @@ Functionality:
 - ✅ pass test above
 - ✅ commit & push
 - ✅ create POST /api/books test (valid and invalid doc)
-- 📌commit & push
+- ✅ commit & push
 
 ------------------ Sun, Aug 14 -----------------------
 
-- pass test above
-- commit & push
+- ✅ pass test above
+- 📌 commit & push
 - create POST /api/books/_id test
 - commit & push
 
