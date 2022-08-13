@@ -95,14 +95,13 @@ Functionality:
 ------------------ Fri, Aug 12 -----------------------
 
 - ✅ Setup DAO file (and database)
-- 📌 commit & push
-- create mongodb book schema
-- commit & push
+- ✅ commit & push
+- ✅ create mongodb book schema
 
 ------------------ Sat, Aug 13 -----------------------
 
-- create GET /api/books test
-- commit & push
+- ✅ create GET /api/books test
+- 🎉 commit & push
 - pass test above
 - commit & push
 - create POST /api/books test
