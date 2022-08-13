@@ -7,6 +7,8 @@ const chai = require('chai'),
     TEST_DOC_1,
     TEST_DOC_2,
     TEST_DOC_3,
+    TEST_DOC_4,
+    TEST_DOC_5,
   ] = require('./personal-library-test-docs.json'),
   { assert } = chai,
   BOOKS = '/api/books'
@@ -68,5 +70,32 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
 
         done()
       })
+  })
+
+  test(`2. create a valid book: POST ${BOOKS}`, done => {
+    chai.request(server).post(BOOKS).send(TEST_DOC_4).end((err, res) => {
+      const { status, ok, body: { acknowledged, insertedId }} = res
+
+      assert.isNull(err)
+      assert.strictEqual(status, 200)
+      assert.areTrue(ok, acknowledged)
+      assert.isString(insertedId)
+
+      done()
+    })
+  })
+
+  test(`3. create an invalid book: POST ${BOOKS}`, done => {
+    chai.request(server).post(BOOKS).send(TEST_DOC_5).end((err, res) => {
+      const { status, ok, body } = res
+      
+      console.log(body)
+      
+      assert.isNull(err)
+      assert.strictEqual(status, 400)
+      assert.isFalse(ok)
+
+      done()
+    })
   })
 })

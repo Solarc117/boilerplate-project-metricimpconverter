@@ -103,9 +103,9 @@ Functionality:
 - ✅ create GET /api/books test
 - ✅ commit & push
 - ✅ pass test above
-- 📌 commit & push
-- create POST /api/books test
-- commit & push
+- ✅ commit & push
+- ✅ create POST /api/books test (valid and invalid doc)
+- 📌commit & push
 
 ------------------ Sun, Aug 14 -----------------------
 
