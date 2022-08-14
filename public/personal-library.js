@@ -5,8 +5,9 @@
 const { log } = console
 
 $(() => {
-  $('#commentTest').on('submit', function() {
-    let _id = $('#idinputtest').val()
+  $('#commentTest').on('submit', function () {
+    const _id = $('#idinputtest').val()
+
     $(this).attr('action', '/api/books/' + _id)
   })
 })
