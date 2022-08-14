@@ -87,17 +87,17 @@ Functionality:
   - ensure clicking on a li element changes the bookDetail div from "select a book" to illustrating all of the book's info, including a form to add comments OR delete the book
   - ensure the "delete all books" button at the very bottom works
 
------------------- Thu, Aug 11 (TODAY) ------------------
+------------------ Thu, Aug 11 ------------------
 
 - ✅ Setup main HTML page
 - ✅ Setup Handler file
-
+ 
 ------------------ Fri, Aug 12 -----------------------
 
 - ✅ Setup DAO file (and database)
 - ✅ commit & push
 - ✅ create mongodb book schema
-
+ 
 ------------------ Sat, Aug 13 -----------------------
 
 - ✅ create GET /api/books test
@@ -106,21 +106,22 @@ Functionality:
 - ✅ commit & push
 - ✅ create POST /api/books test (valid and invalid doc)
 - ✅ commit & push
-
+ 
 ------------------ Sun, Aug 14 -----------------------
 
 - ✅ pass test above
+- ✅ commit & push
+- ✅ create POST /api/books/_id test
+  - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
 - 📌 commit & push
-- create POST /api/books/_id test
-- commit & push
-
+ 
 ------------------ Mon, Aug 15 -----------------------
 
 - pass test above
 - commit & push
 - make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
 - commit & push
-
+ 
 ------------------ Tue, Aug 16 -----------------------
 
 - pass test above
@@ -129,14 +130,14 @@ Functionality:
 - commit & push
 - pass test above
 - commit & push
-
+ 
 ------------------ Wed, Aug 17 -----------------------
 
 - make a form test for the #bookDetail "addcomment" and "deletebook" buttons
 - commit & push
 - pass test above
 - commit & push
-
+ 
 ------------------ Thu, Aug 18 -----------------------
 
 - make a form test for the bottom "delete all books" button
@@ -144,9 +145,10 @@ Functionality:
 - pass test above
 - commit & push
 - check for and fix any missing functionality and bugs
-
+ 
 ------------------ Fri, Aug 19 (DEADLINE) -----------------------
 
 - deploy to heroku
 - test heroku manually
 - make and complete tasklist for last day (what needs to get cleaned up?)
+ 

@@ -48,9 +48,13 @@ router
   .patch(IssueHandler.patch)
   .delete(IssueHandler.delete)
 
-router.route('/books')
+router
+  .route('/books')
   .get(LibraryHandler.get)
-  .post(LibraryHandler.post)
+  .post(LibraryHandler.createBook)
   .delete(LibraryHandler.delete)
+
+router.route('/books/:_id')
+  .post(LibraryHandler.addComment)
 
 module.exports = router

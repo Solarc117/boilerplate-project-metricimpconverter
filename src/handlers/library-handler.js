@@ -1,7 +1,8 @@
 'use strict'
 const { log, error } = console
 
-const LibraryDAO = require('../dao/library-dao.js')
+const { ObjectId } = require('mongodb'),
+  LibraryDAO = require('../dao/library-dao.js')
 
 module.exports = class LibraryHandler {
   /**
@@ -20,7 +21,7 @@ module.exports = class LibraryHandler {
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
    */
-  static async post(req, res) {
+  static async createBook(req, res) {
     const { body: book } = req,
       { title } = book
 
@@ -42,6 +43,21 @@ module.exports = class LibraryHandler {
     const result = await LibraryDAO.postBook(book)
 
     res.status(result?.error ? 500 : 200).json(result)
+  }
+
+  /**
+   * @description Adds a comment to the book with the passed _id.
+   * @param {object} req The Express request object.
+   * @param {object} res The Express response object.
+   */
+  static async addComment(req, res) {
+    const {
+      body: { id, comment },
+    } = req
+
+    log(req.body)
+
+    log(id, comment)
   }
 
   /**

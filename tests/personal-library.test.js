@@ -57,22 +57,49 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
   suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_2))
   suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_3))
 
-  test(`1. GET ${BOOKS}`, done => {
+  test(`1. GET ${BOOKS}, and POST ${BOOKS}/:_id`, done => {
     chai
       .request(server)
       .get(BOOKS)
       .end((err, res) => {
-        const { status, ok, body: books } = res
+        const { status, ok, body: books } = res,
+          { _id } = books?.[2]
 
         assert.isNull(err)
-        assert.strictEqualPairs([status, 200], [books.length, 3])
+        assert.strictEqualPairs(
+          [status, 200],
+          [books.length, 3],
+          [books[2].commentcount, 0]
+        )
         assert.isTrue(ok)
 
-        done()
+        const test4Path = `${BOOKS}/${_id}`,
+          test4Body = {
+            _id,
+            comment: "don't know this book :/",
+          }
+        chai
+          .request(server)
+          .post(test4Path)
+          .send(test4Body)
+          .end((err, res) => {
+            const {
+              status,
+              ok,
+              body: { _id, title, commentcount, comments },
+            } = res
+
+            assert.isNull(err)
+            assert.strictEqualPairs([status, 200], commentcount, comments.length)
+            assert.isTrue(ok)
+            assert.areStrings(_id, title, ...comments)
+
+            done()
+          })
       })
   })
 
-  test(`2. create a valid book: POST ${BOOKS}`, done => {
+  test(`3. create a valid book: POST ${BOOKS}`, done => {
     chai
       .request(server)
       .post(BOOKS)
@@ -93,7 +120,7 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
       })
   })
 
-  test(`3. create an invalid book: POST ${BOOKS}`, done => {
+  test(`4. create an invalid book: POST ${BOOKS}`, done => {
     chai
       .request(server)
       .post(BOOKS)
