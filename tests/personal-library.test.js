@@ -75,7 +75,6 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
 
         const test4Path = `${BOOKS}/${_id}`,
           test4Body = {
-            _id,
             comment: "don't know this book :/",
           }
         chai

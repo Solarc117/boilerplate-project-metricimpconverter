@@ -52,12 +52,11 @@ module.exports = class LibraryHandler {
    */
   static async addComment(req, res) {
     const {
-      body: { id, comment },
+      params: { _id },
+      body: { comment },
     } = req
 
-    log(req.body)
-
-    log(id, comment)
+    
   }
 
   /**

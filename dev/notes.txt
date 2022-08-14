@@ -87,18 +87,18 @@ Functionality:
   - ensure clicking on a li element changes the bookDetail div from "select a book" to illustrating all of the book's info, including a form to add comments OR delete the book
   - ensure the "delete all books" button at the very bottom works
 
------------------- Thu, Aug 11 ------------------
+------------------ ✅Thu, Aug 11 ------------------
 
 - ✅ Setup main HTML page
 - ✅ Setup Handler file
  
------------------- Fri, Aug 12 -----------------------
+------------------ ✅Fri, Aug 12 -----------------------
 
 - ✅ Setup DAO file (and database)
 - ✅ commit & push
 - ✅ create mongodb book schema
  
------------------- Sat, Aug 13 -----------------------
+------------------ ✅Sat, Aug 13 -----------------------
 
 - ✅ create GET /api/books test
 - ✅ commit & push
@@ -107,17 +107,19 @@ Functionality:
 - ✅ create POST /api/books test (valid and invalid doc)
 - ✅ commit & push
  
------------------- Sun, Aug 14 -----------------------
+------------------ ✅Sun, Aug 14 -----------------------
 
 - ✅ pass test above
 - ✅ commit & push
 - ✅ create POST /api/books/_id test
   - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
-- 📌 commit & push
+- ✅ commit & push
  
------------------- Mon, Aug 15 -----------------------
+------------------ 📌 Mon, Aug 15 -----------------------
 
-- pass test above
+- ✅ only submit the comment in the body for POST /api/books/:_id requests
+- 📌 commit & push
+- pass test #1
 - commit & push
 - make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
 - commit & push
