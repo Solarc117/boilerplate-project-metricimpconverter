@@ -131,6 +131,8 @@ Functionality:
 
   - ✅ make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
   - 📌 commit & push
+  - pass test above
+  - commit & push
  
 ------------------ Wed, Aug 17 -----------------------
 

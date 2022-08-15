@@ -173,6 +173,7 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
       const bookDetailRegex = /^[\w\s]+\(id: \w+\)$/
 
       assert.match(browser.text('#detailTitle'), bookDetailRegex)
+      browser.assert.element('#newCommentForm')
 
       done()
     })
