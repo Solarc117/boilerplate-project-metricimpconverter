@@ -89,7 +89,7 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
             } = res
 
             assert.isNull(err)
-            assert.strictEqualPairs([status, 200], commentcount, comments.length)
+            assert.strictEqualPairs([status, 200], [commentcount, comments.length])
             assert.isTrue(ok)
             assert.areStrings(_id, title, ...comments)
 
