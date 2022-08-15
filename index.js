@@ -18,7 +18,7 @@ MongoClient.connect(env.MONGO_URI, {
 
     const port = env.PORT || 3000
     app.listen(port, () => {
-      log(`\x1b[32m\n🚀 listening on port ${port}`)
+      log(`\x1b[32m\n🚀 listening on port ${port}\n`)
       if (env.NODE_ENV !== 'dev') return
 
       try {

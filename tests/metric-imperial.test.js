@@ -14,7 +14,7 @@ const chai = require('chai'),
 
 chai.use(chaiHttp)
 
-suite('🧪 \x1b[33mMetric Imperial: ConvertHandler', () => {
+suite('🧪 \x1b[33mMetric Imperial: ConvertHandler\n', () => {
   test('1. Read integer inputs', done => {
     const integer = 3,
       unit = 'L',
@@ -310,7 +310,7 @@ suite('🧪 \x1b[33mMetric Imperial: ConvertHandler', () => {
   })
 })
 
-suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
+suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
   test('1. Convert 10L: GET /api/convert', done => {
     const num = 10,
       unit = 'L',

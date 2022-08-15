@@ -1,8 +1,7 @@
-const { log } = console
-
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
   server = require('../src/server.js'),
+  Browser = require('zombie'),
   [
     TEST_DOC_1,
     TEST_DOC_2,
@@ -50,8 +49,9 @@ assert.strictEqualPairs = function (...pairs) {
 }
 
 chai.use(chaiHttp)
+Browser.site = 'http://localhost:3000/'
 
-suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
+suite('🧪 \x1b[35mPersonal Library: HTTP\n', () => {
   suiteSetup(() => chai.request(server).delete(BOOKS))
   suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_1))
   suiteSetup(() => chai.request(server).post(BOOKS).send(TEST_DOC_2))
@@ -73,14 +73,14 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
         )
         assert.isTrue(ok)
 
-        const test4Path = `${BOOKS}/${_id}`,
-          test4Body = {
+        const testPath = `${BOOKS}/${_id}`,
+          testBody = {
             comment: "don't know this book :/",
           }
         chai
           .request(server)
-          .post(test4Path)
-          .send(test4Body)
+          .post(testPath)
+          .send(testBody)
           .end((err, res) => {
             const {
               status,
@@ -89,7 +89,10 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
             } = res
 
             assert.isNull(err)
-            assert.strictEqualPairs([status, 200], [commentcount, comments.length])
+            assert.strictEqualPairs(
+              [status, 200],
+              [commentcount, comments.length]
+            )
             assert.isTrue(ok)
             assert.areStrings(_id, title, ...comments)
 
@@ -98,7 +101,7 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
       })
   })
 
-  test(`3. create a valid book: POST ${BOOKS}`, done => {
+  test(`2. create a valid book: POST ${BOOKS}`, done => {
     chai
       .request(server)
       .post(BOOKS)
@@ -119,7 +122,7 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
       })
   })
 
-  test(`4. create an invalid book: POST ${BOOKS}`, done => {
+  test(`3. create an invalid book: POST ${BOOKS}`, done => {
     chai
       .request(server)
       .post(BOOKS)
@@ -138,5 +141,26 @@ suite('🧪 \x1b[35mPersonal Library: HTTP', () => {
 
         done()
       })
+  })
+})
+
+suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
+  const browser = new Browser()
+
+  suiteSetup(() => browser.visit('/personal-library'))
+
+  test('successfull headless browser setup', () =>
+    assert.isString(browser.site))
+
+  test('1. book submitted is displayed in ul', done => {
+    const newBookTitle = 'The Hunger Games'
+
+    browser.assert.element('form#newBookForm')
+    browser.fill('#bookTitleToAdd', newBookTitle)
+    browser.pressButton('#newBook', () => {
+      browser.assert.elements('li.bookItem', 5)
+
+      done()
+    })
   })
 })

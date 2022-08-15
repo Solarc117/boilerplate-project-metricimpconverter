@@ -89,69 +89,70 @@ Functionality:
 
 ------------------ ✅Thu, Aug 11 ------------------
 
-- ✅ Setup main HTML page
-- ✅ Setup Handler file
+  - ✅ Setup main HTML page
+  - ✅ Setup Handler file
  
 ------------------ ✅Fri, Aug 12 -----------------------
 
-- ✅ Setup DAO file (and database)
-- ✅ commit & push
-- ✅ create mongodb book schema
+  - ✅ Setup DAO file (and database)
+  - ✅ commit & push
+  - ✅ create mongodb book schema
  
 ------------------ ✅Sat, Aug 13 -----------------------
 
-- ✅ create GET /api/books test
-- ✅ commit & push
-- ✅ pass test above
-- ✅ commit & push
-- ✅ create POST /api/books test (valid and invalid doc)
-- ✅ commit & push
+  - ✅ create GET /api/books test
+  - ✅ commit & push
+  - ✅ pass test above
+  - ✅ commit & push
+  - ✅ create POST /api/books test (valid and invalid doc)
+  - ✅ commit & push
  
 ------------------ ✅Sun, Aug 14 -----------------------
 
-- ✅ pass test above
-- ✅ commit & push
-- ✅ create POST /api/books/_id test
-  - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
-- ✅ commit & push
+  - ✅ pass test above
+  - ✅ commit & push
+  - ✅ create POST /api/books/_id test
+    - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
+  - ✅ commit & push
  
 ------------------ 📌 Mon, Aug 15 -----------------------
 
-- ✅ only submit the comment in the body for POST /api/books/:_id requests
-- ✅ commit & push
-- ✅ pass test #1
-  - ✅ fix comment(s)count bug (there should only be a commentcount property, NOT commentScount)
-- 📌 commit & push
-- make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
-- commit & push
+  - ✅ only submit the comment in the body for POST /api/books/:_id requests
+  - ✅ commit & push
+  - ✅ pass test #1
+    - ✅ fix comment(s)count bug (there should only be a commentcount property, NOT commentScount)
+  - ✅ commit & push
+  - ✅ make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
+    - ✅ install zombie
+  - 📌 commit & push
  
 ------------------ Tue, Aug 16 -----------------------
 
-- pass test above
-- commit & push
-- make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
-- commit & push
-- pass test above
-- commit & push
+  - pass test above
+  - commit & push
+  - make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
+  - commit & push
+  - pass test above
+  - commit & push
  
 ------------------ Wed, Aug 17 -----------------------
 
-- make a form test for the #bookDetail "addcomment" and "deletebook" buttons
-- commit & push
-- pass test above
-- commit & push
+  - make a form test for the #bookDetail "addcomment" and "deletebook" buttons
+  - commit & push
+  - pass test above
+  - commit & push
  
 ------------------ Thu, Aug 18 -----------------------
 
-- make a form test for the bottom "delete all books" button
-- commit & push
-- pass test above
-- commit & push
-- check for and fix any missing functionality and bugs
+  - make a form test for the bottom "delete all books" button
+  - commit & push
+  - pass test above
+  - commit & push
+  - check for and fix any missing functionality and bugs
  
 ------------------ Fri, Aug 19 (DEADLINE) -----------------------
 
-- deploy to heroku
-- test heroku manually
-- make and complete tasklist for last day (what needs to get cleaned up?)
+  - deploy to heroku
+  - test heroku manually
+  - make and complete tasklist for last day (what needs to get cleaned up?)
  

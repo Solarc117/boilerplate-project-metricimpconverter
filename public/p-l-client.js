@@ -23,6 +23,7 @@ $(document).on('ready', function () {
       items.push('<p>...and ' + (data.length - 15) + ' more!</p>')
     }
     $('<ul/>', {
+      id: 'bookList',
       class: 'listWrapper',
       html: items.join(''),
     }).appendTo('#display')
