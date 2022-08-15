@@ -118,9 +118,10 @@ Functionality:
 ------------------ 📌 Mon, Aug 15 -----------------------
 
 - ✅ only submit the comment in the body for POST /api/books/:_id requests
+- ✅ commit & push
+- ✅ pass test #1
+  - ✅ fix comment(s)count bug (there should only be a commentcount property, NOT commentScount)
 - 📌 commit & push
-- pass test #1
-- commit & push
 - make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
 - commit & push
  

@@ -33,6 +33,7 @@ module.exports = class LibraryDAO {
 
   /**
    * @description Attemps to fetch all books from the current collection.
+   * @async
    * @returns {object | null} The result of the find operation.
    */
   static async getBooks() {
@@ -52,9 +53,11 @@ module.exports = class LibraryDAO {
 
   /**
    * @description Attempts to post the received book to the currently connected collection.
+   * @async
    * @param {Book} book The book to post.
+   * @returns {object | null} The result of the insert operation.
    */
-  static async postBook(book) {
+  static async insertBook(book) {
     let postBookResult
 
     try {
@@ -68,7 +71,41 @@ module.exports = class LibraryDAO {
   }
 
   /**
+   * @description Appends the passed comment to the comments array of the book with the passed id, and increments commentcount.
+   * @async
+   * @param {string} _id The id of the book to append to.
+   * @param {string} comment The comment to append.
+   * @returns {object | null} The result of the update operation.
+   */
+  static async appendComment(_id, comment) {
+    const query = { _id: new ObjectId(_id) },
+      update = {
+        $push: {
+          comments: comment,
+        },
+        $inc: {
+          commentcount: 1,
+        },
+      },
+      options = {
+        returnDocument: 'after'
+      }
+    let updateResult
+
+    try {
+      updateResult = await db.findOneAndUpdate(query, update, options)
+    } catch (err) {
+      error('\x1b[31m', err)
+      return { error: err.message }
+    }
+
+    return updateResult
+  }
+
+  /**
    * @description Drops the currently connected collection.
+   * @async
+   * @returns {object | boolean} The result of the drop operation, or an object containing an error property in the case of a server error.
    */
   static async deleteAll() {
     let dropResult
@@ -88,6 +125,6 @@ module.exports = class LibraryDAO {
  * @typedef Book
  * @property {ObjectId} _id
  * @property {string} title
- * @property {number} commentscount An Integer.
+ * @property {number} commentcount An Integer.
  * @property {[string]} comments An array containing comment strings.
  */

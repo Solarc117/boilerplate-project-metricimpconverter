@@ -35,12 +35,12 @@ module.exports = class LibraryHandler {
 
     if (!Array.isArray(book.comments)) {
       book.comments = []
-      book.commentscount = 0
+      book.commentcount = 0
     }
 
-    book.commentscount = book.comments.length
+    book.commentcount = book.comments.length
 
-    const result = await LibraryDAO.postBook(book)
+    const result = await LibraryDAO.insertBook(book)
 
     res.status(result?.error ? 500 : 200).json(result)
   }
@@ -52,11 +52,13 @@ module.exports = class LibraryHandler {
    */
   static async addComment(req, res) {
     const {
-      params: { _id },
-      body: { comment },
-    } = req
+        params: { _id },
+        body: { comment },
+      } = req,
+      result = await LibraryDAO.appendComment(_id, comment)
 
-    
+
+    res.status(result?.error ? 500 : 200).json(result?.value ?? result)
   }
 
   /**
