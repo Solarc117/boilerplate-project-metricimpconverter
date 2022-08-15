@@ -53,6 +53,7 @@
   ● review all method documentation
   ● style issue-tracker's index page
   ● verify all issues posted have created_on and last_updated properties
+📄 I should try to make tests independent; if a test is dependent on an action, ex. submits a document, then attempts to modify it, both actions should fall within the same document, instead of having the first action in test #1, and the second in test #2, for example. This would allow for more efficient troubleshotting/debugging.
 
 ✨ ways to optimize learning that I should remember:
     ● take short, mind-wandering breaks apart from ultradian breaks
@@ -115,7 +116,7 @@ Functionality:
     - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
   - ✅ commit & push
  
------------------- 📌 Mon, Aug 15 -----------------------
+------------------ ✅ Mon, Aug 15 -----------------------
 
   - ✅ only submit the comment in the body for POST /api/books/:_id requests
   - ✅ commit & push
@@ -124,16 +125,12 @@ Functionality:
   - ✅ commit & push
   - ✅ make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
     - ✅ install zombie
-  - 📌 commit & push
+  - ✅ commit & push
  
------------------- Tue, Aug 16 -----------------------
+------------------ 📌 Tue, Aug 16 -----------------------
 
-  - pass test above
-  - commit & push
-  - make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
-  - commit & push
-  - pass test above
-  - commit & push
+  - ✅ make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
+  - 📌 commit & push
  
 ------------------ Wed, Aug 17 -----------------------
 

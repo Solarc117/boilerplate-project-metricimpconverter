@@ -149,8 +149,7 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
 
   suiteSetup(() => browser.visit('/personal-library'))
 
-  test('successfull headless browser setup', () =>
-    assert.isString(browser.site))
+  test('browser setup', () => assert.isString(browser.site))
 
   test('1. book submitted is displayed in ul', done => {
     const newBookTitle = 'The Hunger Games'
@@ -159,6 +158,21 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
     browser.fill('#bookTitleToAdd', newBookTitle)
     browser.pressButton('#newBook', () => {
       browser.assert.elements('li.bookItem', 5)
+
+      done()
+    })
+  })
+
+  test('2. clicking on a book displays information and form', done => {
+    browser.assert.text(
+      '#detailTitle',
+      'Select a book to see its details and comments'
+    )
+    // To access ids with leading numeric characters, they must be prepended with \\3, and appended by a whitespace in the selector string.
+    browser.click('#\\30 ', () => {
+      const bookDetailRegex = /^[\w\s]+\(id: \w+\)$/
+
+      assert.match(browser.text('#detailTitle'), bookDetailRegex)
 
       done()
     })
