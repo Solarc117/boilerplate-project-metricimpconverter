@@ -40,21 +40,15 @@ $(document).on('ready', function () {
     )
     $.getJSON('/api/books/' + itemsRaw[this.id]._id, function (data) {
       comments = []
-      $.each(data.comments, function (i, val) {
-        comments.push('<li>' + val + '</li>')
-      })
+      $.each(data.comments, (i, val) => comments.push(`<li>${val}</li>`))
       comments.push(
         '<br><form id="newCommentForm"><input style="width:300px" type="text" class="form-control" id="commentToAdd" name="comment" placeholder="New Comment"></form>'
       )
       comments.push(
-        '<br><button class="btn btn-info addComment" id="' +
-          data._id +
-          '">Add Comment</button>'
+        `<br><button class="btn btn-info addComment" id="addComment" data-_id="${data._id}">Add Comment</button>`
       )
       comments.push(
-        '<button class="btn btn-danger deleteBook" id="' +
-          data._id +
-          '">Delete Book</button>'
+        `<button class="btn btn-danger deleteBook" id="deleteBook" data-_id="${data._id}">Delete Book</button>`
       )
       $('#detailComments').html(comments.join(''))
     })
@@ -62,26 +56,25 @@ $(document).on('ready', function () {
 
   $('#bookDetail').on('click', 'button.deleteBook', function () {
     $.ajax({
-      url: '/api/books/' + this.id,
+      url: '/api/books/' + this.dataset._id,
       type: 'delete',
       success: function (data) {
-        //update list
+        // Update list.
         $('#detailComments').html(
-          '<p style="color: red;">' + data + '<p><p>Refresh the page</p>'
+          `<p style="color: red;">${data}<p><p>Refresh the page</p>`
         )
       },
     })
   })
 
   $('#bookDetail').on('click', 'button.addComment', function () {
-    let newComment = $('#commentToAdd').val()
-    newComment = newComment.replace(tagRegex, '') // Sanitize new comment before adding to the HTML below.
+    const newComment = $('#commentToAdd').val().replace(tagRegex, '') // Sanitize new comment before adding to the HTML below.
     $.ajax({
-      url: '/api/books/' + this.id,
+      url: '/api/books/' + this.dataset._id,
       type: 'post',
       dataType: 'json',
       data: $('#newCommentForm').serialize(),
-      success: function (data) {
+      success(data) {
         comments.unshift(newComment) // Adds new comment to top of list.
         $('#detailComments').html(comments.join(''))
       },
@@ -94,7 +87,7 @@ $(document).on('ready', function () {
       type: 'post',
       dataType: 'json',
       data: $('#newBookForm').serialize(),
-      success: function (data) {
+      success(data) {
         //update list
       },
     })

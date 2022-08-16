@@ -170,10 +170,47 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
     )
     // To access ids with leading numeric characters, they must be prepended with \\3, and appended by a whitespace in the selector string.
     browser.click('#\\30 ', () => {
-      const bookDetailRegex = /^[\w\s]+\(id: \w+\)$/
+      const titleAndId = /^[\w\s]+\(id: \w+\)$/
 
-      assert.match(browser.text('#detailTitle'), bookDetailRegex)
+      assert.match(browser.text('#detailTitle'), titleAndId)
       browser.assert.element('#newCommentForm')
+
+      done()
+    })
+  })
+
+  function getLiCount() {
+    return Array.from(browser.querySelector('#detailComments').children).filter(
+      node => node.tagName === 'LI'
+    ).length
+  }
+  test('3. add comment after clicking li', done => {
+    const comment = 'I LOVE THIS BOOK',
+      liCountBefore = getLiCount()
+
+    browser.assert.elements('#commentToAdd', '#addComment')
+
+    browser.fill('#commentToAdd', comment)
+    browser.pressButton('#addComment', () => {
+      const liCountAfter = getLiCount()
+
+      assert.strictEqual(liCountAfter, liCountBefore + 1)
+      browser.assert.text(
+        `#detailComments > li:nth-child(${liCountAfter})`,
+        comment
+      )
+
+      done()
+    })
+  })
+
+  test('4. delete book', done => {
+    browser.assert.element('#deleteBook')
+    browser.click('#deleteBook', () => {
+      browser.assert.element('#detailComments > p')
+      browser.assert.text('#detailComments > p', 'delete successful')
+      browser.assert.element('#detailComments:last-child')
+      assert.match(browser.text('#detailComments:last-child'), /refresh/i)
 
       done()
     })

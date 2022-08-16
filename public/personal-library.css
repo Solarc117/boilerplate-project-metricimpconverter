@@ -40,6 +40,10 @@ input {
   margin-left: 10%
 }
 
+#bookDetail button {
+  margin-right: 5px;
+}
+
 #deleteAllBooks {
   margin: 10px auto 10px 5%;
 }

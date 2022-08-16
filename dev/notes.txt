@@ -127,18 +127,20 @@ Functionality:
     - ✅ install zombie
   - ✅ commit & push
  
------------------- 📌 Tue, Aug 16 -----------------------
+------------------ ✅ Tue, Aug 16 -----------------------
 
   - ✅ make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
   - ✅ commit & push
   - ✅ pass test above
-  - 📌 commit & push
+  - ✅ commit & push
  
------------------- Wed, Aug 17 -----------------------
+------------------ 📌 Wed, Aug 17 -----------------------
 
-  - make a form test for the #bookDetail "addcomment" and "deletebook" buttons
-  - commit & push
+  - ✅ make a form test for the #bookDetail "addcomment" and "deletebook" buttons
+  - 📌 commit & push
   - pass test above
+  - commit & push
+  - edit the handler to not return null, or add null checking in p-l-client
   - commit & push
  
 ------------------ Thu, Aug 18 -----------------------
@@ -148,6 +150,7 @@ Functionality:
   - pass test above
   - commit & push
   - check for and fix any missing functionality and bugs
+    - make all tests asynchronous, if they aren't already, in order to improve speed while running
  
 ------------------ Fri, Aug 19 (DEADLINE) ---------------
 
