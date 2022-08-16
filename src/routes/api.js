@@ -50,11 +50,13 @@ router
 
 router
   .route('/books')
-  .get(LibraryHandler.get)
+  .get(LibraryHandler.getAllBooks)
   .post(LibraryHandler.createBook)
   .delete(LibraryHandler.delete)
 
-router.route('/books/:_id')
+router
+  .route('/books/:_id')
+  .get(LibraryHandler.getBook)
   .post(LibraryHandler.addComment)
 
 module.exports = router

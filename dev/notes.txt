@@ -130,9 +130,9 @@ Functionality:
 ------------------ 📌 Tue, Aug 16 -----------------------
 
   - ✅ make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
+  - ✅ commit & push
+  - ✅ pass test above
   - 📌 commit & push
-  - pass test above
-  - commit & push
  
 ------------------ Wed, Aug 17 -----------------------
 
@@ -149,7 +149,7 @@ Functionality:
   - commit & push
   - check for and fix any missing functionality and bugs
  
------------------- Fri, Aug 19 (DEADLINE) -----------------------
+------------------ Fri, Aug 19 (DEADLINE) ---------------
 
   - deploy to heroku
   - test heroku manually

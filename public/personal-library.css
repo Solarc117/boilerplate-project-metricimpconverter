@@ -31,8 +31,13 @@ input {
   margin-bottom: 5px;
 }
 
-.display > li {
-  cursor: pointer
+.bookItem {
+  cursor: pointer;
+  margin: 10px auto 10px 5%;
+}
+
+#bookDetail li {
+  margin-left: 10%
 }
 
 #deleteAllBooks {

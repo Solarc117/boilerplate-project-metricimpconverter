@@ -71,6 +71,28 @@ module.exports = class LibraryDAO {
   }
 
   /**
+   * @description Attempts to fetch a single book document from the connected collection, using its _id.
+   * @param {string} _id The id of the book to fetch.
+   * @async
+   * @returns {object | null} The result of the find operation.
+   */
+  static async getBookById(_id) {
+    const query = {
+      _id: new ObjectId(_id),
+    }
+    let result
+
+    try {
+      result = await db.findOne(query)
+    } catch (err) {
+      error('\x1b[31m', err)
+      return { error: err.message }
+    }
+
+    return result
+  }
+
+  /**
    * @description Appends the passed comment to the comments array of the book with the passed id, and increments commentcount.
    * @async
    * @param {string} _id The id of the book to append to.
@@ -88,7 +110,7 @@ module.exports = class LibraryDAO {
         },
       },
       options = {
-        returnDocument: 'after'
+        returnDocument: 'after',
       }
     let updateResult
 
