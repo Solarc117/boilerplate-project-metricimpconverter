@@ -207,8 +207,24 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
   test('4. delete book', done => {
     browser.assert.element('#deleteBook')
     browser.click('#deleteBook', () => {
-      browser.assert.text('#detailComments > p:first-child', 'Delete successful')
+      browser.assert.text(
+        '#detailComments > p:first-child',
+        'Delete successful'
+      )
       browser.assert.text('#detailComments > p:last-child', 'Refresh the page')
+
+      done()
+    })
+  })
+
+  test('5. delete all books', done => {
+    browser.assert.element('#deleteAllBooks')
+    browser.click('#deleteAllBooks', () => {
+      browser.assert.elements(
+        '#display li',
+        0,
+        'all bookItems in the display div should be removed'
+      )
 
       done()
     })

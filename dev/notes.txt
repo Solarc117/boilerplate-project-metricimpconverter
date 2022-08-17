@@ -135,22 +135,19 @@ book document schema: {
   - ✅ pass test above
   - ✅ commit & push
  
------------------- 📌 Wed, Aug 17 -----------------------
+------------------ ✅ Wed, Aug 17 -----------------------
 
   - ✅ make a form test for the #bookDetail "addcomment" and "deletebook" buttons
   - ✅ commit & push
   - ✅ pass test above
   - ✅ commit & push
   - ✅ edit the DAO to not return null
-  - 📌 commit & push
-  - figure out how to enforce the schema
-  - commit & push
-
+  - ✅ commit & push
  
------------------- Thu, Aug 18 -----------------------
+------------------ 📌 Thu, Aug 18 -----------------------
 
-  - make a form test for the bottom "delete all books" button
-  - commit & push
+  - ✅ make a form test for the bottom "delete all books" button
+  - 📌 commit & push
   - pass test above
   - commit & push
   - check for and fix any missing functionality and bugs
