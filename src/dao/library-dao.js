@@ -34,7 +34,7 @@ module.exports = class LibraryDAO {
   /**
    * @description Attemps to fetch all books from the current collection.
    * @async
-   * @returns {object | null} The result of the find operation.
+   * @returns {object | Array} The result of the find operation.
    */
   static async getBooks() {
     let cursor
@@ -55,7 +55,7 @@ module.exports = class LibraryDAO {
    * @description Attempts to post the received book to the currently connected collection.
    * @async
    * @param {Book} book The book to post.
-   * @returns {object | null} The result of the insert operation.
+   * @returns {object} The result of the insert operation.
    */
   static async insertBook(book) {
     let postBookResult
@@ -74,7 +74,7 @@ module.exports = class LibraryDAO {
    * @description Attempts to fetch a single book document from the connected collection, using its _id.
    * @param {string} _id The id of the book to fetch.
    * @async
-   * @returns {object | null} The result of the find operation.
+   * @returns {object} The book document, or an empty object if no document was found.
    */
   static async getBookById(_id) {
     const query = {
@@ -89,7 +89,7 @@ module.exports = class LibraryDAO {
       return { error: err.message }
     }
 
-    return result
+    return result === null ? {} : result
   }
 
   /**
@@ -97,7 +97,7 @@ module.exports = class LibraryDAO {
    * @async
    * @param {string} _id The id of the book to append to.
    * @param {string} comment The comment to append.
-   * @returns {object | null} The result of the update operation.
+   * @returns {object} The result of the update operation.
    */
   static async appendComment(_id, comment) {
     const query = { _id: new ObjectId(_id) },
@@ -128,7 +128,7 @@ module.exports = class LibraryDAO {
    * @description Attempts to delete a single book from the database using its _id.
    * @async
    * @param {string} _id The _id of the book to delete.
-   * @returns {object | null} The result of the delete operation.
+   * @returns {object} The result of the delete operation.
    */
   static async deleteSingle(_id) {
     const query = { _id: new ObjectId(_id) }

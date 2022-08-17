@@ -38,22 +38,23 @@
 
 <!-------------------- END ------------------------->
 
-📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
-📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
-📄 render works with templates, like pug. The sendFile method sends file as is.
-📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
-📄 difference between req.body, req.query, and req.params:
-  📄 req.body is what usually contains the majority of information relevant to the request
-  📄 query contains the '...?KEY=VALUE' pairs of a path
-  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
-📄 be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
-📄 Unfinished tasks from issue-tracker:
-  ● remove index properties from documents
-  ● create a test that deletes the FIRST, and LAST element of a document
-  ● review all method documentation
-  ● style issue-tracker's index page
-  ● verify all issues posted have created_on and last_updated properties
-📄 I should try to make tests independent; if a test is dependent on an action, ex. submits a document, then attempts to modify it, both actions should fall within the same document, instead of having the first action in test #1, and the second in test #2, for example. This would allow for more efficient troubleshotting/debugging.
+📄 Notes:
+  📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
+  📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
+  📄 render works with templates, like pug. The sendFile method sends file as is.
+  📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
+  📄 difference between req.body, req.query, and req.params:
+    📄 req.body is what usually contains the majority of information relevant to the request
+    📄 query contains the '...?KEY=VALUE' pairs of a path
+    📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
+  📄 be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
+  📄 Unfinished tasks from issue-tracker:
+    ● remove index properties from documents
+    ● create a test that deletes the FIRST, and LAST element of a document
+    ● review all method documentation
+    ● style issue-tracker's index page
+    ● verify all issues posted have created_on and last_updated properties
+  📄 I should try to make tests independent; if a test is dependent on an action, ex. submits a document, then attempts to modify it, both actions should fall within the same document, instead of having the first action in test #1, and the second in test #2, for example. This would allow for more efficient troubleshotting/debugging.
 
 ✨ ways to optimize learning that I should remember:
     ● take short, mind-wandering breaks apart from ultradian breaks
@@ -74,7 +75,7 @@ book document schema: {
   comments: [string],
 }
 
-Functionality:
+✨ Functionality:
   API:
   - respond to GET requests to /api/books with an array containing ALL book documents
   - respond to POST requests to /api/books, with a body containing the book's title, with the book's title and _id
@@ -139,9 +140,12 @@ Functionality:
   - ✅ make a form test for the #bookDetail "addcomment" and "deletebook" buttons
   - ✅ commit & push
   - ✅ pass test above
+  - ✅ commit & push
+  - ✅ edit the DAO to not return null
   - 📌 commit & push
-  - edit the handler to not return null, or add null checking in p-l-client
+  - figure out how to enforce the schema
   - commit & push
+
  
 ------------------ Thu, Aug 18 -----------------------
 
