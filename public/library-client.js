@@ -1,9 +1,15 @@
-// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts.
+// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts. Credit to @dgdev1024 for catching this vulnerability and coding this regex, and any implementations of it in this file.
 const tagRegex = /(?:\<\/?.+\>)/g
 
-$(document).on('ready', function () {
-  let items = []
-  let itemsRaw = []
+$(function () {
+  function resetBookDetail() {
+    $('#bookDetail').html(
+      `<p id="detailTitle">Select a book to see its details and comments</p>
+      <ol id="detailComments"></ol>`
+    )
+  }
+  let items = [],
+    itemsRaw = []
 
   $.getJSON('/api/books', data => {
     itemsRaw = data
@@ -111,14 +117,13 @@ $(document).on('ready', function () {
     })
   })
 
-  $('#deleteAllBooks').on('click', function () {
+  $('#deleteAllBooks').on('click', () => {
     $.ajax({
       url: '/api/books',
       type: 'delete',
-      dataType: 'json',
-      data: $('#newBookForm').serialize(),
-      success: function (data) {
-        //update list
+      success() {
+        $('#display li').remove()
+        resetBookDetail()
       },
     })
   })

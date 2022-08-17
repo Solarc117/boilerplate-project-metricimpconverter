@@ -147,9 +147,10 @@ book document schema: {
 ------------------ 📌 Thu, Aug 18 -----------------------
 
   - ✅ make a form test for the bottom "delete all books" button
+  - ✅ commit & push
+  - ✅ pass test above
+  - ✅give credit to the guy that caught the vulnerability
   - 📌 commit & push
-  - pass test above
-  - commit & push
   - check for and fix any missing functionality and bugs
     - make all tests asynchronous, if they aren't already, in order to improve speed while running
  
