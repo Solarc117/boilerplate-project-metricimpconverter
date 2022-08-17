@@ -125,6 +125,26 @@ module.exports = class LibraryDAO {
   }
 
   /**
+   * @description Attempts to delete a single book from the database using its _id.
+   * @async
+   * @param {string} _id The _id of the book to delete.
+   * @returns {object | null} The result of the delete operation.
+   */
+  static async deleteSingle(_id) {
+    const query = { _id: new ObjectId(_id) }
+    let result
+
+    try {
+      result = await db.deleteOne(query)
+    } catch (err) {
+      error('\x1b[31m', err)
+      return { error: err.message }
+    }
+
+    return result
+  }
+
+  /**
    * @description Drops the currently connected collection.
    * @async
    * @returns {object | boolean} The result of the drop operation, or an object containing an error property in the case of a server error.

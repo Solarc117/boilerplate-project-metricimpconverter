@@ -52,11 +52,12 @@ router
   .route('/books')
   .get(LibraryHandler.getAllBooks)
   .post(LibraryHandler.createBook)
-  .delete(LibraryHandler.delete)
+  .delete(LibraryHandler.deleteBooks)
 
 router
   .route('/books/:_id')
   .get(LibraryHandler.getBook)
   .post(LibraryHandler.addComment)
+  .delete(LibraryHandler.deleteBook)
 
 module.exports = router

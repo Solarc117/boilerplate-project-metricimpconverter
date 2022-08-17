@@ -5,23 +5,23 @@ $(document).on('ready', function () {
   let items = []
   let itemsRaw = []
 
-  $.getJSON('/api/books', function (data) {
+  $.getJSON('/api/books', data => {
     itemsRaw = data
-    $.each(data, function (i, val) {
+    $.each(data, (i, val) => {
       items.push(
-        '<li class="bookItem" id="' +
-          i +
-          '">' +
-          val.title.replace(tagRegex, '') + // If title in database has HTML tags, remove them.
-          ' - ' +
-          val.commentcount +
-          ' comments</li>'
+        // If title in database has HTML tags, remove them.
+        `<li 
+          class="bookItem" 
+          id="${i}"
+         >
+          ${val.title.replace(tagRegex, '')} - ${val.commentcount} comments
+         </li>`
       )
       return i !== 14
     })
-    if (items.length >= 15) {
-      items.push('<p>...and ' + (data.length - 15) + ' more!</p>')
-    }
+    if (items.length >= 15)
+      items.push(`<p>...and ${data.length - 15} more!</p>`)
+
     $('<ul/>', {
       id: 'bookList',
       class: 'listWrapper',
@@ -32,25 +32,42 @@ $(document).on('ready', function () {
   let comments = []
   $('#display').on('click', 'li.bookItem', function () {
     $('#detailTitle').html(
-      '<b>' +
-        itemsRaw[this.id].title.replace(tagRegex, '') + // If title in database has HTML tags, remove them.
-        '</b> (id: ' +
-        itemsRaw[this.id]._id +
-        ')'
+      // If title in database has HTML tags, remove them.
+      `<b>${itemsRaw[this.id].title.replace(tagRegex, '')}</b> (id: ${
+        itemsRaw[this.id]._id
+      })`
     )
-    $.getJSON('/api/books/' + itemsRaw[this.id]._id, function (data) {
-      comments = []
-      $.each(data.comments, (i, val) => comments.push(`<li>${val}</li>`))
-      comments.push(
-        '<br><form id="newCommentForm"><input style="width:300px" type="text" class="form-control" id="commentToAdd" name="comment" placeholder="New Comment"></form>'
-      )
-      comments.push(
-        `<br><button class="btn btn-info addComment" id="addComment" data-_id="${data._id}">Add Comment</button>`
-      )
-      comments.push(
-        `<button class="btn btn-danger deleteBook" id="deleteBook" data-_id="${data._id}">Delete Book</button>`
-      )
+    $.getJSON(`/api/books/${itemsRaw[this.id]._id}`, book => {
+      comments = book.comments.map(comment => `<li>${comment}</li>`)
       $('#detailComments').html(comments.join(''))
+      $('#bookDetail').append(
+        `<br />
+        <form id="newCommentForm">
+          <input
+            style="width: 300px"
+            type="text"
+            class="form-control"
+            id="commentToAdd"
+            name="comment"
+            placeholder="New Comment"
+          />
+        </form>
+        <br />
+        <button
+          class="btn btn-info addComment"
+          id="addComment"
+          data-_id="${book._id}"
+        >
+          Add Comment
+        </button>
+        <button
+          class="btn btn-danger deleteBook"
+          id="deleteBook"
+          data-_id="${book._id}"
+        >
+          Delete Book
+        </button>`
+      )
     })
   })
 
@@ -58,24 +75,25 @@ $(document).on('ready', function () {
     $.ajax({
       url: '/api/books/' + this.dataset._id,
       type: 'delete',
-      success: function (data) {
-        // Update list.
-        $('#detailComments').html(
-          `<p style="color: red;">${data}<p><p>Refresh the page</p>`
-        )
+      success() {
+        $('#detailComments li').remove()
+        for (const text of ['Delete successful', 'Refresh the page'])
+          $('#detailComments').append(`<p>${text}</p>`)
       },
     })
   })
 
   $('#bookDetail').on('click', 'button.addComment', function () {
-    const newComment = $('#commentToAdd').val().replace(tagRegex, '') // Sanitize new comment before adding to the HTML below.
+    // Sanitize new comment before adding to the HTML below.
+    const newComment = $('#commentToAdd').val().replace(tagRegex, '')
     $.ajax({
       url: '/api/books/' + this.dataset._id,
       type: 'post',
       dataType: 'json',
       data: $('#newCommentForm').serialize(),
+      // This data already contains an array with the updated comments, but the fCC team is using the comments array variable, so I'll keep using that.
       success(data) {
-        comments.unshift(newComment) // Adds new comment to top of list.
+        comments.push(`<li>${newComment}</li>`)
         $('#detailComments').html(comments.join(''))
       },
     })

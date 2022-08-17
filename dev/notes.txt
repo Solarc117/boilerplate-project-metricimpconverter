@@ -137,9 +137,9 @@ Functionality:
 ------------------ 📌 Wed, Aug 17 -----------------------
 
   - ✅ make a form test for the #bookDetail "addcomment" and "deletebook" buttons
+  - ✅ commit & push
+  - ✅ pass test above
   - 📌 commit & push
-  - pass test above
-  - commit & push
   - edit the handler to not return null, or add null checking in p-l-client
   - commit & push
  

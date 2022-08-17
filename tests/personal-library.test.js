@@ -207,10 +207,8 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
   test('4. delete book', done => {
     browser.assert.element('#deleteBook')
     browser.click('#deleteBook', () => {
-      browser.assert.element('#detailComments > p')
-      browser.assert.text('#detailComments > p', 'delete successful')
-      browser.assert.element('#detailComments:last-child')
-      assert.match(browser.text('#detailComments:last-child'), /refresh/i)
+      browser.assert.text('#detailComments > p:first-child', 'Delete successful')
+      browser.assert.text('#detailComments > p:last-child', 'Refresh the page')
 
       done()
     })
