@@ -67,7 +67,7 @@ module.exports = class LibraryDAO {
       return { error: err.message }
     }
 
-    return postBookResult
+    return { _id: postBookResult.insertedId, title: book.title }
   }
 
   /**
