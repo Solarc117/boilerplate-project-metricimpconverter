@@ -44,6 +44,9 @@ module.exports = class IssuesDAO {
     try {
       dropResult = await db.drop()
     } catch (err) {
+      if (err.codeName === 'NamespaceNotFound')
+        return log(`${COLLECTION} collection does not exist`)
+
       error(
         `\x1b[31m\nunsuccessful drop command on ${COLLECTION} collection:`,
         err
