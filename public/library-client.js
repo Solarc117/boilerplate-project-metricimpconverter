@@ -127,11 +127,6 @@ $(() => {
       dataType: 'json',
       data,
       success(data) {
-        console.log(data)
-        // const liCount = $('#bookList').children().length
-        // $('#bookList').append(
-        //   `<li class="bookItem" id="${liCount}">${data.title} - 0 comments</li>`
-        // )
         updateBookItems()
       },
       error({ responseJSON: { error } }) {
