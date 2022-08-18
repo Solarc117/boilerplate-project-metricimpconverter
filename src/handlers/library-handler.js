@@ -1,5 +1,6 @@
 'use strict'
-const LibraryDAO = require('../dao/library-dao.js')
+const { ObjectId } = require('mongodb'),
+  LibraryDAO = require('../dao/library-dao.js')
 
 module.exports = class LibraryHandler {
   /**
@@ -21,7 +22,6 @@ module.exports = class LibraryHandler {
   static async createBook(req, res) {
     const { body: book } = req,
       { title } = book
-
 
     if (typeof title !== 'string')
       return res.status(400).json({ error: 'missing title field' })
@@ -64,10 +64,16 @@ module.exports = class LibraryHandler {
    */
   static async addComment(req, res) {
     const {
-        params: { _id },
-        body: { comment },
-      } = req,
-      result = await LibraryDAO.appendComment(_id, comment)
+      params: { _id },
+      body: { comment },
+    } = req
+
+    if (!ObjectId.isValid(_id))
+      return res.status(400).json({
+        error: 'please input a valid _id',
+      })
+
+    const result = await LibraryDAO.appendComment(_id, comment)
 
     res.status(result?.error ? 500 : 200).json(result?.value ?? result)
   }

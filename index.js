@@ -18,13 +18,13 @@ MongoClient.connect(env.MONGO_URI, {
 
     const port = env.PORT || 3000
     app.listen(port, () => {
-      log(`\x1b[32m\n🚀 listening on port ${port}\n`)
+      log(`\x1b[32m\n🚀 Listening on port ${port}\n`)
       if (env.NODE_ENV !== 'dev') return
 
       try {
         require('./test-runner.js').run()
       } catch (err) {
-        error('\x1b[31m\ntests are not valid:', err)
+        error('\x1b[31m\nTests are not valid:', err)
       }
     })
   })

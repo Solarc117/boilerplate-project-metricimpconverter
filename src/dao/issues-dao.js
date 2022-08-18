@@ -36,7 +36,7 @@ module.exports = class IssuesDAO {
   static async dropTest() {
     if (env.NODE_ENV !== 'dev')
       return {
-        error: `\x1b[31m\nunable to drop ${COLLECTION} collection in a production environment`,
+        error: `\x1b[31m\nUnable to drop ${COLLECTION} collection in a production environment`,
       }
 
     let dropResult
@@ -48,7 +48,7 @@ module.exports = class IssuesDAO {
         return log(`${COLLECTION} collection does not exist`)
 
       error(
-        `\x1b[31m\nunsuccessful drop command on ${COLLECTION} collection:`,
+        `\x1b[31m\nUnsuccessful drop command on ${COLLECTION} collection:`,
         err
       )
       return { error: err.message }

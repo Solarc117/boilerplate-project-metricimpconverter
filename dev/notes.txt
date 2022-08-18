@@ -160,11 +160,17 @@ book document schema: {
   - ✅ clear #newCommentForm and comment/deletebook buttons once book is deleted
   - ✅ commit & push
   - ✅ fix failing tests
+  - ✅ commit & push
+  - ✅ check for  any missing functionality and bugs
+  - ✅ handle incorrect _id submissions when updating book comments
+  - ✅ add indentation to api json responses
   - 📌 commit & push
-  - commit & push
-  - make all tests asynchronous, if they aren't already, in order to improve speed while running
-  - commit & push
-  - check for  any missing functionality and bugs
+  - fix incorrect comment count bug (after using test post comment form on top, and returning)
+  - fix add comment with keyboard bug (move addcomment button to the input's form)
+  - modify only necessary html in #bookDetail when clicking li.bookItem tags, instead of resetting, then adding
+  - set a global timer of 1-3s to change p#detailTitle content back from delete successful to "select a book"
+  - make li.bookItem tags tab-able (accessibility)
+  - 
 
 ------------------ Fri, Aug 19 (DEADLINE) ---------------
 
