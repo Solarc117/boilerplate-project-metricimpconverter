@@ -1,49 +1,59 @@
-// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts. Credit to @dgdev1024 for catching this vulnerability and coding this regex, and any implementations of it in this file.
-const tagRegex = /(?:\<\/?.+\>)/g
+// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts. Credit to @dgdev1024 at Github for catching this vulnerability and coding this regex, and any implementations of it in this file.
+const htmlRegex = /(?:\<\/?.+\>)/g
+let bookItems = [],
+  bookItemsRaw = [],
+  comments = []
 
-$(function () {
-  function resetBookDetail() {
+$(() => {
+  function resetBookDetail(eventType) {
     $('#bookDetail').html(
-      `<p id="detailTitle">Select a book to see its details and comments</p>
+      `<p id="detailTitle">${
+        eventType === 'deleted'
+          ? 'Delete successful'
+          : 'Select a book to see its details and comments'
+      }
       <ol id="detailComments"></ol>`
     )
   }
-  let items = [],
-    itemsRaw = []
-
-  $.getJSON('/api/books', data => {
-    itemsRaw = data
-    $.each(data, (i, val) => {
-      items.push(
-        // If title in database has HTML tags, remove them.
-        `<li 
+  function updateBookItems() {
+    $.getJSON('/api/books', books => {
+      bookItemsRaw = books
+      bookItems = []
+      $.each(bookItemsRaw, (i, book) => {
+        bookItems.push(
+          // If title in database has HTML tags, remove them.
+          `<li 
           class="bookItem" 
           id="${i}"
          >
-          ${val.title.replace(tagRegex, '')} - ${val.commentcount} comments
+          ${book.title.replace(htmlRegex, '')} - ${book.commentcount} comments
          </li>`
-      )
-      return i !== 14
+        )
+        return i !== 14
+      })
+      if (bookItems.length >= 15)
+        bookItems.push(`<p>...and ${bookItemsRaw.length - 15} more!</p>`)
+
+      $('#display *').remove()
+      $('<ul/>', {
+        id: 'bookList',
+        class: 'listWrapper',
+        html: bookItems.join(''),
+      }).appendTo('#display')
     })
-    if (items.length >= 15)
-      items.push(`<p>...and ${data.length - 15} more!</p>`)
+  }
 
-    $('<ul/>', {
-      id: 'bookList',
-      class: 'listWrapper',
-      html: items.join(''),
-    }).appendTo('#display')
-  })
+  updateBookItems()
 
-  let comments = []
   $('#display').on('click', 'li.bookItem', function () {
+    resetBookDetail()
     $('#detailTitle').html(
       // If title in database has HTML tags, remove them.
-      `<b>${itemsRaw[this.id].title.replace(tagRegex, '')}</b> (id: ${
-        itemsRaw[this.id]._id
+      `<b>${bookItemsRaw[this.id].title.replace(htmlRegex, '')}</b> (id: ${
+        bookItemsRaw[this.id]._id
       })`
     )
-    $.getJSON(`/api/books/${itemsRaw[this.id]._id}`, book => {
+    $.getJSON(`/api/books/${bookItemsRaw[this.id]._id}`, book => {
       comments = book.comments.map(comment => `<li>${comment}</li>`)
       $('#detailComments').html(comments.join(''))
       $('#bookDetail').append(
@@ -77,21 +87,22 @@ $(function () {
     })
   })
 
-  $('#bookDetail').on('click', 'button.deleteBook', function () {
+  $('#bookDetail').on('click', 'button.deleteBook', function (event) {
+    event.preventDefault()
     $.ajax({
       url: '/api/books/' + this.dataset._id,
       type: 'delete',
       success() {
-        $('#detailComments li').remove()
-        for (const text of ['Delete successful', 'Refresh the page'])
-          $('#detailComments').append(`<p>${text}</p>`)
+        resetBookDetail('deleted')
+        updateBookItems()
       },
     })
   })
 
   $('#bookDetail').on('click', 'button.addComment', function () {
     // Sanitize new comment before adding to the HTML below.
-    const newComment = $('#commentToAdd').val().replace(tagRegex, '')
+    const newComment = $('#commentToAdd').val().replace(htmlRegex, '')
+    $('#commentToAdd').val('')
     $.ajax({
       url: '/api/books/' + this.dataset._id,
       type: 'post',
@@ -105,14 +116,26 @@ $(function () {
     })
   })
 
-  $('#newBook').on('click', function () {
+  $('#newBook').on('click', event => {
+    event.preventDefault()
+    const data = $('#newBookForm').serialize()
+
+    $('#bookTitleToAdd').val('')
     $.ajax({
       url: '/api/books',
       type: 'post',
       dataType: 'json',
-      data: $('#newBookForm').serialize(),
+      data,
       success(data) {
-        //update list
+        console.log(data)
+        // const liCount = $('#bookList').children().length
+        // $('#bookList').append(
+        //   `<li class="bookItem" id="${liCount}">${data.title} - 0 comments</li>`
+        // )
+        updateBookItems()
+      },
+      error({ responseJSON: { error } }) {
+        alert(error)
       },
     })
   })
@@ -123,7 +146,7 @@ $(function () {
       type: 'delete',
       success() {
         $('#display li').remove()
-        resetBookDetail()
+        resetBookDetail('deleted')
       },
     })
   })

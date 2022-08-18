@@ -150,10 +150,16 @@ book document schema: {
   - ✅ commit & push
   - ✅ pass test above
   - ✅give credit to the guy that caught the vulnerability
-  - 📌 commit & push
-  - check for and fix any missing functionality and bugs
+  - ✅ commit & push
+  - ✅ check for  any missing functionality and bugs
     - make all tests asynchronous, if they aren't already, in order to improve speed while running
- 
+  - ✅ change post /api/books response from { acknowledged, insertedId } to { _id, title }
+  - ✅ prevent reload when submitting a new book, but still update #display
+  - ✅ clear #commentToAdd input on addComment click
+  - ✅ reset #bookDetail and update #display ul on single book delete
+  - ✅ fix double bookDetail form bug when clicking different #display li items
+  - ✅ clear #newCommentForm and comment/deletebook buttons once book is deleted
+  - 📌 commit & push
 ------------------ Fri, Aug 19 (DEADLINE) ---------------
 
   - deploy to heroku
