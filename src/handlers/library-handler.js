@@ -1,6 +1,4 @@
 'use strict'
-const { log, error } = console
-
 const LibraryDAO = require('../dao/library-dao.js')
 
 module.exports = class LibraryHandler {
@@ -23,6 +21,7 @@ module.exports = class LibraryHandler {
   static async createBook(req, res) {
     const { body: book } = req,
       { title } = book
+
 
     if (typeof title !== 'string')
       return res.status(400).json({ error: 'missing title field' })
