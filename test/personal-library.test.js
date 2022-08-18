@@ -107,16 +107,13 @@ suite('🧪 \x1b[35mPersonal Library: HTTP\n', () => {
       .post(BOOKS)
       .send(TEST_DOC_4)
       .end((err, res) => {
-        const {
-          status,
-          ok,
-          body: { acknowledged, insertedId },
-        } = res
+        const { status, ok, body } = res,
+          { _id, title } = body
 
         assert.isNull(err)
-        assert.strictEqual(status, 200)
-        assert.areTrue(ok, acknowledged)
-        assert.isString(insertedId)
+        assert.strictEqualPairs([status, 200], [Object.keys(body).length, 2])
+        assert.isTrue(ok)
+        assert.areStrings(_id, title)
 
         done()
       })
@@ -207,11 +204,7 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
   test('4. delete book', done => {
     browser.assert.element('#deleteBook')
     browser.click('#deleteBook', () => {
-      browser.assert.text(
-        '#detailComments > p:first-child',
-        'Delete successful'
-      )
-      browser.assert.text('#detailComments > p:last-child', 'Refresh the page')
+      browser.assert.text('#bookDetail > p:first-child', 'Delete successful')
 
       done()
     })
