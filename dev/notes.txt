@@ -164,16 +164,18 @@ book document schema: {
   - ✅ check for  any missing functionality and bugs
   - ✅ handle incorrect _id submissions when updating book comments
   - ✅ add indentation to api json responses
-  - 📌 commit & push
-  - fix incorrect comment count bug (after using test post comment form on top, and returning)
+  - ✅ commit & push
+  - ✅ check for empty comment inputs, just like with titles
+
+------------------ Fri, Aug 19 (DEADLINE) ---------------
+
+  - ✅ fix post comment bug
+  - 📌 fix incorrect comment count bug (after using test post comment form on top, and returning)
+  - fix valid, but non-existent _id input bug (change res json)
   - fix add comment with keyboard bug (move addcomment button to the input's form)
   - modify only necessary html in #bookDetail when clicking li.bookItem tags, instead of resetting, then adding
   - set a global timer of 1-3s to change p#detailTitle content back from delete successful to "select a book"
   - make li.bookItem tags tab-able (accessibility)
-  - 
-
------------------- Fri, Aug 19 (DEADLINE) ---------------
-
   - deploy to heroku
   - test heroku manually
   - make and complete tasklist for last day (what needs to get cleaned up?)

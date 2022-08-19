@@ -21,6 +21,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 fccTestingRoutes(app)
 app.use(htmlRouter)
 app.use('/api', apiRouter)
-app.use('*', (_, res) => res.status(404).json({ err: '404 not found' }))
+app.use('*', (_, res) => res.status(404).json({ error: '404 not found' }))
 
 module.exports = app // For testing.

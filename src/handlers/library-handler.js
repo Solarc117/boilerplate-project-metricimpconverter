@@ -28,7 +28,8 @@ module.exports = class LibraryHandler {
 
     if (title.trim().length === 0)
       return res.status(400).json({
-        error: `invalid book title ${title} - must have at least one non-whitespace character`,
+        error:
+          'invalid book title - must have at least one non-whitespace character',
       })
 
     if (!Array.isArray(book.comments)) {
@@ -71,6 +72,11 @@ module.exports = class LibraryHandler {
     if (!ObjectId.isValid(_id))
       return res.status(400).json({
         error: 'please input a valid _id',
+      })
+    if (comment.trim().length === 0)
+      return res.status(400).json({
+        error:
+          'invalid comment - must have at least one non-whitespace character',
       })
 
     const result = await LibraryDAO.appendComment(_id, comment)
