@@ -144,7 +144,7 @@ book document schema: {
   - ✅ edit the DAO to not return null
   - ✅ commit & push
  
------------------- 📌 Thu, Aug 18 -----------------------
+------------------ ✅ Thu, Aug 18 -----------------------
 
   - ✅ make a form test for the bottom "delete all books" button
   - ✅ commit & push
@@ -167,12 +167,12 @@ book document schema: {
   - ✅ commit & push
   - ✅ check for empty comment inputs, just like with titles
 
------------------- Fri, Aug 19 (DEADLINE) ---------------
+------------------ ✅ Fri, Aug 19 (DEADLINE) ---------------
 
   - ✅ fix post comment bug
   - ✅ fix add comment with keyboard bug (move addcomment button to the input's form)
   - ✅ make li.bookItem tags tab-able (accessibility)
-  - deploy to heroku
-  - test heroku manually
-  - make and complete tasklist for last day (what needs to get cleaned up?)
+  - ✅ deploy to heroku
+  - ✅ test heroku manually
+  - ✅ make and complete tasklist for last day (what needs to get cleaned up?)
  
