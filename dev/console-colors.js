@@ -13,8 +13,8 @@ module.exports = {
   FgBlue: '\x1b[34m',
   FgMagenta: '\x1b[35m',
   FgCyan: '\x1b[36m',
-  // Background ⬇️.
   FgWhite: '\x1b[37m',
+  // Background ⬇️.
   BgBlack: '\x1b[40m',
   BgRed: '\x1b[41m',
   BgGreen: '\x1b[42m',

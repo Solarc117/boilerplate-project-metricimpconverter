@@ -11,6 +11,8 @@ const cors = require('cors'),
   app = express()
 if (env.NODE_ENV === 'dev') require('../dev/live-reload.js')(app)
 
+app.set('json spaces', 2)
+
 app.use('/public', express.static(process.cwd() + '/public'))
 app.use(cors({ origin: '*' })) // For FCC testing purposes only.
 app.use(bodyParser.json())
@@ -19,7 +21,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 fccTestingRoutes(app)
 app.use(htmlRouter)
 app.use('/api', apiRouter)
-app.use('*', (_, res) => res.status(404).json({ err: '404 not found' }))
-
+app.use('*', (_, res) => res.status(404).json({ error: '404 not found' }))
 
 module.exports = app // For testing.

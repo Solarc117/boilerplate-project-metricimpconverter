@@ -38,106 +38,141 @@
 
 <!-------------------- END ------------------------->
 
-📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
-📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
-📄 render works with templates, like pug. The sendFile method sends file as is.
-📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
-📄 difference between req.body, req.query, and req.params:
-  📄 req.body is what usually contains the majority of information relevant to the request
-  📄 query contains the '...?KEY=VALUE' pairs of a path
-  📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
-📄 be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
+📄 Notes:
+  📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
+  📄 I think, ultimately, what will matter more in terms of getting me a dev job will be what I have to show in terms of projects; not so much my fCC certifications. 
+  📄 render works with templates, like pug. The sendFile method sends file as is.
+  📄 I might want to read into client.close(); I don't remember that method from my mdbu courses.
+  📄 difference between req.body, req.query, and req.params:
+    📄 req.body is what usually contains the majority of information relevant to the request
+    📄 query contains the '...?KEY=VALUE' pairs of a path
+    📄 params contain sections of the url that are mapped to certain variables, e.g. 'api/issues/:owner', req.param would contain a variable "owner" with the value pertaining to the string that was in the respective url position at the time of the request. 
+  📄 be wary of spaghetti code; functions that call other functions in a disorderly manner. Won't worry about it now, but just be wary.
+  📄 Unfinished tasks from issue-tracker:
+    ● remove index properties from documents
+    ● create a test that deletes the FIRST, and LAST element of a document
+    ● review all method documentation
+    ● style issue-tracker's index page
+    ● verify all issues posted have created_on and last_updated properties
+  📄 I should try to make tests independent; if a test is dependent on an action, ex. submits a document, then attempts to modify it, both actions should fall within the same document, instead of having the first action in test #1, and the second in test #2, for example. This would allow for more efficient troubleshotting/debugging.
 
 ✨ ways to optimize learning that I should remember:
-  - take short, mind-wandering breaks apart from ultradian breaks
-  - use bedtime to estimate ultradian breaks for the day
-  - angle screen upward to trigger alertness
-  - consciously try to blink less
-  - do productive breaks during ultradian breaks (raise adrenalin, then: NSDR, walk, talk to someone, etc.)
-  - implement perceptible, non-intrusive white noise during learning
-  - MINIMIZE DISTRACTIONS
-  - do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
+    ● take short, mind-wandering breaks apart from ultradian breaks
+    ● use temperature-minimum to estimate ultradian breaks for the day
+    ● angle screen upward to trigger alertness
+    ● consciously try to blink less
+    ● do productive breaks during ultradian breaks (raise adrenalin, then: NSDR, walk, talk to someone, etc.)
+    ● implement perceptible, non-intrusive white noise during learning
+    ● MINIMIZE DISTRACTIONS
+    ● do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
--------------- August 5 ------------------
+      PERSONAL LIBRARY DEADLINE: Friday, August 19th, 22:00
 
-- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - ✅⚒️ (1) Update one field on an issue: PATCH request to /api/issues/{project}
-    - ✅ figure out how the data will be sent to the handler method
-      📄 for the issue text, I might have to use string literals to conserve new lines
-    - ✅ address the checkbox's weird behaviour (is undefined or on - turn into a boolean)
-    - ✅ create a test that submits a POST request with the project name, and the index of the issue to update, as well as a single field to update. Expect a status of 200, an ok value of true, and for the body to be an object with at least one key value pair. 
-    - ✅ log the req.body in the api patch callback
-    - ✅ create in issueHandler patch method
-    - ✅ link the issuehandler patch method to the api router
-    - ✅ create a DAO update method
-    - ✅ call the DAO update method in the handler
-    - ✅ iterate through the fieldsToUpdate parameter. For each field to update:
-    - ✅ find a way to communicate the project name, and issue index, from the issueIndexForm to the updateForm, once the latter is submitted
-    - ✅ I have access to the fields to update now; just gotta get access to the index of the issue. Figure out how
-    - ✅ on submit, create a patch request with:
-      - ✅ the issue index 
-      - ✅ the fields to be updated    
-    - ✅ verify the patch request does not contain un-modifiable fields
-      📄 index, created_by, created_on, or last_updated
-    - ✅ edit the test to ensure the exact property was updated to the exact new value, or at least ensure "acknowledged" and "updated_count": 1 are returned
-  - ✅ (0) commit & push
+book document schema: {
+  _id: ObjectId,
+  title: string,
+  commentcount: number,
+  comments: [string],
+}
 
---------------- August 6 -----------------
+✨ Functionality:
+  API:
+  - respond to GET requests to /api/books with an array containing ALL book documents
+  - respond to POST requests to /api/books, with a body containing the book's title, with the book's title and _id
+  - respond to POST requests to /api/books/:_id (with a body containing the comment text) with the updated book document
 
-- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - ✅ ⚒️ (0.5) Update multiple fields on an issue: PATCH request to /api/issues/{project}
-  - ✅ (0) commit & push
-  - ✅ Update an issue with no fields to update: PATCH request to /api/issues/{project}
+  HTML 1:
+  - ensure the Test post /api/books form redirects to the same path, and returns { _id, title }
+  - ensure the Test post /api/books/_id form redirects to the same path, and returns { _id, title, commentscount, comments }
+  HTML 2:
+  - ensure the ul below the second Post Book form is always showing the updated list of books, and the number of comments per book
+  - ensure clicking on a li element changes the bookDetail div from "select a book" to illustrating all of the book's info, including a form to add comments OR delete the book
+  - ensure the "delete all books" button at the very bottom works
+
+------------------ ✅Thu, Aug 11 ------------------
+
+  - ✅ Setup main HTML page
+  - ✅ Setup Handler file
+ 
+------------------ ✅Fri, Aug 12 -----------------------
+
+  - ✅ Setup DAO file (and database)
   - ✅ commit & push
-  - ✅ export test documents, and import them into the required test file - have ONLY tests in the test file.
+  - ✅ create mongodb book schema
+ 
+------------------ ✅Sat, Aug 13 -----------------------
+
+  - ✅ create GET /api/books test
   - ✅ commit & push
-  - ✅⚒️ (0.5) (HALFWAY) Delete an issue: DELETE request to /api/issues/{project}
-    - ✅ create a test 
-    - ✅ create a handler delete method
-    - ✅ create a dao delete method
-    - ✅ link up the methdods to the api
-    - ✅ fix test 11 & 12 (should be attempting a patch/delete on an EXISTING document, but TEST_DOC_8 was never posted to the database)
-    - ✅⚒️ code the DAO delete method
-      - ✅ reset the rest of the issue indexes in the current project
-        📄 I will use an update (or aggregation) to fetch ALL issues whose index is GREATER than the index passed, and set their indexes to their current value + 1
-        📄 Ideally, the delete action would ONLY execute if I was able to update the rest of the indexes, because if only one or the other operation executes, I'll end up with a bug-prone database structure with certain index values skipped
-
------------------- August 7 ------------------- 
-
-- ✅⚒️ Red, green, refactor: all of the functional tests in tests/issue-tracker.test.js:
-  - ✅ (COMPLETE) Delete an issue: DELETE request to /api/issues/{project}
-  -  commit & push
-- ✅ (0.5) verify that DAO errors are SERVER errors: all client errors (bad requests) should be handled in the handler.
-- ✅ (0.5) add navbar to issue-tracker
-- ✅ (0.5) move script tags out of body tags
-- ✅ commit & push
-
----------------------- August 8 -------------------
-
-- 🎉⚒️ instead of using my manual index property, use mdb aggregation to return the index when the user queries using a field, and to locate the right issue to delete when the user passes an index, respectively
-  - ✅⚒️ aggregation stages and operators:
-    - ✅ $replaceWith
-      📄 might be able to use slice here; I can replace the issues array with the issues array spliced in such a way that it excludes the issue matching the passed index
-  - ⚒️✅ figure out what to do when: 
-    - ✅ index is 0
-      - ✅ create a pipeline that removes the first element from the issues field
-      - implement that pipeline when index is 0, AND the length 
-    - ✅ project issues array length is 0 (as this will make the last element in the $slice operator 0, thus returning an error)
-  - ✅ ensure delete test passes
+  - ✅ pass test above
   - ✅ commit & push
-  - make 
-  - remove index properties from documents
-  - create a test that deletes the FIRST, and LAST element of a document
-- commit & push
+  - ✅ create POST /api/books test (valid and invalid doc)
+  - ✅ commit & push
+ 
+------------------ ✅Sun, Aug 14 -----------------------
 
------------------------- August 9 (DEADLINE) ------------------------
+  - ✅ pass test above
+  - ✅ commit & push
+  - ✅ create POST /api/books/_id test
+    - ✅ figure out how the comment information will be passed from the html to the POST /api/books/_id handler
+  - ✅ commit & push
+ 
+------------------ ✅ Mon, Aug 15 -----------------------
 
-- (1) review all method documentation
-- commit & push
-- (0.5) style issue-tracker's index page
-- commit & push
-- (0.5) verify all issues posted have created_on and last_updated properties
-- commit & push
-- verify heroku local works; debug if it doesn't
-- commit & push any changes from the fix above
-- merge dev with main; ensure heroku site deployed & works fine
+  - ✅ only submit the comment in the body for POST /api/books/:_id requests
+  - ✅ commit & push
+  - ✅ pass test #1
+    - ✅ fix comment(s)count bug (there should only be a commentcount property, NOT commentScount)
+  - ✅ commit & push
+  - ✅ make a form test for the second Post Book form (assure the book posted is displayed in the ul upon submittal)
+    - ✅ install zombie
+  - ✅ commit & push
+ 
+------------------ ✅ Tue, Aug 16 -----------------------
+
+  - ✅ make a "click" test on a li element (ensure #bookDetail div displays accurate information after clicking)
+  - ✅ commit & push
+  - ✅ pass test above
+  - ✅ commit & push
+ 
+------------------ ✅ Wed, Aug 17 -----------------------
+
+  - ✅ make a form test for the #bookDetail "addcomment" and "deletebook" buttons
+  - ✅ commit & push
+  - ✅ pass test above
+  - ✅ commit & push
+  - ✅ edit the DAO to not return null
+  - ✅ commit & push
+ 
+------------------ 📌 Thu, Aug 18 -----------------------
+
+  - ✅ make a form test for the bottom "delete all books" button
+  - ✅ commit & push
+  - ✅ pass test above
+  - ✅give credit to the guy that caught the vulnerability
+  - ✅ commit & push
+  - ✅ check for  any missing functionality and bugs
+  - ✅ change post /api/books response from { acknowledged, insertedId } to { _id, title }
+  - ✅ prevent reload when submitting a new book, but still update #display
+  - ✅ clear #commentToAdd input on addComment click
+  - ✅ reset #bookDetail and update #display ul on single book delete
+  - ✅ fix double bookDetail form bug when clicking different #display li items
+  - ✅ clear #newCommentForm and comment/deletebook buttons once book is deleted
+  - ✅ commit & push
+  - ✅ fix failing tests
+  - ✅ commit & push
+  - ✅ check for  any missing functionality and bugs
+  - ✅ handle incorrect _id submissions when updating book comments
+  - ✅ add indentation to api json responses
+  - ✅ commit & push
+  - ✅ check for empty comment inputs, just like with titles
+
+------------------ Fri, Aug 19 (DEADLINE) ---------------
+
+  - ✅ fix post comment bug
+  - ✅ fix add comment with keyboard bug (move addcomment button to the input's form)
+  - ✅ make li.bookItem tags tab-able (accessibility)
+  - deploy to heroku
+  - test heroku manually
+  - make and complete tasklist for last day (what needs to get cleaned up?)
+ 

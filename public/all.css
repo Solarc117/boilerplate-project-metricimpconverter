@@ -22,7 +22,7 @@ hr {
 header,
 main,
 footer {
-  margin: 35px;
+  margin: 10px 35px;
 }
 main {
   flex-grow: 1;

@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Harry Potter",
+    "commentcount": 5,
+    "comments": [
+      "love this book",
+      "HATE this book",
+      "read it while growing up",
+      "throw it in the garbage",
+      "meh"
+    ]
+  },
+  {
+    "title": "Narnia",
+    "commentcount": 1,
+    "comments": [
+      "meh"
+    ]
+  },
+  {
+    "title": "LOTR",
+    "commentcount": 0,
+    "comments": []
+  },
+  {
+    "title": "a",
+    "commentcount": 0,
+    "comments": []
+  },
+  {
+    "title": "",
+    "commentcount": 0,
+    "comments": []
+  }
+]

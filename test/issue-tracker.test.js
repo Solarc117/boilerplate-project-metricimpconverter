@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../src/server.js'),
   { assert } = chai,
-  {
+  [
     TEST_DOC_1,
     TEST_DOC_2,
     TEST_DOC_3,
@@ -12,7 +12,7 @@ const chaiHttp = require('chai-http'),
     TEST_DOC_6,
     TEST_DOC_7,
     TEST_DOC_8,
-  } = require('./issue-tracker-test-docs.json'),
+  ] = require('./issue-tracker-test-docs.json'),
   ISSUES = '/api/issues'
 
 /**
@@ -53,7 +53,7 @@ assert.strictEqualPairs = function (...pairs) {
 
 chai.use(chaiHttp)
 
-suite('🧪 \x1b[34mIssue Tracker: HTTP', () => {
+suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   const setup1Path = `${ISSUES}/${TEST_DOC_1.project}`,
     setup2Path = `${ISSUES}/${TEST_DOC_2.project}`,
     setup3Path = `${ISSUES}/${TEST_DOC_3.project}`,

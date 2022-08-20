@@ -1,5 +1,5 @@
-{
-  "TEST_DOC_1": {
+[
+  {
     "project": "jsPomodoro",
     "owner": "cool_user_33",
     "issues": [
@@ -13,7 +13,7 @@
       }
     ]
   },
-  "TEST_DOC_2": {
+  {
     "project": "huberman_lab_transcripts",
     "owner": "solarc117",
     "issues": [
@@ -51,12 +51,12 @@
       }
     ]
   },
-  "TEST_DOC_3": {
+  {
     "project": "python-algs",
     "owner": "fcc_learner_:)",
     "issues": []
   },
-  "TEST_DOC_4": {
+  {
     "project": "cpp-chess",
     "owner": "johnny123",
     "issues": [
@@ -70,7 +70,7 @@
       }
     ]
   },
-  "TEST_DOC_5": {
+  {
     "project": "blonde-track-list",
     "owner": "frank_ocean_fan",
     "issues": [
@@ -80,17 +80,17 @@
       }
     ]
   },
-  "TEST_DOC_6": {
+  {
     "project": "react-calculator",
     "issues": []
   },
-  "TEST_DOC_7": {
+  {
     "_id": 123456,
     "project": "js website",
     "owner": "random_coder",
     "issues": []
   },
-  "TEST_DOC_8": {
+  {
     "project": "mr-beast-video-transcripts",
     "owner": "chris",
     "issues": [
@@ -120,4 +120,4 @@
       }
     ]
   }
-}
+]

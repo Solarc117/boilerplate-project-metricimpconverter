@@ -10,11 +10,11 @@ const chai = require('chai'),
   getReturnNum = cH.getReturnNum.bind(cH),
   getReturnUnit = cH.getReturnUnit.bind(cH),
   spellOutUnit = cH.spellOutUnit.bind(cH),
-  CONVERT_PATH = '/api/convert'
+  CONVERT = '/api/convert'
 
 chai.use(chaiHttp)
 
-suite('🧪 \x1b[33mMetric Imperial: ConvertHandler', () => {
+suite('🧪 \x1b[33mMetric Imperial: ConvertHandler\n', () => {
   test('1. Read integer inputs', done => {
     const integer = 3,
       unit = 'L',
@@ -310,7 +310,7 @@ suite('🧪 \x1b[33mMetric Imperial: ConvertHandler', () => {
   })
 })
 
-suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
+suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
   test('1. Convert 10L: GET /api/convert', done => {
     const num = 10,
       unit = 'L',
@@ -322,7 +322,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${input}`)
+      .get(`${CONVERT}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { initNum, initUnit, returnNum, returnUnit, string } = body
@@ -348,7 +348,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${input}`)
+      .get(`${CONVERT}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -370,7 +370,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${input}`)
+      .get(`${CONVERT}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -392,7 +392,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${input}`)
+      .get(`${CONVERT}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -415,7 +415,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT_PATH}?input=${unit}`)
+      .get(`${CONVERT}?input=${unit}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { initNum, initUnit, returnNum, returnUnit, string } = body

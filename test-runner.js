@@ -31,7 +31,7 @@ const analyser = require('./assertion-analyser'),
   fs = require('fs'),
   path = require('path'),
   mocha = new Mocha(),
-  testDir = './tests'
+  testDir = './test'
 
 // Add each .js file to the mocha instance
 fs.readdirSync(testDir)
