@@ -19,6 +19,7 @@ function updateBookItems() {
         `<li 
         class="bookItem" 
         id="${i}"
+        tabindex="0"
        >
         ${book.title.replace(htmlRegex, '')} - ${book.commentcount} comments
        </li>`
@@ -36,27 +37,19 @@ function updateBookItems() {
     }).appendTo('#display')
   })
 }
-const htmlRegex = /(?:\<\/?.+\>)/g
-let bookItems = [],
-  bookItemsRaw = [],
-  comments = []
-
-$(() => {
-  updateBookItems()
-
-  $('#display').on('click', 'li.bookItem', function () {
-    resetBookDetail()
-    $('#detailTitle').html(
-      // If title in database has HTML tags, remove them.
-      `<b>${bookItemsRaw[this.id].title.replace(htmlRegex, '')}</b> (id: ${
-        bookItemsRaw[this.id]._id
-      })`
-    )
-    $.getJSON(`/api/books/${bookItemsRaw[this.id]._id}`, book => {
-      comments = book.comments.map(comment => `<li>${comment}</li>`)
-      $('#detailComments').html(comments.join(''))
-      $('#bookDetail').append(
-        `<br />
+function displayBookItem() {
+  resetBookDetail()
+  $('#detailTitle').html(
+    // If title in database has HTML tags, remove them.
+    `<b>${bookItemsRaw[this.id].title.replace(htmlRegex, '')}</b> (id: ${
+      bookItemsRaw[this.id]._id
+    })`
+  )
+  $.getJSON(`/api/books/${bookItemsRaw[this.id]._id}`, book => {
+    comments = book.comments.map(comment => `<li tabindex="0">${comment}</li>`)
+    $('#detailComments').html(comments.join(''))
+    $('#bookDetail').append(
+      `<br />
         <form id="newCommentForm">
           <input
             style="width: 300px"
@@ -66,15 +59,15 @@ $(() => {
             name="comment"
             placeholder="New Comment"
           />
-        </form>
-        <br />
-        <button
-          class="btn btn-info addComment"
-          id="addComment"
-          data-_id="${book._id}"
-        >
+          <button
+            class="btn btn-info addComment"
+            id="addComment"
+            data-_id="${book._id}"
+          >
           Add Comment
         </button>
+        </form>
+        <br />
         <button
           class="btn btn-danger deleteBook"
           id="deleteBook"
@@ -82,8 +75,27 @@ $(() => {
         >
           Delete Book
         </button>`
-      )
-    })
+    )
+  })
+}
+const htmlRegex = /(?:\<\/?.+\>)/g
+let bookItems = [],
+  bookItemsRaw = [],
+  comments = []
+
+$(() => {
+  updateBookItems()
+
+  $('#display').on('click', 'li.bookItem', displayBookItem)
+  $('#display').on('keydown', 'li.bookItem', ({ target, key }) => {
+    if (key.match(/enter/i)) {
+      const dBI = displayBookItem.bind(target)
+      dBI()
+    }
+  })
+
+  $('#newCommentForm').on('submit', event => {
+    event.preventDefault()
   })
 
   $('#bookDetail').on('click', 'button.deleteBook', function (event) {
@@ -98,7 +110,8 @@ $(() => {
     })
   })
 
-  $('#bookDetail').on('click', 'button.addComment', function () {
+  $('#bookDetail').on('click', 'button.addComment', function (event) {
+    event.preventDefault()
     $.ajax({
       url: '/api/books/' + this.dataset._id,
       type: 'post',
@@ -147,14 +160,8 @@ $(() => {
     })
   })
 })
-window.onpopstate = e => {
-  console.log('POPSTATE')
-  console.log('e:', e)
-  updateBookItems()
-  resetBookDetail()
-}
+// This was meant to fix the incorrect li comment count bug that appears after posting a comment, and going back on the browser history. It didn't, but I'll leave it, as it seems like a good idea.
 window.onload = () => {
-  console.log('LOAD')
   updateBookItems()
   resetBookDetail()
 }
