@@ -1,8 +1,9 @@
+'use strict'
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
   server = require('../src/server.js'),
   cH = require('../src/handlers/convert-handler.js'),
-  { assert } = chai,
+  assert = require('./modified-assert.js'),
   { IMP_MET_PAIRS } = cH,
   UNITS = IMP_MET_PAIRS.flat(),
   getNum = cH.getNum.bind(cH),
@@ -10,7 +11,7 @@ const chai = require('chai'),
   getReturnNum = cH.getReturnNum.bind(cH),
   getReturnUnit = cH.getReturnUnit.bind(cH),
   spellOutUnit = cH.spellOutUnit.bind(cH),
-  CONVERT = '/api/convert'
+  CONVERTER = '/api/convert'
 
 chai.use(chaiHttp)
 
@@ -322,7 +323,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT}?input=${input}`)
+      .get(`${CONVERTER}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { initNum, initUnit, returnNum, returnUnit, string } = body
@@ -348,7 +349,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT}?input=${input}`)
+      .get(`${CONVERTER}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -370,7 +371,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT}?input=${input}`)
+      .get(`${CONVERTER}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -392,7 +393,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT}?input=${input}`)
+      .get(`${CONVERTER}?input=${input}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { err: err0 } = body
@@ -415,7 +416,7 @@ suite('🧪 \x1b[33mMetric Imperial: HTTP\n', () => {
 
     chai
       .request(server)
-      .get(`${CONVERT}?input=${unit}`)
+      .get(`${CONVERTER}?input=${unit}`)
       .end((err, res) => {
         const { status, ok, body } = res,
           { initNum, initUnit, returnNum, returnUnit, string } = body

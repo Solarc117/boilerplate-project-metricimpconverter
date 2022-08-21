@@ -77,7 +77,9 @@ Rules:
 Tasks:
 
 --------------- Sunday, August 21st
-  - 📌 Verify valid textArea input (assert the three rules above)
+  - ✅ import modified asserter into test files
+  - 📌 commit & push
+  - Verify valid textArea input (assert the three rules above)
   - Commit & push
 --------------- Monday, August 22nd
   - Verify valid Coordinate input (2 chars: letter, and 1-9 number)
