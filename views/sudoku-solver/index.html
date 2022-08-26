@@ -21,7 +21,7 @@
       href="../../public/sudoku-solver.css"
       type="text/css"
     />
-    <script defer type="module" src="../../public/sudoku-client.js"></script>
+    <script defer src="../../public/sudoku-client.js"></script>
   </head>
 
   <body>
@@ -48,13 +48,14 @@
         <div class="form-container">
           <form id="solve-form">
             <textarea
+              type="text"
               rows="10"
               cols="85"
               id="text-input"
-              name="puzzle"
+              name="sudoku"
             ></textarea>
             <br />
-            <input type="button" value="Solve" id="solve-button" />
+            <input type="submit" value="Solve" id="solve-button" />
             <div id="error-msg"></div>
           </form>
           <form id="check-form">
@@ -66,7 +67,7 @@
               Value (1-9):
               <input class="checker" type="text" id="val" name="value" />
             </p>
-            <input type="button" id="check-button" value="Check Placement" />
+            <input type="submit" value="Check Placement" id="check-button" />
           </form>
           <span id="error"></span>
         </div>

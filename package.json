@@ -5,8 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node -r dotenv/config index.js",
-		"dev": "nodemon -r dotenv/config index.js",
-		"test": "mocha ./test/ --ui tdd"
+		"dev": "nodemon -i dev/ -r dotenv/config index.js",
+		"test": "mocha ./test/ --ui tdd",
+    "debug": "nodemon -i dev/ -r dotenv/config index.js"
 	},
 	"dependencies": {
 		"@octokit/auth-oauth-device": "^3.1.2",

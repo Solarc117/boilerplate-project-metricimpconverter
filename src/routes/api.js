@@ -3,6 +3,7 @@ const { Router } = require('express'),
   cH = require('../handlers/convert-handler.js'),
   IssueHandler = require('../handlers/issue-handler.js'),
   LibraryHandler = require('../handlers/library-handler.js'),
+  SudokuHandler = require('../handlers/sudoku-handler.js'),
   // Base route: /api
   // @ts-ignore
   router = new Router(),
@@ -59,5 +60,7 @@ router
   .get(LibraryHandler.getBook)
   .post(LibraryHandler.addComment)
   .delete(LibraryHandler.deleteBook)
+
+router.route('/solve').post(SudokuHandler.attempt)
 
 module.exports = router

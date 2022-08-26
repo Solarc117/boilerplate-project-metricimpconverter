@@ -1,18 +1,30 @@
-function fillPuzzle(data) {
-  let len = data.length < 81 ? data.length : 81
+'use strict'
+function fillSudoku(data) {
+  const len = data?.length < 81 ? data.length : 81
+  let completeSudoku = true
+
+  log(`filling with data of length ${data?.length}`)
+
   for (let i = 0; i < len; i++) {
-    let rowLetter = String.fromCharCode('A'.charCodeAt(0) + Math.floor(i / 9))
-    let col = (i % 9) + 1
+    const rowLetter = String.fromCharCode(
+        'A'.charCodeAt(0) + Math.floor(i / 9)
+      ),
+      col = (i % 9) + 1
+
     if (!data[i] || data[i] === '.') {
-      document.getElementsByClassName(rowLetter + col)[0].innerText = ' '
+      completeSudoku = false
+      query(`.${rowLetter + col}`).innerHTML = ' '
       continue
     }
-    document.getElementsByClassName(rowLetter + col)[0].innerText = data[i]
+
+    query(`.${rowLetter + col}`).innerHTML = data[i]
   }
-  return
+
+  if (completeSudoku) log('completed sudoku')
 }
-async function solve() {
-  const stuff = { puzzle: textArea.value },
+async function solve(event) {
+  event.preventDefault()
+  const stuff = { sudoku: textArea.value },
     data = await fetch('/api/solve', {
       method: 'POST',
       headers: {
@@ -30,11 +42,12 @@ async function solve() {
       2
     )}</code>`)
 
-  fillPuzzle(parsed.solution)
+  fillSudoku(parsed.solution)
 }
-async function check() {
+async function check(event) {
+  event.preventDefault()
   const stuff = {
-      puzzle: textArea.value,
+      sudoku: textArea.value,
       coordinate: coordInput.value,
       value: valInput.value,
     },
@@ -50,7 +63,8 @@ async function check() {
 
   errorMsg.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`
 }
-const query = document.querySelector.bind(document),
+const log = console.log.bind(console),
+  query = document.querySelector.bind(document),
   [textArea, coordInput, valInput, errorMsg] = [
     '#text-input',
     '#coord',
@@ -58,13 +72,11 @@ const query = document.querySelector.bind(document),
     '#error',
   ].map(query)
 
-document.addEventListener('DOMContentLoaded', () => {
-  textArea.value =
-    '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..'
-  fillPuzzle(textArea.value)
-})
+textArea.value =
+  '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..'
+fillSudoku(textArea.value)
 
-textArea.addEventListener('input', () => fillPuzzle(textArea.value))
+textArea.addEventListener('input', () => fillSudoku(textArea.value))
 
 query('#solve-button').addEventListener('click', solve)
 query('#check-button').addEventListener('click', check)

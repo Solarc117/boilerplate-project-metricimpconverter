@@ -1,14 +1,150 @@
-const chai = require('chai'),
-  chaiHttp = require('chai-http'),
-  server = require('../src/server.js'),
-  Browser = require('zombie'),
+const Browser = require('zombie'),
   assert = require('./modified-assert.js'),
   { env } = process,
-  SOLVER = '/api/solve',
-  CHECKER = '/api/check'
+  HOME = `http://localhost:${env.PORT || 3000}`,
+  SUDOKU = '/sudoku-solver'
 
-chai.use(chaiHttp)
-Browser.site = `http://localhost:${env.PORT || 3000}/`
+Browser.site = HOME
 
-suite('', () => {
+suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
+  const browser = new Browser()
+
+  afterEach(() => browser.removeAllListeners())
+
+  test('1. Valid sudoku input', done => {
+    const input = `
+      . . 9 | . . 5 | . 1 .
+      8 5 . | 4 . . | . . 2
+      4 3 2 | . . . | . . .
+      ---------------------
+      1 . . | . 6 9 | . 8 3
+      . 9 . | . . . | . 6 .
+      6 2 . | 7 1 . | . . 9
+      ---------------------
+      . . . | . . . | 1 9 4
+      5 . . | . . 4 | . 3 7
+      . 4 . | 3 . . | 6 . .
+    `.replace(/[\|\s-]/g, '')
+
+    browser.on('console', (_, message) => {
+      if (message !== 'completed sudoku') return
+
+      assert.strictEqual(
+        Array.from(browser.querySelectorAll('.sudoku-input')).filter(
+          ({ textContent }) => textContent.match(/\d/)
+        ).length,
+        81
+      )
+
+      done()
+    })
+    browser.visit(SUDOKU, () => {
+      browser.assert.element('#text-input')
+      browser.assert.element('#solve-button')
+      browser.fill('#text-input', input)
+      browser.click('#solve-button')
+    })
+  })
+
+  test('2. Invalid sudoku input: duplicate number on row', done => {
+    const input = `
+      9 . 9 | . . 5 | . 1 .
+      8 5 . | 4 . . | . . 2
+      4 3 2 | . . . | . . .
+      ---------------------
+      1 . . | . 6 9 | . 8 3
+      . 9 . | . . . | . 6 .
+      6 2 . | 7 1 . | . . 9
+      ---------------------
+      . . . | . . . | 1 9 4
+      5 . . | . . 4 | . 3 7
+      . 4 . | 3 . . | 6 . .
+    `.replace(/[\|\s-]/g, '')
+
+    browser.on('response', res => {
+      if (res.method !== 'POST') return
+
+      browser.wait(browser.query('#error code'), () => {
+        assert.strictEqual(
+          JSON.parse(browser.text('#error code')).error,
+          'Puzzle cannot be solved'
+        )
+
+        done()
+      })
+    })
+    browser.visit(SUDOKU, () => {
+      browser.assert.element('#text-input')
+      browser.assert.element('#solve-button')
+      browser.query('#text-input').value = input
+      browser.click('#solve-button')
+    })
+  })
+
+  // test('3. Duplicate number on column', done => {
+  //   const input = `
+  //     . . 9 | . . 5 | . 1 .
+  //     8 5 . | 4 . . | . . 2
+  //     4 3 2 | . . . | . . .
+  //     ---------------------
+  //     1 . . | . 6 9 | . 8 3
+  //     1 9 . | . . . | . 6 .
+  //     6 2 . | 7 1 . | . . 9
+  //     ---------------------
+  //     . . . | . . . | 1 9 4
+  //     5 . . | . . 4 | . 3 7
+  //     . 4 . | 3 . . | 6 . .
+  //   `.replace(/[\|\s-]/g, '')
+
+  //   // browser.visit(SUDOKU, () => {
+  //   //   browser.assert.element('#text-input')
+  //   //   browser.assert.element('#solve-button')
+  //   //   // Might have to clear input before filling - or does fill() clear any pre-existing input?
+  //   //   browser.fill('#text-input', input)
+  //   //   browser.click('#solve-button', () => {
+  //   //     browser.assert.element('#error code')
+  //   //     assert.strictEqual(
+  //   //       JSON.parse(browser.text('#error code')).error,
+  //   //       'Puzzle cannot be solved'
+  //   //     )
+
+  //   //     done()
+  //   //   })
+  //   // })
+
+  //   done()
+  // })
+
+  // test('4. Duplicate number on grid', done => {
+  //   const input = `
+  //     2 . 9 | . . 5 | . 1 .
+  //     8 5 . | 4 . . | . . 2
+  //     4 3 2 | . . . | . . .
+  //     ---------------------
+  //     1 . . | . 6 9 | . 8 3
+  //     . 9 . | . . . | . 6 .
+  //     6 2 . | 7 1 . | . . 9
+  //     ---------------------
+  //     . . . | . . . | 1 9 4
+  //     5 . . | . . 4 | . 3 7
+  //     . 4 . | 3 . . | 6 . .
+  //   `.replace(/[\|\s-]/g, '')
+
+  //   // browser.visit(SUDOKU, () => {
+  //   //   browser.assert.element('#text-input')
+  //   //   browser.assert.element('#solve-button')
+  //   //   browser.fill('#text-input', input)
+  //   //   browser.click('#solve-button', () => {
+  //   //     browser.assert.element('#error code')
+  //   //     assert.strictEqual(
+  //   //       JSON.parse(browser.text('#error code')).error,
+  //   //       'Puzzle cannot be solved'
+  //   //     )
+
+  //   //     done()
+  //   //   })
+  //   // })
+
+  //   done()
+  // })
 })
