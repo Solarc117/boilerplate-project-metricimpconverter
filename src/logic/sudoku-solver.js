@@ -1,5 +1,9 @@
 'use strict'
 module.exports = class SudokuSolver {
+  /**
+   * @param {string} sudoku
+   * @returns {Array}
+   */
   static columns(sudoku) {
     const splitSudoku = sudoku.split(''),
       columns = []
@@ -14,6 +18,10 @@ module.exports = class SudokuSolver {
     return columns
   }
 
+  /**
+   * @param {string} sudoku
+   * @returns {Array}
+   */
   static rows(sudoku) {
     const splitSudoku = sudoku.split(''),
       rows = []
@@ -28,6 +36,10 @@ module.exports = class SudokuSolver {
     return rows
   }
 
+  /**
+   * @param {string} sudoku
+   * @returns {Array}
+   */
   static grids(sudoku) {
     const grids = []
 
@@ -45,6 +57,10 @@ module.exports = class SudokuSolver {
     return grids
   }
 
+  /**
+   * @param {string} sudoku
+   * @returns {boolean}
+   */
   static isValid(sudoku) {
     function hasDuplicates(array) {
       for (let i = 0; i < array.length; i++) {
@@ -57,6 +73,7 @@ module.exports = class SudokuSolver {
     }
     const [columns, rows, grids] = [this.columns, this.rows, this.grids].map(
       method =>
+        // Filter out empty values, and sort in ascending order.
         method(sudoku).map(string =>
           string
             .split('')
@@ -70,7 +87,40 @@ module.exports = class SudokuSolver {
     return true
   }
 
+  /**
+   * @param {string} sudoku
+   * @returns {string}
+   */
   static solve(sudoku) {
     return '769235418851496372432178956174569283395842761628713549283657194516924837947381625'
+  }
+
+  /**
+   * @param {string} coordinate
+   * @returns {boolean}
+   */
+  static validCoordinate(coordinate) {
+    const coordRegex = /^[A-I][1-9]$/i
+
+    return coordRegex.test(coordinate)
+  }
+
+  /**
+   * @param {string} value
+   * @returns {boolean}
+   */
+  static validValue(value) {
+    const numRegex = /^[1-9]$/
+
+    return numRegex.test(value)
+  }
+
+  /**
+   * @param {string} sudoku
+   * @param {string} coordinate
+   * @param {number} number
+   */
+  static check(sudoku, coordinate, number) {
+    return {}
   }
 }

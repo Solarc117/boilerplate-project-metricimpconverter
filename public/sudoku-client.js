@@ -3,8 +3,6 @@ function fillSudoku(data) {
   const len = data?.length < 81 ? data.length : 81
   let completeSudoku = true
 
-  log(`filling with data of length ${data?.length}`)
-
   for (let i = 0; i < len; i++) {
     const rowLetter = String.fromCharCode(
         'A'.charCodeAt(0) + Math.floor(i / 9)
@@ -13,11 +11,11 @@ function fillSudoku(data) {
 
     if (!data[i] || data[i] === '.') {
       completeSudoku = false
-      query(`.${rowLetter + col}`).innerHTML = ' '
+      query(`.${rowLetter + col}`).textContent = ' '
       continue
     }
 
-    query(`.${rowLetter + col}`).innerHTML = data[i]
+    query(`.${rowLetter + col}`).textContent = data[i]
   }
 
   if (completeSudoku) log('completed sudoku')
@@ -63,6 +61,7 @@ async function check(event) {
 
   errorMsg.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`
 }
+// @ts-ignore
 const log = console.log.bind(console),
   query = document.querySelector.bind(document),
   [textArea, coordInput, valInput, errorMsg] = [

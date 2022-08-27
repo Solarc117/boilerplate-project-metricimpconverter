@@ -36,7 +36,7 @@
     f) add caching
 7. Keep practicing! Get feedback from other devs.
 
-<!-------------------- END ------------------------->
+<!-------------- END -------------->
 
 📄 Notes:
   📄 I should consider adding messages to assertions (ex. assert.strictEquals(var, expect, MESSAGE)) if it improves readability and is worth the time investment.
@@ -82,15 +82,13 @@ Rules:
     - 📌 check why fillSudoku is not running properly (pausing on browser.visit shows none of the sudoku td's have been filled)
       ✅ check if textarea has the default value
         IT DOES!
-  - Commit & push
-  2. Verify valid textArea input (assert the three rules above) upon user input
+  ✅ Commit & push
+  2. ✅ Verify valid textArea input (assert the three rules above) upon user input
     📄 Also to prevent cross-site scripting attempts.
     📄 I would like to toggle a class "valid" or "invalid" on the textarea, and add a red or green border depending on that
+  3. ✅ Verify valid Coordinate and Value input (2 chars: letter, and 1-9 number) (1-9)
   - Commit & push
-  3. Verify valid Coordinate input (2 chars: letter, and 1-9 number)
-  4. Verify valid Value input (1-9)
-  - Commit & push
-  5. Align letters with board
+  4. Align letters with board
   - Commit & push
 
 --------------- Sat, August 27nd
