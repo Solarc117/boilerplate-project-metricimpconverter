@@ -1,23 +1,32 @@
 'use strict'
 function fillSudoku(data) {
-  const len = data?.length < 81 ? data.length : 81
+  const smaller = data.length < 81,
+    length = smaller ? data.length : 81
   let completeSudoku = true
 
-  for (let i = 0; i < len; i++) {
-    const rowLetter = String.fromCharCode(
+  for (let i = 0; i < length; i++) {
+    const row = String.fromCharCode(
         'A'.charCodeAt(0) + Math.floor(i / 9)
       ),
-      col = (i % 9) + 1
+      column = (i % 9) + 1
 
     if (!data[i] || data[i] === '.') {
       completeSudoku = false
-      query(`.${rowLetter + col}`).textContent = ' '
+      query(`.${row + column}`).textContent = ' '
       continue
     }
 
-    query(`.${rowLetter + col}`).textContent = data[i]
+    query(`.${row + column}`).textContent = data[i]
   }
+  if (smaller)
+    for (let i = length; i < 81; i++) {
+      const row = String.fromCharCode(
+          'A'.charCodeAt(0) + Math.floor(i / 9)
+        ),
+        column = (i % 9) + 1
 
+      query(`.${row + column}`).textContent = ' '
+    }
   if (completeSudoku) log('completed sudoku')
 }
 async function solve(event) {

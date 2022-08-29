@@ -93,8 +93,7 @@ Rules:
 
   4. ✅ Fix failing tests
   5. ✅ Align letters with board
-  - Commit & push
-  6. Clear Sudoku inputs as textArea inputs are deleted
+  6. ✅ Clear Sudoku inputs as textArea inputs are deleted
   - Commit & push
   7. Describe handler check method functionality
   8. Code handler check method
