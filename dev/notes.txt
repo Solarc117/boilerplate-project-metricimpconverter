@@ -92,7 +92,7 @@ Rules:
 --------------- Sat, August 27nd
 
   4. ✅ Fix failing tests
-  5. 📌 Align letters with board
+  5. ✅ Align letters with board
   - Commit & push
   6. Clear Sudoku inputs as textArea inputs are deleted
   - Commit & push
