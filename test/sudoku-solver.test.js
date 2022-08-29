@@ -61,8 +61,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       . 4 . | 3 . . | 6 . .
     `.replace(/[\|\s-]/g, '')
 
-    browser.on('response', res => {
-      if (res.method !== 'POST') return
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST') return
 
       browser.wait(browser.query('#error code'), () => {
         assert.isString(JSON.parse(browser.text('#error code')).error)
@@ -73,7 +73,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     browser.visit(SUDOKU, () => {
       browser.assert.element('#text-input')
       browser.assert.element('#solve-button')
-      browser.query('#text-input').value = input
+      browser.fill('#text-input', input)
       browser.click('#solve-button')
     })
   })
@@ -93,8 +93,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       . 4 . | 3 . . | 6 . .
     `.replace(/[\|\s-]/g, '')
 
-    browser.on('response', res => {
-      if (res.method !== 'POST') return
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST') return
 
       browser.wait(browser.query('#error code'), () => {
         assert.isString(JSON.parse(browser.text('#error code')).error)
@@ -108,8 +108,6 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       browser.fill('#text-input', input)
       browser.click('#solve-button')
     })
-
-    done()
   })
 
   test('4. Duplicate number on grid', done => {
@@ -127,8 +125,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       . 4 . | 3 . . | 6 . .
     `.replace(/[\|\s-]/g, '')
 
-    browser.on('response', res => {
-      if (res.method !== 'POST') return
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST') return
 
       browser.wait(browser.query('#error code'), () => {
         assert.isString(JSON.parse(browser.text('#error code')).error)

@@ -87,12 +87,14 @@ Rules:
     📄 Also to prevent cross-site scripting attempts.
     📄 I would like to toggle a class "valid" or "invalid" on the textarea, and add a red or green border depending on that
   3. ✅ Verify valid Coordinate and Value input (2 chars: letter, and 1-9 number) (1-9)
-  - Commit & push
-  4. Align letters with board
-  - Commit & push
+  ✅ Commit & push
 
 --------------- Sat, August 27nd
 
+  4. ✅ Fix failing tests
+  - Commit & push
+  5. Align letters with board
+  - Commit & push
   6. Clear Sudoku inputs as textArea inputs are deleted
   - Commit & push
   7. Describe handler check method functionality
