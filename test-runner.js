@@ -40,7 +40,6 @@ fs.readdirSync(TESTS)
   .forEach(file => mocha.addFile(path.join(TESTS, file)))
 
 const emitter = new EventEmitter()
-// @ts-ignore
 emitter.run = function () {
   let tests = [],
     context = '',

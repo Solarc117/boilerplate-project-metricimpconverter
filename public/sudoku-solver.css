@@ -1,3 +1,8 @@
+:root {
+  --block-side: 2em;
+  --letter-height: 1.9em;
+}
+
 code {
   background: #d0d0d5;
 }
@@ -48,15 +53,15 @@ td {
 }
 
 .yAxisLegend {
-  margin-top: 50px;
+  margin-top: calc(var(--block-side) + 0.4em);
   text-align: right;
   font-weight: bold;
 }
 
 .yAxisLegend tr td {
   border: 1px solid rgba(0,0,0,0);
-  width: 2em;
-  height: 1.95em;
+  width: var(--block-side);
+  height: var(--letter-height);
 }
 
 .xAxisLegend {
@@ -67,8 +72,8 @@ td {
 
 .xAxisLegend tr td {
   border: 1px solid rgba(0,0,0,0);
-  width: 2em;
-  height: 2em;
+  width: var(--block-side);
+  height: var(--block-side);
   text-align: center;
   vertical-align: bottom;
   padding-bottom: 0;
@@ -80,8 +85,8 @@ td {
 
 .sudoku-input {
   border: 1px solid black;
-  width: 2em;
-  height: 2em;
+  width: var(--block-side);
+  height: var(--block-side);
   text-align: center;
 }
 
