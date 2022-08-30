@@ -43,7 +43,7 @@ async function solve(event) {
     parsed = await data.json()
 
   if (parsed.error)
-    return (errorMsg.innerHTML = `<code>${JSON.stringify(
+    return (response.innerHTML = `<code>${JSON.stringify(
       parsed,
       null,
       2
@@ -55,8 +55,8 @@ async function check(event) {
   event.preventDefault()
   const stuff = {
       sudoku: textArea.value,
-      coordinate: coordInput.value,
-      value: valInput.value,
+      coordinate: coordinateIn.value,
+      value: valueIn.value,
     },
     data = await fetch('/api/check', {
       method: 'POST',
@@ -68,16 +68,16 @@ async function check(event) {
     }),
     parsed = await data.json()
 
-  errorMsg.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`
+  response.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`
 }
 // @ts-ignore
 const log = console.log.bind(console),
   query = document.querySelector.bind(document),
-  [textArea, coordInput, valInput, errorMsg] = [
+  [textArea, coordinateIn, valueIn, response] = [
     '#text-input',
     '#coord',
     '#val',
-    '#error',
+    '#json',
   ].map(query)
 
 textArea.value =

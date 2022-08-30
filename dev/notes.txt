@@ -75,7 +75,7 @@ Rules:
 
 📄 For each of the following tasks, I need to write a test BEFORE coding, unless it's a commit task.
 
---------------- Friday, Aug 26
+--------------- Sun, Aug 28
 
   1. ✅ Fix sudoku input browser tests
     📄 I understand that fixing this bug in the short term is detrimental to my progress, because when I test my site's functionality manually, it works, despite the test saying it doesn't. But that's not why I'm building these projects. I'm building these projects to LEARN tdd, for when I actually build something I intend to use. These tests have great potential to speed up my workflow, and working on them is helping me understand web development better, so in the long term it's BETTER for me to figure out this bug, instead of working around it. ALTHOUGH it might be fine to work around it, as that might help me understand this bug.
@@ -89,20 +89,19 @@ Rules:
   3. ✅ Verify valid Coordinate and Value input (2 chars: letter, and 1-9 number) (1-9)
   ✅ Commit & push
 
---------------- Sat, August 27nd
+--------------- Mon/Tue, Aug 29th/30th
 
   4. ✅ Fix failing tests
   5. ✅ Align letters with board
   6. ✅ Clear Sudoku inputs as textArea inputs are deleted
-  - Commit & push
-  7. Describe handler check method functionality
+  7. ✅ Describe handler check method functionality
   8. Code handler check method
   - Commit & push
   9. Describe handler solve method functionality
   10. Code handler solve method
   - Commit & push
 
---------------- Sun, August 28rd
+--------------- Wed, Sep 1
 
   11. Format api responses properly
   - Commit & push

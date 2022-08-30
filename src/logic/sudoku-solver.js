@@ -116,11 +116,12 @@ module.exports = class SudokuSolver {
   }
 
   /**
-   * @param {string} sudoku
-   * @param {string} coordinate
-   * @param {number} number
+   * @description Checks whether the value passed is legal in the coordinate of the passed sudoku.
+   * @param {string} sudoku A string depicting the sudoku, row by row. Periods represent empty values.
+   * @param {string} coordinate A letter and number representing the row and column of the value, respectively.
+   * @param {number} value The value of the coordinate.
+   * @returns {{ valid: boolean, conflicts: [string] | null }} An object with: a valid property describing whether the passed value is legal in the passed coordinate; and a conflicts property containing an array of strings describing where the conflicts were, or null if there were no conflicts.
    */
-  static check(sudoku, coordinate, number) {
-    return {}
+  static check(sudoku, coordinate, value) {
   }
 }

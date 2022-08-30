@@ -1,5 +1,13 @@
 const Browser = require('zombie'),
   assert = require('./modified-assert.js'),
+  [
+    [test1, solution1],
+    [test2, solution2],
+    [test3, solution3],
+    [test4, solution4],
+    [test5, solution5],
+    [test6, solution6],
+  ] = require('./test-sudokus.json'),
   { env } = process,
   HOME = `http://localhost:${env.PORT || 3000}`,
   SUDOKU = '/sudoku-solver'
@@ -46,7 +54,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     })
   })
 
-  test('2. Invalid sudoku input: duplicate number on row', done => {
+  test('2. Invalid sudoku input: row duplicate', done => {
     const input = `
       9 . 9 | . . 5 | . 1 .
       8 5 . | 4 . . | . . 2
@@ -64,8 +72,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     browser.on('response', (req, res) => {
       if (req.method !== 'POST') return
 
-      browser.wait(browser.query('#error code'), () => {
-        assert.isString(JSON.parse(browser.text('#error code')).error)
+      browser.wait(browser.query('#json code'), () => {
+        assert.isString(JSON.parse(browser.text('#json code')).error)
 
         done()
       })
@@ -78,7 +86,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     })
   })
 
-  test('3. Duplicate number on column', done => {
+  test('3. Invalid sudoku input: column duplicate', done => {
     const input = `
       . . 9 | . . 5 | . 1 .
       8 5 . | 4 . . | . . 2
@@ -96,8 +104,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     browser.on('response', (req, res) => {
       if (req.method !== 'POST') return
 
-      browser.wait(browser.query('#error code'), () => {
-        assert.isString(JSON.parse(browser.text('#error code')).error)
+      browser.wait(browser.query('#json code'), () => {
+        assert.isString(JSON.parse(browser.text('#json code')).error)
 
         done()
       })
@@ -110,7 +118,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     })
   })
 
-  test('4. Duplicate number on grid', done => {
+  test('4. Invalid sudoku input: grid duplicate', done => {
     const input = `
       2 . 9 | . . 5 | . 1 .
       8 5 . | 4 . . | . . 2
@@ -128,8 +136,8 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
     browser.on('response', (req, res) => {
       if (req.method !== 'POST') return
 
-      browser.wait(browser.query('#error code'), () => {
-        assert.isString(JSON.parse(browser.text('#error code')).error)
+      browser.wait(browser.query('#json code'), () => {
+        assert.isString(JSON.parse(browser.text('#json code')).error)
 
         done()
       })
@@ -139,6 +147,32 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       browser.assert.element('#solve-button')
       browser.fill('#text-input', input)
       browser.click('#solve-button')
+    })
+  })
+
+  test('5. Valid coordinate value', done => {
+    const sudoku = test6,
+      coordinate = 'E1',
+      value = 3
+
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST') return
+
+      browser.wait(browser.query('#json code'), () => {
+        assert.isTrue(JSON.parse(browser.text('#json code')).valid)
+
+        done()
+      })
+    })
+    browser.visit(SUDOKU, () => {
+      browser.assert.element('#text-input')
+      browser.assert.element('#coord')
+      browser.assert.element('#val')
+      assert.strictEqual(browser.query('#json').innerHTML, '')
+      browser.fill('#text-input', sudoku)
+      browser.fill('#coord', coordinate)
+      browser.fill('#val', value)
+      browser.click('#check-button')
     })
   })
 })

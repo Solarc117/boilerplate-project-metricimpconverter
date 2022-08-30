@@ -60,6 +60,6 @@ router
   .delete(LibraryHandler.deleteBook)
 
 router.route('/solve').post(SudokuHandler.solve)
-// router.route('/check').
+router.route('/check').post(SudokuHandler.check)
 
 module.exports = router
