@@ -16,7 +16,7 @@ module.exports = class SudokuHandler {
   }
 
   static check(req, res) {
-    const { sudoku, coordinate, value } = req
+    const { sudoku, coordinate, value } = req.body
 
     if (!SudokuSolver.validCoordinate(coordinate))
       return res.status(400).json({
