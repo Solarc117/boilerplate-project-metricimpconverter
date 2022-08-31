@@ -5,9 +5,7 @@ function fillSudoku(data) {
   let completeSudoku = true
 
   for (let i = 0; i < length; i++) {
-    const row = String.fromCharCode(
-        'A'.charCodeAt(0) + Math.floor(i / 9)
-      ),
+    const row = String.fromCharCode('A'.charCodeAt(0) + Math.floor(i / 9)),
       column = (i % 9) + 1
 
     if (!data[i] || data[i] === '.') {
@@ -20,9 +18,7 @@ function fillSudoku(data) {
   }
   if (smaller)
     for (let i = length; i < 81; i++) {
-      const row = String.fromCharCode(
-          'A'.charCodeAt(0) + Math.floor(i / 9)
-        ),
+      const row = String.fromCharCode('A'.charCodeAt(0) + Math.floor(i / 9)),
         column = (i % 9) + 1
 
       query(`.${row + column}`).textContent = ' '
