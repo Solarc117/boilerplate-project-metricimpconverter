@@ -109,8 +109,9 @@ module.exports = class SudokuSolver {
   }
 
   /**
-   * @param {string} sudoku
-   * @returns {string}
+   * @description Returns a string containing the solution of the passed, incomplete sudoku.
+   * @param {string} sudoku A valid sudoku to solve.
+   * @returns {string} The sudoku's solution.
    */
   static solve(sudoku) {
     return '769235418851496372432178956174569283395842761628713549283657194516924837947381625'

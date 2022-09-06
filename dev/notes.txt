@@ -95,7 +95,7 @@ Rules:
   5. ✅ Align letters with board
   6. ✅ Clear Sudoku inputs as textArea inputs are deleted
   7. ✅ Describe handler check method functionality
-  8. 📌 Code handler check method
+  8. ✅ Code handler check method
     ✅ I'll edit my columns, rows, and grids methods to accept an optional parameter specifying WHICH row/column/grid to return.
     If none, 
       it just returns an array with all.
@@ -107,9 +107,22 @@ Rules:
       valid is false, and the array is returned. 
     Otherwise, 
       valid is true and conflicts is instead set to null.
-  9. Describe handler solve method functionality
+  9. 📌 Describe handler solve method functionality
   10. Code handler solve method
-  - Commit & push
+  - Commit & push A2 1
+   1 2 3   4 5 6   7 8 9
+
+A  1 . 5 | . . 2 | . 8 4
+B  . . 6 | 3 . 1 | 2 . 7
+C  . 2 . | . 5 . | . . .
+   - - - | - - - | - - -
+D  . 9 . | . 1 . | . . .
+E  8 . 2 | . 3 6 | 7 4 .
+   3 . 7 | . 2 . | . 9 .
+   - - - | - - - | - - -
+   4 7 . | . . 8 | . . 1
+   . . 1 | 6 . . | . . 9
+   2 6 9 | 1 4 . | 3 7 .
 
 --------------- Wed, Sep 1
 

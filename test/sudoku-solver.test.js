@@ -178,4 +178,32 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       browser.click('#check-button')
     })
   })
+
+  test('6. Invalid coordinate value', done => {
+    const sudoku = test1,
+      coordinate = 'A2',
+      value = 1
+
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST') return
+
+      browser.wait(browser.query('#json code'), () => {
+        const { valid, conflicts } = JSON.parse(browser.text('#json code'))
+        assert.isFalse(valid)
+        assert.deepStrictEqual(conflicts, ['row'])
+
+        done()
+      })
+    })
+    browser.visit(SUDOKU, () => {
+      browser.assert.element('#text-input')
+      browser.assert.element('#coord')
+      browser.assert.element('#val')
+      assert.strictEqual(browser.query('#json').innerHTML, '')
+      browser.fill('#text-input', sudoku)
+      browser.fill('#coord', coordinate)
+      browser.fill('#val', value)
+      browser.click('#check-button')
+    })
+  })
 })
