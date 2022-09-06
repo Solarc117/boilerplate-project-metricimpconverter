@@ -95,8 +95,18 @@ Rules:
   5. ✅ Align letters with board
   6. ✅ Clear Sudoku inputs as textArea inputs are deleted
   7. ✅ Describe handler check method functionality
-  8. Code handler check method
-  - Commit & push
+  8. 📌 Code handler check method
+    ✅ I'll edit my columns, rows, and grids methods to accept an optional parameter specifying WHICH row/column/grid to return.
+    If none, 
+      it just returns an array with all.
+    ✅ Then, I'll use those modifications to return ONLY the row, column and grid of the passed coordinate. 
+    ✅ I'll make the validArea function a static method, so I can use it in the check method
+    If there are any conflicts in an area, 
+      it is added to the "conflicts" array that will be returned.
+    ✅ If the "conflicts" array has at least one item, 
+      valid is false, and the array is returned. 
+    Otherwise, 
+      valid is true and conflicts is instead set to null.
   9. Describe handler solve method functionality
   10. Code handler solve method
   - Commit & push

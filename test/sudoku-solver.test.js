@@ -46,6 +46,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
 
       done()
     })
+
     browser.visit(SUDOKU, () => {
       browser.assert.element('#text-input')
       browser.assert.element('#solve-button')
@@ -159,7 +160,9 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       if (req.method !== 'POST') return
 
       browser.wait(browser.query('#json code'), () => {
-        assert.isTrue(JSON.parse(browser.text('#json code')).valid)
+        const { valid, conflicts } = JSON.parse(browser.text('#json code'))
+        assert.isTrue(valid)
+        assert.isNull(conflicts)
 
         done()
       })

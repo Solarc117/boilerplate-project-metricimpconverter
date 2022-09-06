@@ -7,7 +7,7 @@ module.exports = class SudokuHandler {
       body: { sudoku },
     } = req
 
-    if (!SudokuSolver.isValid(sudoku))
+    if (!SudokuSolver.validSudoku(sudoku))
       return res.status(400).json({ error: 'Puzzle cannot be solved' })
 
     const solution = SudokuSolver.solve(sudoku)
