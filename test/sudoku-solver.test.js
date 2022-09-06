@@ -190,7 +190,7 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
       browser.wait(browser.query('#json code'), () => {
         const { valid, conflicts } = JSON.parse(browser.text('#json code'))
         assert.isFalse(valid)
-        assert.deepStrictEqual(conflicts, ['row'])
+        assert.deepStrictEqual(conflicts, ['row', 'grid'])
 
         done()
       })

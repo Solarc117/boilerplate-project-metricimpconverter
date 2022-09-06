@@ -107,22 +107,11 @@ Rules:
       valid is false, and the array is returned. 
     Otherwise, 
       valid is true and conflicts is instead set to null.
+  8.5. ✅ fix failing test
   9. 📌 Describe handler solve method functionality
+  - Commit & push
   10. Code handler solve method
-  - Commit & push A2 1
-   1 2 3   4 5 6   7 8 9
-
-A  1 . 5 | . . 2 | . 8 4
-B  . . 6 | 3 . 1 | 2 . 7
-C  . 2 . | . 5 . | . . .
-   - - - | - - - | - - -
-D  . 9 . | . 1 . | . . .
-E  8 . 2 | . 3 6 | 7 4 .
-   3 . 7 | . 2 . | . 9 .
-   - - - | - - - | - - -
-   4 7 . | . . 8 | . . 1
-   . . 1 | 6 . . | . . 9
-   2 6 9 | 1 4 . | 3 7 .
+  - Commit & push
 
 --------------- Wed, Sep 1
 

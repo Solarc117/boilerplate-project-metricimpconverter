@@ -154,7 +154,10 @@ module.exports = class SudokuSolver {
           : [6, 7, 8],
       columnIndex = +coordinate[1] - 1,
       valueIndex = rowIndex * 9 + columnIndex,
-      subbedSudoku = sudoku.slice(0, valueIndex) + value + sudoku.slice(valueIndex + 1, sudoku.length),
+      subbedSudoku =
+        sudoku.slice(0, valueIndex) +
+        value +
+        sudoku.slice(valueIndex + 1, sudoku.length),
       gridIndex =
         columnIndexes[
           columnIndex >= 0 && columnIndex <= 2
