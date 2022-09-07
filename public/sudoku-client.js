@@ -36,16 +36,12 @@ async function solve(event) {
       },
       body: JSON.stringify(stuff),
     }),
-    parsed = await data.json()
+    parsed = await data.json(),
+    { solution } = parsed
 
-  if (parsed.error)
-    return (response.innerHTML = `<code>${JSON.stringify(
-      parsed,
-      null,
-      2
-    )}</code>`)
+  response.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`
 
-  fillSudoku(parsed.solution)
+  if (typeof solution === 'string') fillSudoku(solution)
 }
 async function check(event) {
   event.preventDefault()
