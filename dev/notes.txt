@@ -79,7 +79,7 @@ Rules:
 
   1. ✅ Fix sudoku input browser tests
     📄 I understand that fixing this bug in the short term is detrimental to my progress, because when I test my site's functionality manually, it works, despite the test saying it doesn't. But that's not why I'm building these projects. I'm building these projects to LEARN tdd, for when I actually build something I intend to use. These tests have great potential to speed up my workflow, and working on them is helping me understand web development better, so in the long term it's BETTER for me to figure out this bug, instead of working around it. ALTHOUGH it might be fine to work around it, as that might help me understand this bug.
-    - 📌 check why fillSudoku is not running properly (pausing on browser.visit shows none of the sudoku td's have been filled)
+    - ✅ check why fillSudoku is not running properly (pausing on browser.visit shows none of the sudoku td's have been filled)
       ✅ check if textarea has the default value
         IT DOES!
   ✅ Commit & push
@@ -109,7 +109,26 @@ Rules:
       valid is true and conflicts is instead set to null.
   8.5. ✅ fix failing test
   9. 📌 Describe handler solve method functionality
-  - Commit & push
+    ✅ Order the numbers in the sudoku from most common to least common.
+    ✅ Iterate from most to least common. 
+    - For each number, 
+      ✅ determine valid rows,
+      ✅ valid columns,
+      ✅ and valid grids (for placement):
+        ✅ get the respective areas of the sudoku.
+        ✅ IF an area does not contain the current number,
+          ✅ store its index in a "valid areas" variable.
+      - Determine where ALL three of these areas overlap:
+        📄 A given row index will always match with the same grid index
+        📄 A given grid index will match 
+        - determine which columns and rows overlap+
+      - If ANY of the three areas have a SINGLE overlap,
+      fill that overlap with the current number,
+      and clear any overlaps that are rendered invalid by said placement.
+    - If the puzzle is not solved by the end of the iteration, 
+      return to the most common number (that is still less than 9 in population). 
+    - Otherwise, 
+      return the solution.
   10. Code handler solve method
   - Commit & push
 
@@ -122,4 +141,20 @@ Rules:
   - Commit & push
   14. Merge with main, test heroku site
 
-  
+    2    4    6 7
+. . 9  . . 5  . 1 .   row 0     
+8 5 .  4 . .  . . 2   
+4 3 2  . . .  . . .   
+
+1 . .  . 6 9  . 8 3   row 3
+. 9 .  . . .  . 6 .   row 4
+6 2 .  7 1 .  . . 9   row 5
+
+. . .  . . .  1 9 4
+5 . .  . . 4  . 3 7
+. 4 .  3 . .  6 . .
+
+rows: 0, 3, 4, 5
+columns: 2, 4, 6, 7
+grids: 2, 3, 4, 5
+

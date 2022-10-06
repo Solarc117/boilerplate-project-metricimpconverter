@@ -73,7 +73,28 @@ module.exports = class SudokuSolver {
   }
 
   /**
-   * @description Accepts a single string of values (from a sudoku column, row, or grid) and returns whether the area is valid (whether it has no duplicates).
+   * @description Returns the index of the passed coordinate's grid.
+   * @param {number[]} coordinate Array containing the column and grid indexes, in that order.
+   * @returns {number} The index of the coordinate's grid.
+   */
+  static grid([column, row]) {
+    const f = [0, 1, 2],
+      m = [3, 4, 5],
+      l = [6, 7, 8],
+      possibleGrids = [f, f, f, m, m, m, l, l, l][row]
+
+    const grid =
+      column <= 2
+        ? possibleGrids[0]
+        : column >= 3 && column <= 5
+        ? possibleGrids[1]
+        : possibleGrids[2]
+
+    return grid
+  }
+
+  /**
+   * @description Accepts a single string of values (from a sudoku column, row, or grid) and returns whether the area is valid (whether it lacks duplicates)..
    * @param {string} values The values of the column, row, or grid, with periods representing empty slots.
    * @returns {boolean} Whether the area is valid or not.
    */
@@ -83,7 +104,7 @@ module.exports = class SudokuSolver {
       .filter(val => !isNaN(+val))
       .sort()
 
-    for (let i = 0; i < sortedValues.length; i++) {
+    for (let i = 0; i < sortedValues.length - 1; i++) {
       const current = sortedValues[i],
         next = sortedValues[i + 1]
 
@@ -100,7 +121,6 @@ module.exports = class SudokuSolver {
    */
   static validSudoku(sudoku) {
     const areas = [this.columns, this.rows, this.grids].map(method =>
-      // @ts-ignore
       method(sudoku)
     )
 
@@ -114,7 +134,41 @@ module.exports = class SudokuSolver {
    * @returns {string} The sudoku's solution.
    */
   static solve(sudoku) {
-    return '769235418851496372432178956174569283395842761628713549283657194516924837947381625'
+    const [rows, columns, grids] = [this.rows, this.columns, this.grids].map(
+      method => method(sudoku)
+    )
+    let sortedNumbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+      .map(str => [str, sudoku.match(new RegExp(str, 'g'))?.length ?? 0])
+      .filter(number => number[1] < 9)
+      // @ts-ignore
+      .sort((a, b) => b[1] - a[1])
+
+    for (const [numberStr, numCount] of sortedNumbers) {
+      const validRowIndexes = [],
+        validColumnIndexes = [],
+        validGridIndexes = [],
+        overlaps = []
+
+      // @ts-ignore
+      for (const [i, row] of rows.entries()) 
+        // prettier-ignore
+        // @ts-ignore
+        if (!row.includes(numberStr)) validRowIndexes.push(i)
+      // @ts-ignore
+      for (const [i, column] of columns.entries())
+        // prettier-ignore
+        // @ts-ignore
+        if (!column.includes(numberStr)) validColumnIndexes.push(i)
+      // @ts-ignore
+      for (const [i, grid] of grids.entries())
+        // prettier-ignore
+        // @ts-ignore
+        if (!grid.includes(numberStr)) validGridIndexes.push(i)
+
+      // for (let i = 0; i < 12; i > 9 && i < 12 ? i -= 8 : i += 3)
+    }
+
+    return ''
   }
 
   /**
