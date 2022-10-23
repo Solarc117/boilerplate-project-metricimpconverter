@@ -1,17 +1,17 @@
 'use strict'
 const { Router } = require('express'),
-  cH = require('../handlers/convert-handler.js'),
+  ConvertHandler = require('../handlers/convert-handler.js'),
   IssueHandler = require('../handlers/issue-handler.js'),
   LibraryHandler = require('../handlers/library-handler.js'),
-  // Base route: /api
-  // @ts-ignore
-  router = new Router(),
-  getNum = cH.getNum.bind(cH),
-  getUnit = cH.getUnit.bind(cH),
-  getReturnNum = cH.getReturnNum.bind(cH),
-  getReturnUnit = cH.getReturnUnit.bind(cH),
-  getString = cH.getString.bind(cH)
+  SudokuHandler = require('../handlers/sudoku-handler.js'),
+  router = Router(),
+  getNum = ConvertHandler.getNum.bind(ConvertHandler),
+  getUnit = ConvertHandler.getUnit.bind(ConvertHandler),
+  getReturnNum = ConvertHandler.getReturnNum.bind(ConvertHandler),
+  getReturnUnit = ConvertHandler.getReturnUnit.bind(ConvertHandler),
+  getString = ConvertHandler.getString.bind(ConvertHandler)
 
+// Base route: /api
 router.route('/convert').get((req, res) => {
   const { input } = req.query,
     { err: err0, initNum } = getNum(input),
@@ -53,11 +53,13 @@ router
   .get(LibraryHandler.getAllBooks)
   .post(LibraryHandler.createBook)
   .delete(LibraryHandler.deleteBooks)
-
 router
   .route('/books/:_id')
   .get(LibraryHandler.getBook)
   .post(LibraryHandler.addComment)
   .delete(LibraryHandler.deleteBook)
+
+router.route('/solve').post(SudokuHandler.solve)
+router.route('/check').post(SudokuHandler.check)
 
 module.exports = router

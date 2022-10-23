@@ -25,21 +25,21 @@
  *
  */
 
-const analyser = require('./assertion-analyser'),
+const analyser = require('./assertion-analyser.js'),
   { EventEmitter } = require('events'),
   Mocha = require('mocha'),
   fs = require('fs'),
   path = require('path'),
   mocha = new Mocha(),
-  testDir = './test'
+  TESTS = './test',
+  TEST_ANNEX = '.test.js'
 
 // Add each .js file to the mocha instance
-fs.readdirSync(testDir)
-  .filter(file => file.substring(file.length - 3, file.length) === '.js')
-  .forEach(file => mocha.addFile(path.join(testDir, file)))
+fs.readdirSync(TESTS)
+  .filter(file => file.substring(file.length - TEST_ANNEX.length, file.length) === TEST_ANNEX)
+  .forEach(file => mocha.addFile(path.join(TESTS, file)))
 
 const emitter = new EventEmitter()
-// @ts-ignore
 emitter.run = function () {
   let tests = [],
     context = '',
