@@ -66,7 +66,7 @@
     ● MINIMIZE DISTRACTIONS
     ● do not write maintainable, clean code until the first working prototype is done; similar to writing, it is much easier to clean up dirty code than it is to write clean code from the get-go.
 
-  SUDOKU DEADLINE: Friday, August 26th
+  SUDOKU DEADLINE: Tuesday, October 11th!!!
 
 Rules:
   1. Numbers may not be repeated in a column.
@@ -108,27 +108,15 @@ Rules:
     Otherwise, 
       valid is true and conflicts is instead set to null.
   8.5. ✅ fix failing test
-  9. 📌 Describe handler solve method functionality
-    ✅ Order the numbers in the sudoku from most common to least common.
-    ✅ Iterate from most to least common. 
-    - For each number, 
-      ✅ determine valid rows,
-      ✅ valid columns,
-      ✅ and valid grids (for placement):
-        ✅ get the respective areas of the sudoku.
-        ✅ IF an area does not contain the current number,
-          ✅ store its index in a "valid areas" variable.
-      - Determine where ALL three of these areas overlap:
-        📄 A given row index will always match with the same grid index
-        📄 A given grid index will match 
-        - determine which columns and rows overlap+
-      - If ANY of the three areas have a SINGLE overlap,
-      fill that overlap with the current number,
-      and clear any overlaps that are rendered invalid by said placement.
-    - If the puzzle is not solved by the end of the iteration, 
-      return to the most common number (that is still less than 9 in population). 
-    - Otherwise, 
-      return the solution.
+  9. ✅ Describe solver solve method functionality
+  9.3. ✅ Describe solver constructor method functionality
+    - During the row iteration, 
+      - if any of the set.delete() calls returns false,
+        - throw the appropriate error type 
+    📄 b/c that value was previously encountered in the current row/column/grid, meaning there's a duplicate and the sudoku input is invalid 
+  9.6. Write functionality for constructor described above
+    - ✅ write constructor set.delete() response checks, and approprite error
+    - ✅ handle a possible constructor error by responding to the client that their input was invalid
   10. Code handler solve method
   - Commit & push
 

@@ -1,245 +1,220 @@
 'use strict'
+
+// @ts-ignore
+Set.prototype.copy = function () {
+  const set = new Set()
+
+  for (const value of this) set.add(value)
+
+  return set
+}
+// Credit to Jack He Tech (https://www.youtube.com/watch?v=3_50lwD7ygE); my algorithm is more-or-less his algorithm, except with set implementation for quicker input validation.
 module.exports = class SudokuSolver {
   /**
-   * @description Returns the columns in a sudoku, or a single column if a "column" number is passed.
-   * @param {string} sudoku The sudoku puzzle to extract columns from.
-   * @param {number} [columnInd] The column to return, if any.
-   * @returns {string[] | string} An array containing each column string (left to right), or a single column string.
+   * @param {Rows} rows
+   * @param {ValidNumbers} [rowNumbers]
+   * @param {ValidNumbers} [columnNumbers]
+   * @param {ValidNumbers} [gridNumbers]
+   * @param {number} [emptyCount]
    */
-  static columns(sudoku, columnInd) {
-    function getColumn(sudokuVals, columnNum) {
-      return sudokuVals
-        .filter((_, i) => i - columnNum === 0 || (i - columnNum) % 9 === 0)
-        .join('')
+  constructor(rows, rowNumbers, columnNumbers, gridNumbers, emptyCount) {
+    this.rows = rows
+    const missingProps = {}
+
+    Array.isArray(rowNumbers)
+      ? (this.validRowNumbers = rowNumbers)
+      : (missingProps.validRowNumbers = this.areaSet())
+    Array.isArray(columnNumbers)
+      ? (this.validColumnNumbers = columnNumbers)
+      : (missingProps.validColumnNumbers = this.areaSet())
+    Array.isArray(gridNumbers)
+      ? (this.validGridNumbers = gridNumbers)
+      : (missingProps.validGridNumbers = this.areaSet())
+    typeof emptyCount === 'number'
+      ? (this.emptyCount = emptyCount)
+      : (missingProps.emptyCount = 0)
+
+    if (Object.keys(missingProps).length > 0) {
+      for (const [rowIndex, row] of rows.entries())
+        for (const [columnIndex, value] of row.entries()) {
+          if (value === '.') {
+            if (typeof missingProps.emptyCount === 'number')
+              missingProps.emptyCount++
+            continue
+          }
+          const gridIndex = this.gridIndex(rowIndex, columnIndex)
+
+          if (
+            (missingProps.validRowNumbers &&
+              !missingProps.validRowNumbers[rowIndex].delete(value)) ||
+            (missingProps.validColumnNumbers &&
+              !missingProps.validColumnNumbers[columnIndex].delete(value)) ||
+            (missingProps.validGridNumbers &&
+              !missingProps.validGridNumbers[gridIndex].delete(value))
+          )
+            throw new Error(`invalid sudoku input: duplicate value ${value}`)
+        }
+      const {
+        validRowNumbers,
+        validColumnNumbers,
+        validGridNumbers,
+        emptyCount: eC,
+      } = missingProps
+
+      if (validRowNumbers) this.validRowNumbers = validRowNumbers
+      if (validColumnNumbers) this.validColumnNumbers = validColumnNumbers
+      if (validGridNumbers) this.validGridNumbers = validGridNumbers
+      if (typeof eC === 'number') this.emptyCount = eC
     }
-    const splitSudoku = sudoku.split(''),
-      columns = []
-
-    if (typeof columnInd === 'number') return getColumn(splitSudoku, columnInd)
-    for (let column = 0; column <= 8; column++)
-      columns.push(getColumn(splitSudoku, column))
-
-    return columns
   }
 
   /**
-   * @description Returns the rows in a sudoku, or a single row if a "row" number is passed.
-   * @param {string} sudoku The sudoku puzzle to extract rows from.
-   * @param {number} [rowIndex] The row to return, if any.
-   * @returns {string[] | string} An array containing each row string (top to bottom), or a single row string.
+   * @returns {SudokuSolver | null}
    */
-  static rows(sudoku, rowIndex) {
-    function getRow(sudokuVals, rowNum) {
-      const multiple = rowNum * 9,
-        min = 0 + multiple,
-        max = 8 + multiple
+  solve() {
+    if (this.emptyCount === 0) return this
 
-      return sudokuVals.filter((_, i) => min <= i && i <= max).join('')
-    }
-    const splitSudoku = sudoku.split(''),
-      rows = []
+    const sudokus = this.possibleSudokus()
 
-    if (typeof rowIndex === 'number') return getRow(splitSudoku, rowIndex)
-    for (let row = 0; row <= 8; row++) rows.push(getRow(splitSudoku, row))
-
-    return rows
+    return this.search(sudokus)
   }
 
   /**
-   * @description Returns the grids in a sudoku, or a single grid if a "grid" number is passed.
-   * @param {string} sudoku The sudoku puzzle to extract grids from.
-   * @param {number} [gridIndex] The grid to return, if any.
-   * @returns {string[] | string} An array containing each grid string (left to right, top to bottom), or a single grid string.
+   * @param {SudokuSolver[]} sudokus
+   * @returns {SudokuSolver | null}
    */
-  static grids(sudoku, gridIndex) {
-    function getGrid(sudoku, gridNum) {
-      const starts = [0, 1, 2, 9, 10, 11, 18, 19, 20],
-        trios = []
-      let start = starts[gridNum] * 3
+  search(sudokus) {
+    if (sudokus.length === 0) return null
 
-      while (trios.length < 3) {
-        trios.push(sudoku.substring(start, start + 3))
-        start = start + 9
-      }
+    const attempt = sudokus.shift()?.solve()
 
-      return trios.join('')
-    }
-    const grids = []
-
-    if (typeof gridIndex === 'number') return getGrid(sudoku, gridIndex)
-    for (let grid = 0; grid <= 8; grid++) grids.push(getGrid(sudoku, grid))
-
-    return grids
+    return attempt || this.search(sudokus)
   }
 
   /**
-   * @description Returns the index of the passed coordinate's grid.
-   * @param {number[]} coordinate Array containing the column and grid indexes, in that order.
-   * @returns {number} The index of the coordinate's grid.
+   * @returns {SudokuSolver[]}
    */
-  static grid([column, row]) {
+  possibleSudokus() {
+    const sudokus = []
+
+    // @ts-ignore
+    if (this.emptyCount > 0)
+      for (const [rowIndex, row] of this.rows.entries())
+        for (const [columnIndex, value] of row.entries())
+          if (value === '.') {
+            const gridIndex = this.gridIndex(rowIndex, columnIndex)
+            // @ts-ignore
+            for (const number of this.validRowNumbers[rowIndex])
+              if (
+                // @ts-ignore
+                this.validColumnNumbers[columnIndex].has(number) &&
+                // @ts-ignore
+                this.validGridNumbers[gridIndex].has(number)
+              ) {
+                const newRows = this.rows.map(row => [...row]),
+                  // @ts-ignore
+                  newEmptyCount = this.emptyCount - 1,
+                  // @ts-ignore
+                  validRowNumbersCopy = this.validRowNumbers.map(set =>
+                    // @ts-ignore
+                    set.copy()
+                  ),
+                  // @ts-ignore
+                  validColumnNumbersCopy = this.validColumnNumbers.map(set =>
+                    // @ts-ignore
+                    set.copy()
+                  ),
+                  // @ts-ignore
+                  validGridNumbersCopy = this.validGridNumbers.map(set =>
+                    // @ts-ignore
+                    set.copy()
+                  )
+                newRows[rowIndex][columnIndex] = number
+                validRowNumbersCopy[rowIndex].delete(number)
+                validColumnNumbersCopy[columnIndex].delete(number)
+                validGridNumbersCopy[gridIndex].delete(number)
+
+                const sudoku = new SudokuSolver(
+                  newRows,
+                  validRowNumbersCopy,
+                  validColumnNumbersCopy,
+                  validGridNumbersCopy,
+                  newEmptyCount
+                )
+                sudokus.push(sudoku)
+              }
+
+            return sudokus
+          }
+
+    return sudokus
+  }
+
+  /**
+   * @param {number} rowIndex
+   * @param {number} columnIndex
+   * @param {string} value
+   * @returns {string[]}
+   */
+  conflicts(rowIndex, columnIndex, value) {
+    const gridIndex = this.gridIndex(rowIndex, columnIndex),
+      // @ts-ignore
+      validRowValues = this.validRowNumbers[rowIndex],
+      // @ts-ignore
+      validColumnValues = this.validColumnNumbers[columnIndex],
+      // @ts-ignore
+      validGridValues = this.validGridNumbers[gridIndex],
+      conflicts = []
+
+    if (!validRowValues.has(value)) conflicts.push('row')
+    if (!validColumnValues.has(value)) conflicts.push('column')
+    if (!validGridValues.has(value)) conflicts.push('grid')
+
+    return conflicts
+  }
+
+  /**
+   * @returns {ValidNumbers}
+   */
+  areaSet() {
+    const values = []
+
+    for (let i = 1; i <= 9; i++) values.push(`${i}`)
+
+    return (
+      Array(9)
+        // @ts-ignore
+        .fill()
+        .map(() => new Set(values))
+    )
+  }
+
+  /**
+   * @param {number} rowIndex
+   * @param {number} columnIndex
+   * @returns {number}
+   */
+  gridIndex(rowIndex, columnIndex) {
     const f = [0, 1, 2],
       m = [3, 4, 5],
       l = [6, 7, 8],
-      possibleGrids = [f, f, f, m, m, m, l, l, l][row]
+      possibleGrids = [f, f, f, m, m, m, l, l, l][rowIndex]
 
-    const grid =
-      column <= 2
+    const gridIndex =
+      columnIndex <= 2
         ? possibleGrids[0]
-        : column >= 3 && column <= 5
+        : columnIndex >= 3 && columnIndex <= 5
         ? possibleGrids[1]
         : possibleGrids[2]
 
-    return grid
-  }
-
-  /**
-   * @description Accepts a single string of values (from a sudoku column, row, or grid) and returns whether the area is valid (whether it lacks duplicates)..
-   * @param {string} values The values of the column, row, or grid, with periods representing empty slots.
-   * @returns {boolean} Whether the area is valid or not.
-   */
-  static validArea(values) {
-    const sortedValues = values
-      .split('')
-      .filter(val => !isNaN(+val))
-      .sort()
-
-    for (let i = 0; i < sortedValues.length - 1; i++) {
-      const current = sortedValues[i],
-        next = sortedValues[i + 1]
-
-      if (current === next) return false
-    }
-
-    return true
-  }
-
-  /**
-   * @description Determines whether the sudoku passed is valid by verifying there are no duplicates on rows, columns or grids.
-   * @param {string} sudoku The sudoku to validate.
-   * @returns {boolean} Whether the sudoku was valid.
-   */
-  static validSudoku(sudoku) {
-    const areas = [this.columns, this.rows, this.grids].map(method =>
-      method(sudoku)
-    )
-
-    // @ts-ignore
-    return areas.every(area => area.every(this.validArea))
-  }
-
-  /**
-   * @description Returns a string containing the solution of the passed, incomplete sudoku.
-   * @param {string} sudoku A valid sudoku to solve.
-   * @returns {string} The sudoku's solution.
-   */
-  static solve(sudoku) {
-    const [rows, columns, grids] = [this.rows, this.columns, this.grids].map(
-      method => method(sudoku)
-    )
-    let sortedNumbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-      .map(str => [str, sudoku.match(new RegExp(str, 'g'))?.length ?? 0])
-      .filter(number => number[1] < 9)
-      // @ts-ignore
-      .sort((a, b) => b[1] - a[1])
-
-    for (const [numberStr, numCount] of sortedNumbers) {
-      const validRowIndexes = [],
-        validColumnIndexes = [],
-        validGridIndexes = [],
-        overlaps = []
-
-      // @ts-ignore
-      for (const [i, row] of rows.entries()) 
-        // prettier-ignore
-        // @ts-ignore
-        if (!row.includes(numberStr)) validRowIndexes.push(i)
-      // @ts-ignore
-      for (const [i, column] of columns.entries())
-        // prettier-ignore
-        // @ts-ignore
-        if (!column.includes(numberStr)) validColumnIndexes.push(i)
-      // @ts-ignore
-      for (const [i, grid] of grids.entries())
-        // prettier-ignore
-        // @ts-ignore
-        if (!grid.includes(numberStr)) validGridIndexes.push(i)
-
-      // for (let i = 0; i < 12; i > 9 && i < 12 ? i -= 8 : i += 3)
-    }
-
-    return ''
-  }
-
-  /**
-   * @param {string} coordinate
-   * @returns {boolean}
-   */
-  static validCoordinate(coordinate) {
-    const coordRegex = /^[A-I][1-9]$/i
-
-    return coordRegex.test(coordinate)
-  }
-
-  /**
-   * @param {string} value
-   * @returns {boolean}
-   */
-  static validValue(value) {
-    const numRegex = /^[1-9]$/
-
-    return numRegex.test(value)
-  }
-
-  /**
-   * @description Checks whether the value passed is legal in the coordinate of the passed sudoku.
-   * @param {string} sudoku A string depicting the sudoku, row by row, with periods representing empty values.
-   * @param {string} coordinate A letter and number representing the row and column of the value, respectively.
-   * @param {number} value The value of the coordinate.
-   * @returns {{ valid: boolean, conflicts: string[] | null }} An object with: a valid property describing whether the passed value is legal in the passed coordinate; and a conflicts property containing an array of strings describing where the conflicts were, or null if there were no conflicts.
-   */
-  static check(sudoku, coordinate, value) {
-    const rowIndex = coordinate.toUpperCase().charCodeAt(0) - 65,
-      columnIndexes =
-        rowIndex >= 0 && rowIndex <= 2
-          ? [0, 1, 2]
-          : rowIndex >= 3 && rowIndex <= 5
-          ? [3, 4, 5]
-          : [6, 7, 8],
-      columnIndex = +coordinate[1] - 1,
-      valueIndex = rowIndex * 9 + columnIndex,
-      subbedSudoku =
-        sudoku.slice(0, valueIndex) +
-        value +
-        sudoku.slice(valueIndex + 1, sudoku.length),
-      gridIndex =
-        columnIndexes[
-          columnIndex >= 0 && columnIndex <= 2
-            ? 0
-            : columnIndex >= 3 && columnIndex <= 5
-            ? 1
-            : 2
-        ],
-      row = this.rows(subbedSudoku, rowIndex),
-      column = this.columns(subbedSudoku, columnIndex),
-      grid = this.grids(subbedSudoku, gridIndex),
-      conflicts = []
-
-    for (const [line, str] of [
-      [row, 'row'],
-      [column, 'column'],
-      [grid, 'grid'],
-    ])
-    // prettier-ignore
-    // @ts-ignore
-      if (!this.validArea(line)) conflicts.push(str)
-
-    const valid = conflicts.length === 0
-
-    return {
-      valid,
-      // @ts-ignore
-      conflicts: valid ? null : conflicts,
-    }
+    return gridIndex
   }
 }
+
+/**
+ * @typedef {string[][]} Rows
+ */
+
+/**
+ * @typedef {Set<string>[]} ValidNumbers
+ */
