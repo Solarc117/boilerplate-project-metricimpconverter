@@ -5,3 +5,4 @@ node_modules
 ignore.js
 dev/test.http
 dev/ignore.js
+.vercel
