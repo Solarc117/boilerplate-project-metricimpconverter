@@ -1,0 +1,123 @@
+[
+  {
+    "project": "jsPomodoro",
+    "owner": "cool_user_33",
+    "issues": [
+      {
+        "title": "dysfunctional timer",
+        "text": "timer does not proceed after first focus session",
+        "created_by": "pom0doro_user",
+        "assigned_to": null,
+        "status_text": null,
+        "open": true
+      }
+    ]
+  },
+  {
+    "project": "huberman_lab_transcripts",
+    "owner": "solarc117",
+    "issues": [
+      {
+        "title": "podcast 37 missing",
+        "text": "solarc please add the transcripts from episode 37",
+        "created_by": "keenLearner139",
+        "assigned_to": "solarc117",
+        "status_text": null,
+        "open": true
+      },
+      {
+        "title": "episode 22 typos",
+        "text": "i've read this episode for 10s and already found 30 typos, someone please fix",
+        "created_by": "abg112",
+        "assigned_to": null,
+        "status_text": null,
+        "open": true
+      },
+      {
+        "title": "episode 1 typo",
+        "text": "there is a typo on the transcript of episode 1",
+        "created_by": "solarc117",
+        "assigned_to": "solarc117",
+        "status_text": "processing",
+        "open": true
+      },
+      {
+        "title": "inaccuracy in episode 30",
+        "text": "in the second chapter, Dr. Huberman makes an inaccurate statement. We should note this in the transcript",
+        "created_by": "coder-coder",
+        "assigned_to": "solarc117",
+        "status_text": null,
+        "open": true
+      }
+    ]
+  },
+  {
+    "project": "python-algs",
+    "owner": "fcc_learner_:)",
+    "issues": []
+  },
+  {
+    "project": "cpp-chess",
+    "owner": "johnny123",
+    "issues": [
+      {
+        "title": "knight doesn't jump over other pieces",
+        "created_by": "johnny123",
+        "text": "the knight is unable to jump over pawns at the beginning of a game",
+        "assigned_to": "anyone",
+        "status_text": "under development",
+        "open": true
+      }
+    ]
+  },
+  {
+    "project": "blonde-track-list",
+    "owner": "frank_ocean_fan",
+    "issues": [
+      {
+        "title": "missing lyrics for 'Nikes' track",
+        "created_by": "frank_ocean_fan"
+      }
+    ]
+  },
+  {
+    "project": "react-calculator",
+    "issues": []
+  },
+  {
+    "_id": 123456,
+    "project": "js website",
+    "owner": "random_coder",
+    "issues": []
+  },
+  {
+    "project": "mr-beast-video-transcripts",
+    "owner": "chris",
+    "issues": [
+      {
+        "title": "Missing 100,000,000 subscriber island video",
+        "text": "can someone please add the transcript from the video mentioned in the title :(",
+        "created_by": "chris",
+        "assigned_to": null,
+        "status_text": null,
+        "open": true
+      },
+      {
+        "title": "typo on the squid game transcript",
+        "text": "the text in the squid game video transcript is wrong, I'll review it",
+        "created_by": "chris",
+        "assigned_to": "chris",
+        "status_text": "working on it",
+        "open": true
+      },
+      {
+        "title": "incorrect video title",
+        "text": "the 12th video transcript had an incorrect title, so it was deleted",
+        "created_by": "chris",
+        "assigned_to": null,
+        "status_text": "completed",
+        "open": false
+      }
+    ]
+  }
+]

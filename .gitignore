@@ -1,3 +1,8 @@
 .env
 node_modules
 .vscode
+*.mongodb
+ignore.js
+dev/test.http
+dev/ignore.js
+.vercel
