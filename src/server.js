@@ -1,4 +1,5 @@
 'use strict'
+require('dotenv').config()
 const log = console.log.bind(console),
   { env } = process
 function logger(req, res, next) {
@@ -14,7 +15,7 @@ const cors = require('cors'),
   fccTestingRoutes = require('./routes/fcctesting.js'),
   htmlRouter = require('./routes/html-router.js'),
   app = express()
-if (env.NODE_ENV === 'dev') require('../dev/live-reload.js')(app)
+if (env.NODE_ENV === 'development') require('../.vscode/dev/live-reload.js')(app)
 
 app.set('json spaces', 2)
 app.use('/public', express.static(process.cwd() + '/public'))

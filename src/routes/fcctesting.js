@@ -64,7 +64,7 @@ module.exports = function (app) {
     cors(),
     function (req, res, next) {
       console.log('requested')
-      if (process.env.NODE_ENV === 'dev') return next()
+      if (process.env.NODE_ENV === 'development') return next()
       res.json({ status: 'unavailable' })
     },
     function (req, res, next) {

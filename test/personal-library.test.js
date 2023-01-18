@@ -1,3 +1,4 @@
+require('dotenv').config()
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
   server = require('../src/server.js'),
@@ -111,7 +112,11 @@ suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
 
   suiteSetup(() => browser.visit('/personal-library'))
 
-  test('browser setup', () => assert.isString(browser.site))
+  test('browser setup', done => {
+    assert.isString(browser.site)
+
+    done()
+  })
 
   test('1. book submitted is displayed in ul', done => {
     const newBookTitle = 'The Hunger Games'

@@ -1,6 +1,10 @@
-const { log, error } = console,
+'use strict'
+require('dotenv').config()
+const log = console.log.bind(console),
+  error = console.error.bind(console),
   { env } = process
-const COLLECTION = env.NODE_ENV === 'dev' ? 'test' : 'projects'
+
+const COLLECTION = env.NODE_ENV === 'development' ? 'test' : 'projects'
 let db
 
 // 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
@@ -60,7 +64,7 @@ module.exports = class IssuesDAO {
   /**
    * @description Attempts to fetch a single Project document matching the passed project name.
    * @async
-   * @param {string} name The name of the project.
+   * @param {string} project The name of the project.
    * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
   static async fetchProject(project) {

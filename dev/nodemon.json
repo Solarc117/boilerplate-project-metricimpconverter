@@ -1,3 +1,0 @@
-{
-  "watch": ["public", "src", "test", "views", "index.js"]
-}

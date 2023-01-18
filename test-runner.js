@@ -36,7 +36,7 @@ const analyser = require('./assertion-analyser.js'),
 
 // Add each .js file to the mocha instance
 fs.readdirSync(TESTS)
-  .filter(file => file.substring(file.length - TEST_ANNEX.length, file.length) === TEST_ANNEX)
+  .filter(file => file.endsWith(TEST_ANNEX))
   .forEach(file => mocha.addFile(path.join(TESTS, file)))
 
 const emitter = new EventEmitter()
@@ -49,32 +49,32 @@ emitter.run = function () {
     mocha
       .ui('tdd')
       .run()
-      // Deconstructured from test
-      .on('test end', ({ body, title, state }) => {
-        // remove comments
-        body = body.replace(/\/\/.*\n|\/\*.*\*\//g, '')
-        // collapse spaces
-        body = body.replace(/\s+/g, ' ')
+      // // Deconstructured from test
+      // .on('test end', ({ body, title, state }) => {
+      //   // remove comments
+      //   body = body.replace(/\/\/.*\n|\/\*.*\*\//g, '')
+      //   // collapse spaces
+      //   body = body.replace(/\s+/g, ' ')
 
-        tests.push({
-          title,
-          context: context.slice(0, -separator.length),
-          state,
-          // body: body,
-          assertions: analyser(body),
-        })
-      })
-      .on('end', function () {
-        // @ts-ignore
-        emitter.report = tests
-        emitter.emit('done', tests)
-      })
-      .on('suite', function (s) {
-        context += s.title + separator
-      })
-      .on('suite end', function (s) {
-        context = context.slice(0, -(s.title.length + separator.length))
-      })
+      //   tests.push({
+      //     title,
+      //     context: context.slice(0, -separator.length),
+      //     state,
+      //     // body: body,
+      //     assertions: analyser(body),
+      //   })
+      // })
+      // .on('end', function () {
+      //   // @ts-ignore
+      //   emitter.report = tests
+      //   emitter.emit('done', tests)
+      // })
+      // .on('suite', function (s) {
+      //   context += s.title + separator
+      // })
+      // .on('suite end', function (s) {
+      //   context = context.slice(0, -(s.title.length + separator.length))
+      // })
   } catch (e) {
     throw e
   }

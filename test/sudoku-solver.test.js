@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Browser = require('zombie'),
   assert = require('./modified-assert.js'),
   [
@@ -7,6 +8,7 @@ const Browser = require('zombie'),
     [sudoku4, solution4],
     [sudoku5, solution5],
     [sudoku6, solution6],
+    [sudoku7, solution7],
   ] = require('./test-sudokus.json'),
   { env } = process,
   HOME = `http://localhost:${env.PORT || 3000}`,
@@ -176,6 +178,36 @@ suite('🧪 \x1b[36mSudoku Solver: Browser\n', () => {
   test('6. Valid sudoku input', done => {
     const sudoku = sudoku6,
       complete = solution6
+
+    browser.on('response', (req, res) => {
+      if (req.method !== 'POST' || !req.url.endsWith('/api/solve')) return
+
+      browser.wait(browser.query('#json code'), () => {
+        const { solution } = JSON.parse(browser.text('#json code'))
+
+        assert.strictEqual(solution, complete)
+        assert.strictEqual(
+          Array.from(browser.querySelectorAll('.sudoku-input')).filter(
+            ({ textContent }) => textContent.match(/\d/)
+          ).length,
+          81
+        )
+
+        done()
+      })
+    })
+
+    browser.visit(SUDOKU, () => {
+      browser.assert.element('#text-input')
+      browser.assert.element('#solve-button')
+      browser.fill('#text-input', sudoku)
+      browser.click('#solve-button')
+    })
+  })
+
+  test('6.5. Valid sudoku input', done => {
+    const sudoku = sudoku7,
+      complete = solution7
 
     browser.on('response', (req, res) => {
       if (req.method !== 'POST' || !req.url.endsWith('/api/solve')) return

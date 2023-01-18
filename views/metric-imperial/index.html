@@ -102,6 +102,7 @@
     $(() => {
       $('#convertForm').submit(e => {
         e.preventDefault()
+
         $.ajax({
           url: '/api/convert',
           type: 'get',

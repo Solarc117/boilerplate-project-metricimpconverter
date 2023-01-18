@@ -1,4 +1,3 @@
-// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts. Credit to @dgdev1024 at Github for catching this vulnerability and coding this regex, and any implementations of it in this file.
 function resetBookDetail(eventType) {
   $('#bookDetail').html(
     `<p id="detailTitle">${
@@ -78,6 +77,7 @@ function displayBookItem() {
     )
   })
 }
+// Regular expression to pick up HTML/XML tags, in case of any cross-site scripting attempts. Credit to @dgdev1024 at Github for catching this vulnerability and coding this regex, and any implementations of it in this file.
 const htmlRegex = /(?:\<\/?.+\>)/g
 let bookItems = [],
   bookItemsRaw = [],
@@ -88,10 +88,10 @@ $(() => {
 
   $('#display').on('click', 'li.bookItem', displayBookItem)
   $('#display').on('keydown', 'li.bookItem', ({ target, key }) => {
-    if (key.match(/enter/i)) {
-      const dBI = displayBookItem.bind(target)
-      dBI()
-    }
+    if (!key.match(/enter/i)) return
+
+    const dBI = displayBookItem.bind(target)
+    dBI()
   })
 
   $('#newCommentForm').on('submit', event => {
