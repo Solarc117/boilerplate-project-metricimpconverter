@@ -3,7 +3,7 @@ require('dotenv').config()
 const { ObjectId } = require('mongodb'),
   { log, error } = console,
   { env } = process,
-  COLLECTION = env.NODE_ENV === 'development' ? 'test' : 'books'
+  COLLECTION = env.NODE_ENV === 'production' ? 'books' : 'test'
 let db
 
 module.exports = class LibraryDAO {
