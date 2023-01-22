@@ -6,11 +6,11 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon -i dev/ -r dotenv/config index.js",
-		"test": "mocha ./test/ --ui tdd",
+		"test": "mocha ./test/*.test.js --ui tdd",
 		"debug": "nodemon -i dev/ -r dotenv/config index.js"
 	},
 	"engines": {
-		"node": "16.x"
+		"node": "18.x"
 	},
 	"dependencies": {
 		"body-parser": "^1.19.0",
