@@ -1,4 +1,0 @@
-- implement secret manager:
-  - copy secret manager code in index OR server file
-
-- set environment variables on server startup manually
