@@ -1,4 +1,5 @@
 'use strict'
+require('dotenv').config()
 const chaiHttp = require('chai-http'),
   chai = require('chai'),
   server = require('../src/server.js'),
@@ -13,16 +14,16 @@ const chaiHttp = require('chai-http'),
     TEST_DOC_7,
     TEST_DOC_8,
   ] = require('./issue-tracker-test-docs.json'),
-  ISSUES = '/api/issues'
+  ISSUES_API = '/api/issues'
 
 chai.use(chaiHttp)
 
-suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
-  const setup1Path = `${ISSUES}/${TEST_DOC_1.project}`,
-    setup2Path = `${ISSUES}/${TEST_DOC_2.project}`,
-    setup3Path = `${ISSUES}/${TEST_DOC_3.project}`,
-    setup4Path = `${ISSUES}/${TEST_DOC_8.project}`
-  suiteSetup(() => chai.request(server).delete(ISSUES))
+suite('🧪 Issue Tracker: HTTP\n', () => {
+  const setup1Path = `${ISSUES_API}/${TEST_DOC_1.project}`,
+    setup2Path = `${ISSUES_API}/${TEST_DOC_2.project}`,
+    setup3Path = `${ISSUES_API}/${TEST_DOC_3.project}`,
+    setup4Path = `${ISSUES_API}/${TEST_DOC_8.project}`
+  suiteSetup(() => chai.request(server).delete(ISSUES_API))
   suiteSetup(() => chai.request(server).put(setup1Path).send(TEST_DOC_1))
   suiteSetup(() => chai.request(server).put(setup2Path).send(TEST_DOC_2))
   suiteSetup(() => chai.request(server).put(setup3Path).send(TEST_DOC_3))
@@ -98,15 +99,15 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
         )
 
         const {
-          title, // s
-          text, // s
-          created_by, // chris
-          assigned_to, // null
-          status_text, // null
-          open, // true
-          created_on, // new date
-          last_updated, // new date
-          index, // 0
+          title, 
+          text, 
+          created_by, 
+          assigned_to, 
+          status_text, 
+          open, 
+          created_on, 
+          last_updated,  
+          index, 
         } = issues[0]
 
         assert.areNull(err, assigned_to, status_text)
@@ -125,7 +126,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test1Path = `${ISSUES}/${TEST_DOC_1.project}`
+  const test1Path = `${ISSUES_API}/${TEST_DOC_1.project}`
   test(`1. GET ${test1Path}`, done => {
     chai
       .request(server)
@@ -144,7 +145,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test2Path = `${ISSUES}/${TEST_DOC_4.project}`
+  const test2Path = `${ISSUES_API}/${TEST_DOC_4.project}`
   test(`2. Create with every field except _id: POST ${test2Path}`, done => {
     chai
       .request(server)
@@ -163,7 +164,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test3Path = `${ISSUES}/${TEST_DOC_5.project}`
+  const test3Path = `${ISSUES_API}/${TEST_DOC_5.project}`
   test(`3. Create with only required fields: POST ${test3Path}`, done => {
     chai
       .request(server)
@@ -185,7 +186,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test4Path = `${ISSUES}/${TEST_DOC_6.project}`
+  const test4Path = `${ISSUES_API}/${TEST_DOC_6.project}`
   test(`4. Create with missing required fields: POST ${test4Path}`, done => {
     chai
       .request(server)
@@ -204,7 +205,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test5Path = `${ISSUES}/${TEST_DOC_7.project}`
+  const test5Path = `${ISSUES_API}/${TEST_DOC_7.project}`
   test(`5. Include _id field in project: POST ${test5Path}`, done => {
     chai
       .request(server)
@@ -224,7 +225,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
       })
   })
 
-  const test6Path = `${ISSUES}/${TEST_DOC_1.project}`
+  const test6Path = `${ISSUES_API}/${TEST_DOC_1.project}`
   test(`6. GET ${test6Path}`, done => {
     chai
       .request(server)
@@ -259,7 +260,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test7Params = '?assigned_to',
-    test7Path = `${ISSUES}/${TEST_DOC_2.project}${test7Params}`
+    test7Path = `${ISSUES_API}/${TEST_DOC_2.project}${test7Params}`
   test(`7. View issues with one filter: GET ${test7Path}`, done => {
     chai
       .request(server)
@@ -286,7 +287,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test8Params = '?title=podcast&assigned_to=sol',
-    test8Path = `${ISSUES}/${TEST_DOC_2.project}${test8Params}`
+    test8Path = `${ISSUES_API}/${TEST_DOC_2.project}${test8Params}`
   test(`8. View issues with multiple filters: GET ${test8Path}`, done => {
     chai
       .request(server)
@@ -309,7 +310,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test9Params = '?index=0',
-    test9Path = `${ISSUES}/${TEST_DOC_1.project}${test9Params}`
+    test9Path = `${ISSUES_API}/${TEST_DOC_1.project}${test9Params}`
   test(`9. Update one field on an issue: PATCH ${test9Path}`, done => {
     const fieldsToUpdate = {
       assigned_to: TEST_DOC_1.owner,
@@ -335,7 +336,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test10Params = '?index=2',
-    test10Path = `${ISSUES}/${TEST_DOC_2.project}${test10Params}`
+    test10Path = `${ISSUES_API}/${TEST_DOC_2.project}${test10Params}`
   test(`10. Update multiple fields: PATCH ${test10Path}`, done => {
     const fieldsToUpdate = {
       status_text: 'finished',
@@ -362,7 +363,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test11Params = '?index=0',
-    test11Path = `${ISSUES}/${TEST_DOC_8.project}${test11Params}`
+    test11Path = `${ISSUES_API}/${TEST_DOC_8.project}${test11Params}`
   test(`11. Update with no fields: PATCH ${test11Path}`, done => {
     chai
       .request(server)
@@ -384,7 +385,7 @@ suite('🧪 \x1b[34mIssue Tracker: HTTP\n', () => {
   })
 
   const test12Params = '?index=1',
-    test12Path = `${ISSUES}/${TEST_DOC_8.project}${test12Params}`
+    test12Path = `${ISSUES_API}/${TEST_DOC_8.project}${test12Params}`
   test(`12. DELETE ${test12Path}`, done => {
     chai
       .request(server)
