@@ -2,10 +2,9 @@
 require('dotenv').config()
 const log = console.log.bind(console),
   error = console.error.bind(console),
-  { env } = process
-
-const COLLECTION = env.NODE_ENV === 'development' ? 'test' : 'projects'
-let db
+  { env } = process,
+  COLLECTION = env.NODE_ENV === 'production' ? 'projects' : 'test'
+let DB
 
 // 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
 module.exports = class IssuesDAO {
@@ -15,13 +14,13 @@ module.exports = class IssuesDAO {
    * @param {object} client The MongoDB project under which the issue-tracker database and test/owners collection are located.
    */
   static async injectDB(client) {
-    if (db)
+    if (DB)
       return log(
         `connection to ${COLLECTION} collection previously established`
       )
 
     try {
-      db = await client.db('issue-tracker').collection(COLLECTION)
+      DB = await client.db('issue-tracker').collection(COLLECTION)
     } catch (err) {
       error(
         `\x1b[31m\nunable to establish a collection handle in IssuesDAO:`,
@@ -34,8 +33,7 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Drops the test collection if currently connected to it.
-   * @async
-   * @returns {object | null} The result of the drop operation, or an object containing an error property if the operation failed or was unable to execute.
+   * @returns {Promise<object | null>} The result of the drop operation, or an object containing an error property if the operation failed or was unable to execute.
    */
   static async dropTest() {
     if (env.NODE_ENV !== 'dev')
@@ -46,7 +44,7 @@ module.exports = class IssuesDAO {
     let dropResult
 
     try {
-      dropResult = await db.drop()
+      dropResult = await DB.drop()
     } catch (err) {
       if (err.codeName === 'NamespaceNotFound')
         return log(`${COLLECTION} collection does not exist`)
@@ -63,9 +61,8 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Attempts to fetch a single Project document matching the passed project name.
-   * @async
    * @param {string} project The name of the project.
-   * @returns {{ err: string } | Project | null} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
+   * @returns {Promise<{ error: string } | Project | null>} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
   static async fetchProject(project) {
     // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
@@ -73,7 +70,7 @@ module.exports = class IssuesDAO {
     let result
 
     try {
-      result = await db.findOne(query)
+      result = await DB.findOne(query)
     } catch (err) {
       error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
       return { error: err.message }
@@ -83,10 +80,33 @@ module.exports = class IssuesDAO {
   }
 
   /**
+   * @description Attempts to fetch all projects in db, & returns their titles.
+   * @returns {Promise<[string] | { error: string }>}
+   */
+  static async fetchProjects() {
+    try {
+      const result = await DB.find(
+        {},
+        {
+          projection: {
+            _id: 0,
+            project: 1,
+          },
+        }
+      ).toArray()
+
+      return result
+    } catch (err) {
+      error('error fetching projects:', err)
+
+      return { error: err.message }
+    }
+  }
+
+  /**
    * @description Creates an upsert call to the db with the project argument passed. For testing purposes.
-   * @async
    * @param {Project} project The document to be upserted into the collection.
-   * @returns {object | null} The collection.updateOne response, or an object containing an error property if the attempt failed.
+   * @returns {Promise<object | null>} The collection.updateOne response, or an object containing an error property if the attempt failed.
    */
   static async upsertProject(project) {
     const query = { project: project.project },
@@ -95,7 +115,7 @@ module.exports = class IssuesDAO {
     let result
 
     try {
-      result = await db.updateOne(query, operators, options)
+      result = await DB.updateOne(query, operators, options)
     } catch (err) {
       error(`\x1b[31m\nerror upserting ${COLLECTION} collection:`, err)
       return { error: err.message }
@@ -106,15 +126,14 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Attempts to post (upload) the passed object to the connected collection.
-   * @async
    * @param {Project} project The object to post to the respective collection.
-   * @returns {null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }}
+   * @returns {Promise<null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }>}
    */
   static async createProject(project) {
     let result
 
     try {
-      result = await db.insertOne(project)
+      result = await DB.insertOne(project)
     } catch (err) {
       error(
         `\x1b[31m\nunable to insert document in ${COLLECTION} collection:`,
@@ -128,9 +147,9 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Attempts to update a single issue in the database.
-   * @async
    * @param {object} query An object containing the index of the issue to update, and the title of the project that the issue pertains to.
    * @param {object} fieldsToUpdate The fields of the issue to update, containing their new values.
+   * @returns {Promise<object>}
    */
   static async updateIssue(query, fieldsToUpdate) {
     const { project, index } = query,
@@ -145,7 +164,7 @@ module.exports = class IssuesDAO {
     let result
 
     try {
-      result = await db.updateOne(filter, command)
+      result = await DB.updateOne(filter, command)
     } catch (err) {
       error(
         `\x1b[31m\nunable to update document in ${COLLECTION} collection:`,
@@ -159,10 +178,9 @@ module.exports = class IssuesDAO {
 
   /**
    * @description Deletes a single issue from a project using its index
-   * @async.
    * @param {string} project The name of the project that the issue pertains to.
    * @param {number} index The index of the issue to delete.
-   * @returns { object | null } The result of the update operaton.
+   * @returns {Promise<object | null>} The result of the update operaton.
    */
   static async deleteIssue(project, index) {
     const skipFirstIssuePipeline = [
@@ -210,7 +228,7 @@ module.exports = class IssuesDAO {
     let deleteResult
 
     try {
-      deleteResult = await db.updateOne(
+      deleteResult = await DB.updateOne(
         { project },
         index === 0 ? skipFirstIssuePipeline : skipMiddleIssuePipeline
       )

@@ -58,6 +58,10 @@
       <hr style="margin: 0 50px" />
       <section id="testui" style="margin-left: 50px">
         <h2 style="text-align: left">API Tests</h2>
+        <h3>Get projects</h3>
+        <form id="getProjects">
+          <button type="submit">Get Projects</button>
+        </form>
         <h3>Get issues</h3>
         <form id="getForm" class="border">
           <input
@@ -183,85 +187,88 @@
 
   <!-- Your web-app is https, so your scripts need to be too -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script type="module">
-    const { log, error } = console
+  <script>
     function stringify(data) {
       $('#jsonResult').text(JSON.stringify(data))
     }
+    const log = console.log.bind(console),
+      error = console.error.bind(console)
 
-    $(() => {
-      $('#getForm').on('submit', e => {
-        e.preventDefault()
-        const [{ value: project }] =
-          $('#getForm').serializeArray()
-        $.ajax({
-          url: `/api/issues/${project}`,
-          type: 'get',
-          success: data => stringify(data),
-        })
+    $('#getProjects').on('submit', e => {
+      e.preventDefault()
+      $.ajax({
+        url: '/api/issues/projects',
+        success: stringify,
       })
-      $('#submitForm').on('submit', e => {
-        e.preventDefault()
-        $.ajax({
-          url: '/api/issues/apitest',
-          type: 'post',
-          data: $('#submitForm').serialize(),
-          success: data => stringify(data),
-        })
+    })
+    $('#getForm').on('submit', e => {
+      e.preventDefault()
+      const [{ value: project }] = $('#getForm').serializeArray()
+      $.ajax({
+        url: `/api/issues/${project}`,
+        type: 'get',
+        success: stringify,
       })
-      $('#issueIndexForm').on('submit', e => {
-        e.preventDefault()
-        const [{ value: project }, { value: index }] =
-          $('#issueIndexForm').serializeArray()
-
-        $.ajax({
-          url: `/api/issues/${project}?index=${index}`,
-          type: 'get',
-          success(data) {
-            let [{ title, text, assigned_to, status_text, open }] = data
-
-            // This is so that the following updateForm can access these fields, which it requires in order to issue its patch request.
-            sessionStorage.setItem('project', project)
-            sessionStorage.setItem('index', index)
-
-            $('#updateForm').removeClass('hidden')
-            $('[name=new-title]').val(title)
-            $('[name=new-text]').val(text ?? '')
-            $('[name=new-assigned-to]').val(assigned_to ?? '')
-            $('[name=new-status-text]').val(status_text ?? '')
-            $('[name=new-open]').prop('checked', open)
-          },
-        })
+    })
+    $('#submitForm').on('submit', e => {
+      e.preventDefault()
+      $.ajax({
+        url: '/api/issues/apitest',
+        type: 'post',
+        data: $('#submitForm').serialize(),
+        success: stringify,
       })
+    })
+    $('#issueIndexForm').on('submit', e => {
+      e.preventDefault()
+      const [{ value: project }, { value: index }] =
+        $('#issueIndexForm').serializeArray()
 
-      $('#updateForm').on('submit', e => {
-        e.preventDefault()
-        const [project, index] = ['project', 'index'].map(item =>
-          sessionStorage.getItem(item)
-        )
-        sessionStorage.clear()
+      $.ajax({
+        url: `/api/issues/${project}?index=${index}`,
+        type: 'get',
+        success(data) {
+          let [{ title, text, assigned_to, status_text, open }] = data
 
-        const data = `${$('#updateForm')
-          .serialize()
-          .replace(/new-/g, '')
-          .replace(/-/g, '_')}`
+          // This is so that the following updateForm can access these fields, which it requires in order to issue its patch request.
+          sessionStorage.setItem('project', project)
+          sessionStorage.setItem('index', index)
 
-        $.ajax({
-          url: `/api/issues/${project}?index=${index}`,
-          type: 'patch',
-          data,
-          success: data => stringify(data),
-        })
+          $('#updateForm').removeClass('hidden')
+          $('[name=new-title]').val(title)
+          $('[name=new-text]').val(text ?? '')
+          $('[name=new-assigned-to]').val(assigned_to ?? '')
+          $('[name=new-status-text]').val(status_text ?? '')
+          $('[name=new-open]').prop('checked', open)
+        },
       })
+    })
+    $('#updateForm').on('submit', e => {
+      e.preventDefault()
+      const [project, index] = ['project', 'index'].map(item =>
+        sessionStorage.getItem(item)
+      )
+      sessionStorage.clear()
 
-      $('#deleteForm').on('submit', e => {
-        e.preventDefault()
-        $.ajax({
-          url: '/api/issues/apitest',
-          type: 'delete',
-          data: $('#deleteForm').serialize(),
-          success: data => stringify(data),
-        })
+      const data = `${$('#updateForm')
+        .serialize()
+        .replace(/new-/g, '')
+        .replace(/-/g, '_')}`
+
+      $.ajax({
+        url: `/api/issues/${project}?index=${index}`,
+        type: 'patch',
+        data,
+        success: stringify,
+      })
+    })
+    $('#deleteForm').on('submit', e => {
+      e.preventDefault()
+      $.ajax({
+        url: '/api/issues/apitest',
+        type: 'delete',
+        data: $('#deleteForm').serialize(),
+        success: stringify,
       })
     })
   </script>

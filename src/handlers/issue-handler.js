@@ -15,6 +15,25 @@ module.exports = class IssueHandler {
   }
 
   /**
+   * @description Fetches all projects from the database
+   * @param {object} req
+   * @param {object} res
+   */
+  static async getProjects(req, res) {
+    try {
+      const result = await IssuesDAO.fetchProjects()
+
+      return res.status(200).json(result)
+    } catch (error) {
+      console.error('unable to get projects:', error)
+
+      return res.status(500).json({
+        error: error.message || 'something went wrong, please try again',
+      })
+    }
+  }
+
+  /**
    * @description Fetches a project from the database using its title. Responds with null if no match was found, or otherwise with the project's issues. Filters the issues array if any queries were passed. Responds with an error object and status code 500 if a server error is encountered.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
@@ -71,7 +90,6 @@ module.exports = class IssueHandler {
         nullifyEmptyStringProps(query)
       )
 
-
     if (getResult?.error) return res.status(500).json(getResult)
     // Return null if there is no such project; or an array containing however many issues the existing project has.
     res.status(200).json(getResult === null ? getResult : getResult.issues)
@@ -81,7 +99,6 @@ module.exports = class IssueHandler {
    * @description Invokes the IssuesDAO putProject method, with the request body as an argument, and responds with the result. For testing purposes.
    * @param {object} req The Express request object.
    * @param {object} res The Express response object.
-   * @param {Function} next The Express function to invoke the next middleware.
    */
   static async put(req, res) {
     function updateAllIssueDates(project) {

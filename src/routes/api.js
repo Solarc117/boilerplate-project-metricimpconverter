@@ -34,7 +34,7 @@ router.route('/convert').get((req, res) => {
 
 // Purely for testing purposes.
 router.route('/issues').delete(IssueHandler.drop)
-
+router.route('/issues/projects').get(IssueHandler.getProjects)
 router
   .route('/issues/:project')
   /* POST: create a resource. NON-IDEMPOTENT; multiple identical requests create multiple   
