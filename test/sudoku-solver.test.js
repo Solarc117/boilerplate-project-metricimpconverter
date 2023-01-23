@@ -1,3 +1,4 @@
+'use strict'
 require('dotenv').config()
 const Browser = require('zombie'),
   assert = require('./modified-assert.js'),
