@@ -7,9 +7,19 @@ LEGEND:
 📄 implement tdd for these projects; FIRST write the E2E failing test, THEN write code to pass test, FINALLY refactor test/code to implement a better solution (if any).  
 
 ✅ set environment variables on app.yaml
-- for issue-tracker, write a test that: 
-  - queries a #getProjects form,
-  - submits it,
-  - and ensures #jsonResult is updated with the correct data 
+❌ for issue-tracker, write a test that: (bind EINVAL 0.0.0.0, 
+tried comparing to sudoku-solver which also uses browser tests
+but came up empty-handed)
+  ❌ queries the #getProjects form,
+  ❌ submits it,
+  ❌ and ensures #jsonResult is updated with the correct data 
     📄 avoid being TOO thorough when validating data above
+- stage & commit changes with semantic notes
+
+- prevent duplicate projects from submitting:
+  - ...
+- stage & commit changes with semantic notes
+
+- prevent duplicate issues from submitting:
+  - ...
 - stage & commit changes with semantic notes

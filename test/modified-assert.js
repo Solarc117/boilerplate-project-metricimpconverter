@@ -51,5 +51,13 @@ assert.includesAll = function (array, ...vals) {
   for (const v of vals) assert.include(array, v)
 }
 
+/**
+ * @description Asserts all arguments match the data types found in the array argument.
+ * @param {any[]} dataTypes Data types that all values are expected to fall under.
+ * @param {...any} vals Values to assert are of a data type found in the dataTypes parameter. 
+ */
+assert.allOneOf = function(dataTypes, ...vals) {
+  for (const v of vals) assert.oneOf(v, dataTypes)
+}
 
 module.exports = assert
