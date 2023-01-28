@@ -1,7 +1,7 @@
 'use strict'
 const { Router } = require('express'),
   ConvertHandler = require('../handlers/convert-handler.js'),
-  IssueHandler = require('../handlers/issue-handler.js'),
+  IssueHandler = require('../handlers/issues-handler.js'),
   LibraryHandler = require('../handlers/library-handler.js'),
   SudokuHandler = require('../handlers/sudoku-handler.js'),
   router = Router(),
@@ -33,20 +33,19 @@ router.route('/convert').get((req, res) => {
 })
 
 // Purely for testing purposes.
-router.route('/issues').delete(IssueHandler.drop)
-router.route('/issues/projects').get(IssueHandler.getProjects)
+router.route('/issues').get(IssueHandler.getProjects).delete(IssueHandler.drop)
+router.route('/issues/projects/:owner/:project').post(IssueHandler.postProject)
 router
   .route('/issues/:project')
   /* POST: create a resource. NON-IDEMPOTENT; multiple identical requests create multiple   
      equal resources.
      PUT: update a resource, either partially or fully, or create if it doesn't exist. IDEMPOTENT: multiple identical requests will not create a new resource if it was already there, or if the first request created it, and they will not modify the resource more than once.
      PATCH: update a resource partially. IDEMPOTENT: multiple identical requests will not modify the resource more than once, as with PUT requests. */
-  .get(IssueHandler.get)
+  .get(IssueHandler.getProjectIssues)
   // This put request is only for the issue-tracker tests suiteSetup.
-  .put(IssueHandler.put)
-  .post(IssueHandler.post)
-  .patch(IssueHandler.patch)
-  .delete(IssueHandler.delete)
+  .post(IssueHandler.appendIssue)
+  .patch(IssueHandler.updateIssue)
+  .delete(IssueHandler.deleteIssue)
 
 router
   .route('/books')

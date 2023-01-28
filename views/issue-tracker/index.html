@@ -32,135 +32,258 @@
     </header>
     <hr />
     <main>
-      <section style="margin: 0 50px">
-        <h3>Example <code>GET</code> Usage</h3>
-        <code>/api/issues/{project}</code><br />
-        <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br />
-        <h3>Example Return</h3>
+      <section>
+        <h3 class="title">Example <code>GET</code> Usage</h3>
+        <code>/api/issues/:project:</code><br />
+        <code>/api/issues/:project:?open=true&amp;assigned_to=Joe</code><br />
+        <h3 class="title">Example Return</h3>
         <pre>
-  <code>[
-    { 
-      "_id": "5871dda29faedc3491ff93bb",
-      "issue_title": "Fix error in posting data",
-      "issue_text": "When we post data it has an error.",
-      "created_on": "2017-01-08T06:35:14.240Z",
-      "updated_on": "2017-01-08T06:35:14.240Z",
-      "created_by": "Joe",
-      "assigned_to": "Joe",
-      "open": true,
-      "status_text": "In QA"
-    },
-    ...
-   ]
-  </code>
-  </pre>
+<code>
+[
+  { 
+    "title": "Fix error in posting data",
+    "text": "When we post data it has an error.",
+    "created_by": "Joe",
+    "assigned_to": "Joe",
+    "status_text": "In QA"
+    "created_on": "08/01/2017",
+    "last_updated": "08/01/2017",
+    "open": true,
+  },
+  ...
+]</code>
+      </pre>
+        <p>Note: issue dates are in DD/MM/YYYY format.</p>
       </section>
-      <hr style="margin: 0 50px" />
-      <section id="testui" style="margin-left: 50px">
-        <h2 style="text-align: left">API Tests</h2>
-        <h3>Get projects</h3>
-        <form id="getProjects">
+      <hr />
+      <section id="testui">
+        <h2>API Tests</h2>
+        <h3 class="title">Get Projects</h3>
+        <form class="form" id="getProjects">
           <button type="submit">Get Projects</button>
         </form>
-        <h3>Get issues</h3>
-        <form id="getForm" class="border">
-          <input
-            type="text"
-            name="project"
-            placeholder="*Project"
-            style="width: 100px"
-            required
-          /><br />
+
+        <h3 class="title">Create Project</h3>
+        <form class="form" id="createProject">
+          <label class="label">
+            Project name:
+            <input type="text" name="project_name" />
+          </label>
+          <label class="label">
+            Project owner:
+            <input type="text" name="project_owner" />
+          </label>
+          <br />
+          <button type="submit">Create Project</button>
+        </form>
+
+        <h3 class="title">Get Issues</h3>
+        <form class="form" id="getIssues">
+          <label class="label">
+            Project name:
+            <input
+              type="text"
+              name="project_name"
+              placeholder="*Name of issues' project"
+              required
+            />
+          </label>
+          <br />
+          <h4 class="title filters-title">Issue Filters</h4>
+          <fieldset class="fieldset flex-grid">
+            <label class="label"
+              >Title:<br /><input
+                type="text"
+                name="title"
+                title="Title"
+                placeholder="Title"
+                maxlength="50" /></label
+            ><label class="label"
+              >Text:<br /><textarea
+                name="text"
+                placeholder="Text"
+                maxlength="50"
+              ></textarea></label
+            ><label class="label"
+              >Created by:<br /><input
+                type="text"
+                name="created_by"
+                title="Created by"
+                placeholder="Created by"
+                maxlength="50" /></label
+            ><label class="label"
+              >Assigned to:<br /><input
+                type="text"
+                name="assigned_to"
+                title="Assigned to"
+                placeholder="Assigned to"
+                maxlength="50" /></label
+            ><label class="label"
+              >Status text:<br /><input
+                type="text"
+                name="status_text"
+                title="Status text"
+                placeholder="Status text"
+                maxlength="50" /></label
+            ><label class="label"
+              >Open/closed:<br /><select name="open" title="open">
+                <option value="">Open?</option>
+                <option value="true">Open</option>
+                <option value="false">Closed</option>
+              </select></label
+            ><label class="label"
+              >Created on:<br /><input type="date" name="created_on" /></label
+            ><label class="label"
+              >Last updated on:<br /><input type="date" name="last_updated"
+            /></label>
+            <label class="label">
+              Index:
+              <input type="number" name="index" min="0" step="1" />
+            </label>
+          </fieldset>
+          <input type="reset" />
           <button type="submit">Get Project Issues</button>
         </form>
-        <h3>Submit issue</h3>
-        <form id="submitForm" class="border">
-          <input
-            type="text"
-            name="issue_title"
-            placeholder="*Title"
-            style="width: 100px"
-            required
-          /><br />
-          <textarea
-            type="text"
-            name="issue_text"
-            placeholder="*Text"
-            style="width: 100px"
-            required
-          ></textarea
-          ><br />
-          <input
-            type="text"
-            name="created_by"
-            placeholder="*Created by"
-            style="width: 100px"
-            required
-          /><br />
-          <input
-            type="text"
-            name="assigned_to"
-            placeholder="(opt)Assigned to"
-            style="width: 100px"
-          /><br />
-          <input
-            type="text"
-            name="status_text"
-            placeholder="(opt)Status text"
-            style="width: 100px"
-          /><br />
+
+        <h3 class="title">Submit Issue</h3>
+        <form class="form" id="submitIssue">
+          <fieldset class="fieldset flex-grid">
+            <label class="label"
+              >Project name:<input
+                type="text"
+                name="project_name"
+                placeholder="*Project to post issue to"
+                required
+            /></label>
+          </fieldset>
+          <fieldset class="fieldset flex-grid">
+            <label class="label"
+              >Title:<br /><input
+                type="text"
+                name="title"
+                placeholder="*Title"
+                required /></label
+            ><label class="label"
+              >Text:<br /><textarea
+                name="text"
+                placeholder="*Text"
+              ></textarea></label
+            ><label class="label"
+              >Created by:<br /><input
+                type="text"
+                name="created_by"
+                placeholder="*Created by"
+                required /></label
+            ><label class="label"
+              >Assigned to:<br /><input
+                type="text"
+                name="assigned_to"
+                placeholder="Assigned to" /></label
+            ><label class="label"
+              >Status text:<br /><input
+                type="text"
+                name="status_text"
+                placeholder="Status text"
+            /></label>
+          </fieldset>
+          <input type="reset" />
           <button type="submit">Submit Issue</button>
         </form>
-        <br />
-        <h3>Update Single Issue</h3>
-        <br />
-        <form id="issueIndexForm" class="border">
-          <input type="text" name="project" placeholder="*Project" required />
+
+        <h3 class="title">Update Single Issue</h3>
+        <form class="form" id="issueIndex">
+          <label class="label">
+            Project name:
+            <input
+              type="text"
+              name="project"
+              placeholder="*Project"
+              title="Name of the project that contains the issue to update"
+              required
+            />
+          </label>
+          <label class="label">
+            Issue index:
+            <input
+              type="number"
+              min="0"
+              step="1"
+              name="issue-name"
+              title="Index of issue to update (zero-based)"
+              placeholder="*Issue index"
+              required
+            />
+          </label>
           <br />
-          <input
-            type="number"
-            min="0"
-            step="1"
-            name="issue-name"
-            placeholder="*Issue index"
-            required
-          />
           <br />
           <button type="submit">Fetch Issue To Update</button>
         </form>
-        <form id="updateForm" class="hidden">
+        <form class="form hidden" id="update">
           <h4>Issue Fields to Update</h4>
-          <input type="text" name="new-title" placeholder="title" />
-          <br />
-          <textarea type="text" name="new-text" placeholder="text"></textarea>
-          <br />
-          <input type="text" name="new-assigned-to" placeholder="assigned to" />
-          <br />
-          <input
-            type="text"
-            name="new-status-text"
-            placeholder="status text"
-          /><br />
-          <label><input type="checkbox" name="new-open" checked /> Open</label
-          ><br />
+          <label class="label">
+            Issue title:
+            <input type="text" name="new-title" placeholder="title" />
+          </label>
+          <label class="label">
+            Issue text:
+            <textarea type="text" name="new-text" placeholder="text"></textarea>
+          </label>
+          <label class="label">
+            User assigned to:
+            <input
+              type="text"
+              name="new-assigned-to"
+              placeholder="assigned to"
+            />
+          </label>
+          <label class="label">
+            Issue status:
+            <input
+              type="text"
+              name="new-status-text"
+              placeholder="status text"
+            />
+          </label>
+          <label class="label">
+            Open or closed issue:
+            <input type="checkbox" name="new-open" checked />Open</label
+          >
           <button type="submit">Update Issue</button>
         </form>
-        <br />
-        <h3>Delete Issue</h3>
-        <form id="deleteForm" class="border">
-          <input
-            type="text"
-            name="_id"
-            placeholder="_id"
-            style="width: 100px"
-            required
-          /><br />
+
+        <h3 class="title">Delete Issue</h3>
+        <form class="form" id="delete">
+          <label class="label">
+            Project name:
+            <input
+              type="text"
+              name="project"
+              placeholder="*Project"
+              title="Name of the project that contains the issue to delete"
+              required
+            />
+          </label>
+          <label class="label">
+            Project index:
+            <input
+              type="number"
+              name="index"
+              placeholder="*Issue index"
+              title="Index of issue to delete (zero-based)"
+              min="0"
+              step="1"
+              required
+            />
+          </label>
           <button type="submit">Delete Issue</button>
         </form>
-        <code id="jsonResult"></code>
+
+        <code id="jsonResult"
+          >{ "message": "submit a form to see its result here" }</code
+        >
       </section>
     </main>
-    <hr style="margin: 50px; margin-top: 200px" />
+    <hr />
     <footer>
       <ul>
         <li>
@@ -187,89 +310,5 @@
 
   <!-- Your web-app is https, so your scripts need to be too -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    function stringify(data) {
-      $('#jsonResult').text(JSON.stringify(data))
-    }
-    const log = console.log.bind(console),
-      error = console.error.bind(console)
-
-    $('#getProjects').on('submit', e => {
-      e.preventDefault()
-      $.ajax({
-        url: '/api/issues/projects',
-        success: stringify,
-      })
-    })
-    $('#getForm').on('submit', e => {
-      e.preventDefault()
-      const [{ value: project }] = $('#getForm').serializeArray()
-      $.ajax({
-        url: `/api/issues/${project}`,
-        type: 'get',
-        success: stringify,
-      })
-    })
-    $('#submitForm').on('submit', e => {
-      e.preventDefault()
-      $.ajax({
-        url: '/api/issues/apitest',
-        type: 'post',
-        data: $('#submitForm').serialize(),
-        success: stringify,
-      })
-    })
-    $('#issueIndexForm').on('submit', e => {
-      e.preventDefault()
-      const [{ value: project }, { value: index }] =
-        $('#issueIndexForm').serializeArray()
-
-      $.ajax({
-        url: `/api/issues/${project}?index=${index}`,
-        type: 'get',
-        success(data) {
-          let [{ title, text, assigned_to, status_text, open }] = data
-
-          // This is so that the following updateForm can access these fields, which it requires in order to issue its patch request.
-          sessionStorage.setItem('project', project)
-          sessionStorage.setItem('index', index)
-
-          $('#updateForm').removeClass('hidden')
-          $('[name=new-title]').val(title)
-          $('[name=new-text]').val(text ?? '')
-          $('[name=new-assigned-to]').val(assigned_to ?? '')
-          $('[name=new-status-text]').val(status_text ?? '')
-          $('[name=new-open]').prop('checked', open)
-        },
-      })
-    })
-    $('#updateForm').on('submit', e => {
-      e.preventDefault()
-      const [project, index] = ['project', 'index'].map(item =>
-        sessionStorage.getItem(item)
-      )
-      sessionStorage.clear()
-
-      const data = `${$('#updateForm')
-        .serialize()
-        .replace(/new-/g, '')
-        .replace(/-/g, '_')}`
-
-      $.ajax({
-        url: `/api/issues/${project}?index=${index}`,
-        type: 'patch',
-        data,
-        success: stringify,
-      })
-    })
-    $('#deleteForm').on('submit', e => {
-      e.preventDefault()
-      $.ajax({
-        url: '/api/issues/apitest',
-        type: 'delete',
-        data: $('#deleteForm').serialize(),
-        success: stringify,
-      })
-    })
-  </script>
+  <script src="../../public/issue-client.js"></script>
 </html>

@@ -1,27 +1,52 @@
-* {
-  margin: 0px;
-  padding: 0px;
-}
-
-body {
-  padding: 10px;
-}
-
-.issue {
-  margin: 20px;
-  padding: 5px;
-  width: 60%;
-  border: 2px solid black;
-}
-
-.closed {
-  background-color: lightgrey;
-}
-
-.id {
-  font-size: 10.5px;
-}
-
+/* General */
 .hidden {
   display: none;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 10px;
+  column-gap: 10px;
+}
+
+/* Areas */
+.form {
+  margin: 10px 0;
+}
+.fieldset {
+  border: none;
+  margin: 10px 0;
+}
+/* Components */
+.title {
+  margin: 10px 0;
+}
+.filters-title {
+  text-align: left;
+  margin-top: 10px;
+  border-bottom: 1px solid black;
+}
+.issue-filter,
+.label {
+  width: 120px;
+}
+.label {
+  margin: 10px 10px 0 0;
+}
+.form > input,
+.form > textarea,
+.form > select,
+.form > button {
+  margin: 3px;
+  padding: 2px;
+  width: 250px;
 }

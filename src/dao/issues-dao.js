@@ -6,77 +6,26 @@ const log = console.log.bind(console),
   COLLECTION = env.NODE_ENV === 'production' ? 'projects' : 'test'
 let DB
 
-// 📄 I don't yet know the difference between declaring owners as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
+// 📄 I don't yet know the difference between declaring DB as a global variable in this file (the current setup), and declaring it as a property in the IssuesDAO class.
 module.exports = class IssuesDAO {
+  1
   /**
-   * @description Impure; attempts to assign the "issue-tracker" db's "owners" collection to the global "owners" variable, if the global variable is undefined; logs a message if a connection is already established.
-   * @async
-   * @param {object} client The MongoDB project under which the issue-tracker database and test/owners collection are located.
+   * @description Impure; attempts to assign the "issue-tracker" db's "projects" or "test" collection to the argument, if undefined. Logs a message if a connection is already established.
+   * @returns {Promise<void>}
    */
-  static async injectDB(client) {
+  static async connect(client) {
     if (DB)
       return log(
-        `connection to ${COLLECTION} collection previously established`
+        `IssuesDAO connection to ${COLLECTION} collection already established`
       )
 
     try {
       DB = await client.db('issue-tracker').collection(COLLECTION)
-    } catch (err) {
-      error(
-        `\x1b[31m\nunable to establish a collection handle in IssuesDAO:`,
-        err
-      )
+
+      log(`IssuesDAO connected to ${COLLECTION} collection`)
+    } catch (error) {
+      error(`unable to connect IssuesDAO to ${COLLECTION} collection:`, error)
     }
-
-    log(`\x1b[32m\n📌 IssuesDAO connected to ${COLLECTION} collection`)
-  }
-
-  /**
-   * @description Drops the test collection if currently connected to it.
-   * @returns {Promise<object | null>} The result of the drop operation, or an object containing an error property if the operation failed or was unable to execute.
-   */
-  static async dropTest() {
-    if (env.NODE_ENV !== 'dev')
-      return {
-        error: `\x1b[31m\nUnable to drop ${COLLECTION} collection in a production environment`,
-      }
-
-    let dropResult
-
-    try {
-      dropResult = await DB.drop()
-    } catch (err) {
-      if (err.codeName === 'NamespaceNotFound')
-        return log(`${COLLECTION} collection does not exist`)
-
-      error(
-        `\x1b[31m\nUnsuccessful drop command on ${COLLECTION} collection:`,
-        err
-      )
-      return { error: err.message }
-    }
-
-    return dropResult
-  }
-
-  /**
-   * @description Attempts to fetch a single Project document matching the passed project name.
-   * @param {string} project The name of the project.
-   * @returns {Promise<{ error: string } | Project | null>} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
-   */
-  static async fetchProject(project) {
-    // I will filter the issues array after finding a match, but will keep in mind the possibility of integrating the pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
-    const query = { project }
-    let result
-
-    try {
-      result = await DB.findOne(query)
-    } catch (err) {
-      error(`\x1b[31m\nerror querying ${COLLECTION} collection:`, err)
-      return { error: err.message }
-    }
-
-    return result
   }
 
   /**
@@ -104,52 +53,86 @@ module.exports = class IssuesDAO {
   }
 
   /**
-   * @description Creates an upsert call to the db with the project argument passed. For testing purposes.
-   * @param {Project} project The document to be upserted into the collection.
-   * @returns {Promise<object | null>} The collection.updateOne response, or an object containing an error property if the attempt failed.
+   * @description Attempts to fetch a single Project document matching the passed project name. If an index argument exists, returns the issue under said index.
+   * @param {string} projectName The name of the project.
+   * @param {number} [issueIndex] The index of a single issue to project, if any.
+   * @returns {Promise<{ error: string } | Project | null>} An object containing an error property if the find method fails, or a document or null depending on whether a match was found.
    */
-  static async upsertProject(project) {
-    const query = { project: project.project },
-      operators = { $set: { ...project } },
-      options = { upsert: true }
-    let result
-
+  static async fetchProject(projectName, issueIndex) {
+    // Filters the issues array after finding a match. Might be possibile to integrate a pipeline for this functionality - maybe reformat the document structure to each individually represent an issue, and have the collection represent the project?
     try {
-      result = await DB.updateOne(query, operators, options)
+      const matchProject = {
+          $match: {
+            project: projectName,
+          },
+        },
+        getIssueAtIndex = {
+          $project: {
+            _id: 0,
+            issue: {
+              $arrayElemAt: ['$issues', issueIndex],
+            },
+          },
+        },
+        pipeline = [matchProject]
+      if (typeof issueIndex === 'number')
+        // @ts-ignore
+        pipeline.push(getIssueAtIndex)
+
+      const result = await DB.aggregate(pipeline).toArray()
+
+      return result[0]
     } catch (err) {
-      error(`\x1b[31m\nerror upserting ${COLLECTION} collection:`, err)
+      error(`error querying ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
-
-    return result
   }
 
   /**
-   * @description Attempts to post (upload) the passed object to the connected collection.
-   * @param {Project} project The object to post to the respective collection.
-   * @returns {Promise<null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }>}
+   * @description Appends the issue to the project argument, creating the project document if it does not exist.
+   * @param {Issue} issue The issue object to append.
+   * @param {string} project The name of the project to be upserted into the collection.
+   * @returns {Promise<object>} The collection.updateOne response, or an object containing an error property if the attempt failed.
    */
-  static async createProject(project) {
-    let result
-
+  static async createIssue(issue, project) {
     try {
-      result = await DB.insertOne(project)
+      const query = { project },
+        operators = {
+          $push: {
+            issues: issue,
+          },
+        },
+        updateResult = await DB.updateOne(query, operators)
+
+      return updateResult
     } catch (err) {
-      error(
-        `\x1b[31m\nunable to insert document in ${COLLECTION} collection:`,
-        err
-      )
+      error(`error creating new issue in ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
+  }
 
-    return result
+  /**
+   * @description Attempts to post a new project document to the connected collection.
+   * @param {string} project The name of the project.
+   * @param {string} owner The owner of the project.
+   * @returns {Promise<null | { error: string } | { acknowledged: string, insertedId: string | null | undefined }>}
+   */
+  static async createProject(project, owner) {
+    try {
+      const result = await DB.insertOne({ project, owner, issues: [] })
+
+      return result
+    } catch (err) {
+      error(`unable to insert document in ${COLLECTION} collection:`, err)
+      return { error: err.message }
+    }
   }
 
   /**
    * @description Attempts to update a single issue in the database.
-   * @param {object} query An object containing the index of the issue to update, and the title of the project that the issue pertains to.
+   * @param {{ project: string, index: string | number }} query An object containing the index of the issue to update, and the title of the project that the issue pertains to.
    * @param {object} fieldsToUpdate The fields of the issue to update, containing their new values.
-   * @returns {Promise<object>}
+   * @returns {Promise<object>} The result of the update operation. Contains an "error" property in case of an error, detailing its message.
    */
   static async updateIssue(query, fieldsToUpdate) {
     const { project, index } = query,
@@ -161,87 +144,88 @@ module.exports = class IssuesDAO {
     for (const key of Object.keys(fieldsToUpdate))
       command.$set[`issues.${index}.${key}`] = fieldsToUpdate[key]
 
-    let result
-
     try {
-      result = await DB.updateOne(filter, command)
+      const result = await DB.updateOne(filter, command)
+
+      return result
     } catch (err) {
-      error(
-        `\x1b[31m\nunable to update document in ${COLLECTION} collection:`,
-        err
-      )
+      error(`unable to update document in ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
-
-    return result
   }
 
   /**
-   * @description Deletes a single issue from a project using its index
+   * @description Deletes the issue at the given index from a project.
    * @param {string} project The name of the project that the issue pertains to.
    * @param {number} index The index of the issue to delete.
-   * @returns {Promise<object | null>} The result of the update operaton.
+   * @returns {Promise<object | null>} The result of the operaton.
    */
   static async deleteIssue(project, index) {
-    const skipFirstIssuePipeline = [
-        {
-          $replaceWith: {
-            $setField: {
-              field: 'issues',
-              input: '$$ROOT',
-              value: {
-                $cond: [
-                  { $eq: [{ $size: '$issues' }, 0] },
-                  [],
-                  {
-                    $slice: ['$issues', 0, { $size: '$issues' }],
-                  },
-                ],
+    const deleteIssuePipeline = [
+      {
+        $replaceWith: {
+          $setField: {
+            field: 'issues',
+            input: '$$ROOT',
+            value: {
+              $cond: {
+                if: { $eq: [{ $size: '$issues' }, 0] },
+                then: [],
+                else:
+                  index === 0
+                    ? {
+                        $slice: ['$issues', 1, { $size: '$issues' }],
+                      }
+                    : {
+                        $concatArrays: [
+                          { $slice: ['$issues', 0, index] },
+                          {
+                            $slice: [
+                              '$issues',
+                              index + 1,
+                              { $size: '$issues' },
+                            ],
+                          },
+                        ],
+                      },
               },
             },
           },
         },
-      ],
-      // This pipeline can only run if index is greater than 0.
-      skipMiddleIssuePipeline = [
-        {
-          $replaceWith: {
-            $setField: {
-              field: 'issues',
-              input: '$$ROOT',
-              value: {
-                $cond: [
-                  { $eq: [{ $size: '$issues' }, 0] },
-                  [],
-                  {
-                    $concatArrays: [
-                      { $slice: ['$issues', 0, index] },
-                      { $slice: ['$issues', index + 1, { $size: '$issues' }] },
-                    ],
-                  },
-                ],
-              },
-            },
-          },
-        },
-      ]
-    let deleteResult
+      },
+    ]
 
     try {
-      deleteResult = await DB.updateOne(
-        { project },
-        index === 0 ? skipFirstIssuePipeline : skipMiddleIssuePipeline
-      )
-      // Attempt to edit the issue indexes only if the delete operation succeeded.
+      const deleteResult = await DB.updateOne({ project }, deleteIssuePipeline)
+
+      return deleteResult
     } catch (err) {
-      error(
-        `\x1b[31m\nunable to delete issue in ${COLLECTION} collection:`,
-        err
-      )
+      error(`unable to delete issue in ${COLLECTION} collection:`, err)
       return { error: err.message }
     }
+  }
 
-    return deleteResult
+  /**
+   * @description Drops the test collection if currently connected to it.
+   * @returns {Promise<object | null>} The result of the drop operation, or an object containing an error property if the operation failed or was unable to execute.
+   */
+  static async dropTest() {
+    if (process.env.NODE_ENV !== 'development')
+      return {
+        error: `unable to drop ${COLLECTION} collection in a production environment`,
+      }
+
+    try {
+      const dropResult = await DB.drop()
+
+      return dropResult
+    } catch (err) {
+      if (err.codeName === 'NamespaceNotFound')
+        return log(`${COLLECTION} collection does not exist`)
+
+      error(`unsuccessful drop command on ${COLLECTION} collection:`, err)
+      return { error: err.message }
+    }
   }
 }
 

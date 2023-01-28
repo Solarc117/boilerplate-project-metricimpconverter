@@ -16,8 +16,8 @@ MongoClient.connect(env.MONGO_URI, {
   useUnifiedTopology: true,
 })
   .then(async client => {
-    await IssuesDAO.injectDB(client)
-    await LibraryDAO.injectDB(client)
+    await IssuesDAO.connect(client)
+    await LibraryDAO.connect(client)
 
     const port = env.PORT || 3000
     app.listen(port, () => {

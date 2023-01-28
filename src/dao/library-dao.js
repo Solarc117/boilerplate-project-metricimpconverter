@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb'),
   { log, error } = console,
   { env } = process,
   COLLECTION = env.NODE_ENV === 'production' ? 'books' : 'test'
-let db
+let DB
 
 module.exports = class LibraryDAO {
   /**
@@ -12,14 +12,14 @@ module.exports = class LibraryDAO {
    * @async
    * @param {object} client The MongoDB project under which the personal-library database and test/books collections are located.
    */
-  static async injectDB(client) {
-    if (db)
+  static async connect(client) {
+    if (DB)
       return log(
         `connection to ${COLLECTION} collection previously established`
       )
 
     try {
-      db = await client.db('personal-library').collection(COLLECTION)
+      DB = await client.db('personal-library').collection(COLLECTION)
     } catch (err) {
       error(
         `\x1b[31m\nunable to establish a collection handle in LibraryDAO:`,
@@ -39,7 +39,7 @@ module.exports = class LibraryDAO {
     let cursor
 
     try {
-      cursor = await db.find()
+      cursor = await DB.find()
     } catch (err) {
       error('\x1b[31m', err)
       return { error: err.message }
@@ -60,7 +60,7 @@ module.exports = class LibraryDAO {
     let postBookResult
 
     try {
-      postBookResult = await db.insertOne(book)
+      postBookResult = await DB.insertOne(book)
     } catch (err) {
       error('\x1b[31m', err)
       return { error: err.message }
@@ -82,7 +82,7 @@ module.exports = class LibraryDAO {
     let result
 
     try {
-      result = await db.findOne(query)
+      result = await DB.findOne(query)
     } catch (err) {
       error('\x1b[31m', err)
       return { error: err.message }
@@ -114,7 +114,7 @@ module.exports = class LibraryDAO {
     let updateResult
 
     try {
-      updateResult = await db.findOneAndUpdate(query, update, options)
+      updateResult = await DB.findOneAndUpdate(query, update, options)
     } catch (err) {
       error('\x1b[31m', err)
       return { error: err.message }
@@ -134,7 +134,7 @@ module.exports = class LibraryDAO {
     let result
 
     try {
-      result = await db.deleteOne(query)
+      result = await DB.deleteOne(query)
     } catch (err) {
       error('\x1b[31m', err)
       return { error: err.message }
@@ -152,7 +152,7 @@ module.exports = class LibraryDAO {
     let dropResult
 
     try {
-      dropResult = await db.drop()
+      dropResult = await DB.drop()
     } catch (err) {
       if (err.codeName === 'NamespaceNotFound')
         return log(`${COLLECTION} collection does not exist`)

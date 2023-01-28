@@ -1,4 +1,4 @@
-:not(input) {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -15,7 +15,11 @@ body {
   display: flex;
   flex-direction: column;
 }
-
+.json,
+.code,
+code {
+  background: hsl(240, 6%, 83%);
+}
 hr {
   margin: 5px 35px;
 }
@@ -33,7 +37,10 @@ main > * {
 
 h1,
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
   text-align: center;
 }
 
