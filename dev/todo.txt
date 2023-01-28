@@ -36,10 +36,10 @@ but came up empty-handed)
 ✅ fix bug where project_owner is assigned to the ISSUE, instead of the project
 ✅ stage & commit changes with semantic notes
 
-- fix bug where updateIssueForm shows even when no issue was fetched:
-  - add issue existence checking in issue client js
-- stage & commit changes with semantic notes
+✅ fix bug where updateIssueForm shows even when no issue was fetched:
+✅ stage & commit changes with semantic notes
 
-- fix duplicate project bug
+- fix duplicate project bug:
+  - before submitting a project, check that no such project under that title exists
 - stage & commit changes with semantic notes
 
