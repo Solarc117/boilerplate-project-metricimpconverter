@@ -13,7 +13,7 @@ $('#getProjects').on('submit', e => {
   $.ajax({
     url: '/api/issues',
     success: stringify,
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -27,7 +27,7 @@ $('#createProject').on('submit', e => {
     url: `/api/issues/projects/${projectOwner}/${projectName}`,
     type: 'post',
     success: stringify,
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -41,7 +41,7 @@ $('#getIssues').on('submit', e => {
     url: `/api/issues/${projectName}?${data.toString()}`,
     type: 'get',
     success: stringify,
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -56,7 +56,7 @@ $('#submitIssue').on('submit', e => {
     type: 'post',
     data: data.toString(),
     success: stringify,
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -86,7 +86,7 @@ $('#issueIndex').on('submit', e => {
       $('[name=new-status-text]').val(status_text)
       $('[name=new-open]').prop('checked', open)
     },
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -110,7 +110,7 @@ $('#update').on('submit', e => {
       sessionStorage.clear()
       $('#update').addClass('hidden')
     },
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
 
@@ -127,6 +127,6 @@ $('#delete').on('submit', e => {
     type: 'delete',
     data: data.toString(),
     success: stringify,
-    error: stringify,
+    error() { stringify({ error: 'something went wrong, please try again' }) },
   })
 })
