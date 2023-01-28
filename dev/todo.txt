@@ -16,9 +16,8 @@ but came up empty-handed)
     📄 avoid being TOO thorough when validating data above
 ✅ stage & commit changes with semantic notes
 
-- prevent duplicate projects from submitting:
   ✅ ensure api endpoints are tied to the proper handler methods
-  - ensure data is being sent & received propery in client forms and handler methods; for each form, send data and add logs to debug in their respective handler methods until they work:
+  ✅ ensure data is being sent & received propery in client forms and handler methods; for each form, send data and add logs to debug in their respective handler methods until they work:
     ✅ getProjects
     ✅ createProject:
       ✅ on form submit, POST to /api/issues/:project, with owner in data or params
@@ -34,15 +33,13 @@ but came up empty-handed)
     ✅ update:
       ✅ fix open field not updating bug:
     ✅ delete:
+✅ fix bug where project_owner is assigned to the ISSUE, instead of the project
 ✅ stage & commit changes with semantic notes
 
-- fix bug where project_owner is assigned to the ISSUE, instead of the project
+- fix bug where updateIssueForm shows even when no issue was fetched:
+  - add issue existence checking in issue client js
 - stage & commit changes with semantic notes
 
-- prevent duplicate projects from submitting:
-  - ...
+- fix duplicate project bug
 - stage & commit changes with semantic notes
 
-- attempting to submit an issue to a project that doesn't exist, without including the owner, should return a bad request with a message stating the owner field is required if the project doesn't exist:
-  - ...
-- stage & commit changes with semantic notes
