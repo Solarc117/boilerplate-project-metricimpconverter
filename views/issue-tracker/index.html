@@ -220,34 +220,40 @@
         </form>
         <form class="form hidden" id="update">
           <h4>Issue Fields to Update</h4>
-          <label class="label">
-            Issue title:
-            <input type="text" name="new-title" placeholder="title" />
-          </label>
-          <label class="label">
-            Issue text:
-            <textarea type="text" name="new-text" placeholder="text"></textarea>
-          </label>
-          <label class="label">
-            User assigned to:
-            <input
-              type="text"
-              name="new-assigned-to"
-              placeholder="assigned to"
-            />
-          </label>
-          <label class="label">
-            Issue status:
-            <input
-              type="text"
-              name="new-status-text"
-              placeholder="status text"
-            />
-          </label>
-          <label class="label">
-            Open or closed issue:
-            <input type="checkbox" name="new-open" checked />Open</label
-          >
+          <fieldset class="fieldset flex-grid">
+            <label class="label">
+              Issue title:
+              <input type="text" name="new-title" placeholder="title" />
+            </label>
+            <label class="label">
+              Issue text:
+              <textarea
+                type="text"
+                name="new-text"
+                placeholder="text"
+              ></textarea>
+            </label>
+            <label class="label">
+              User assigned to:
+              <input
+                type="text"
+                name="new-assigned-to"
+                placeholder="assigned to"
+              />
+            </label>
+            <label class="label">
+              Issue status:
+              <input
+                type="text"
+                name="new-status-text"
+                placeholder="status text"
+              />
+            </label>
+            <label class="label">
+              Open or closed issue:
+              <input type="checkbox" name="new-open" checked />Open</label
+            >
+          </fieldset>
           <button type="submit">Update Issue</button>
         </form>
 
