@@ -4,6 +4,7 @@ node_modules
 *.mongodb
 ignore.js
 dev/test.http
+dev/package.json
 dev/ignore.js
 .vercel
 app.yaml

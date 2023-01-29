@@ -38,8 +38,8 @@ but came up empty-handed)
 
 ✅ fix bug where updateIssueForm shows even when no issue was fetched:
 ✅ stage & commit changes with semantic notes
+✅ fix duplicate project bug:
+✅ stage & commit changes with semantic notes
 
-- fix duplicate project bug:
-  - before submitting a project, check that no such project under that title exists
+✅ ensure American/British tests are running
 - stage & commit changes with semantic notes
-

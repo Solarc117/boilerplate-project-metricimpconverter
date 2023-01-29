@@ -110,7 +110,7 @@ suite('🧪 \x1b[35mPersonal Library: HTTP\n', () => {
 suite('🧪 \x1b[35mPersonal Library: Browser\n', () => {
   const browser = new Browser()
 
-  suiteSetup(() => browser.visit('/personal-library'))
+  suiteSetup(done => browser.visit('/personal-library', done))
 
   test('browser setup', done => {
     assert.isString(browser.site)

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>American/British English Translator</title>
+
+    <meta
+      name="description"
+      content="An example for the fCC QA American/British English Translator project"
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png"
+      type="image/x-icon"
+    />
+
+    <link rel="stylesheet" href="../public/all.css" type="text/css" />
+    <link rel="stylesheet" href="../public/style.css" type="text/css" />
+
+    <script defer src="../../public/translator-client.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>American/British English Translator</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>
+            <a href="/metric-imperial">Metric-Imperial Converter</a>
+          </li>
+          <li><a href="/issue-tracker">Issue Tracker</a></li>
+          <li><a href="/personal-library">Personal Library</a></li>
+          <li><a href="/sudoku-solver">Sudoku Solver</a></li>
+          <li class="current">
+            <a href="/american-british">American British Translator</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <hr  />
+    <main>
+      <div class="form-container">
+        <textarea rows="10" cols="60" id="text-input"></textarea>
+        <br />
+        <select id="locale-select">
+          <option value="american-to-british">American to British</option>
+          <option value="british-to-american">British to American</option>
+        </select>
+        <input type="button" value="Translate" id="translate-btn" />
+      </div>
+      <div id="output-container">
+        <div id="solution-container">
+          Translated Sentence:
+          <div id="translated-sentence"></div>
+          <div id="error-msg"></div>
+        </div>
+      </div>
+    </main>
+    <hr  />
+    <footer>
+      <ul>
+        <li>
+          <p>By Carlos Bernal.</p>
+        </li>
+        <li>
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/carlos-jonathan-bernal-torres-07b90a1b1/"
+            >My LinkedIn</a
+          >.
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/Solarc117">My Github</a>.
+        </li>
+        <li>
+          <a target="_blank" href="https://www.freecodecamp.org/solarc"
+            >My freeCodeCamp</a
+          >.
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>
