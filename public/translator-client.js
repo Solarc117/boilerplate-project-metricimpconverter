@@ -1,3 +1,4 @@
+// @ts-ignore
 const query = document.querySelector.bind(document),
   [translateForm, errorArea, translatedArea] = [
     '#translate-form',
@@ -26,8 +27,6 @@ async function fetchTranslation(event) {
       body: JSON.stringify({ text }),
     }),
     parsed = await response.json()
-
-  console.log('parsed:', parsed)
 
   if (parsed.error) return (errorArea.textContent = JSON.stringify(parsed))
   translatedArea.textContent = parsed.translation

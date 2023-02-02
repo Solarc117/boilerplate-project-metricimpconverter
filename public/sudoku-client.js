@@ -64,6 +64,7 @@ async function check(event) {
 }
 // @ts-ignore
 const log = console.log.bind(console),
+  // @ts-ignore
   query = document.querySelector.bind(document),
   [textArea, coordinateIn, valueIn, response] = [
     '#text-input',
