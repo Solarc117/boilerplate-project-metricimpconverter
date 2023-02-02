@@ -10,7 +10,7 @@ const Browser = require('zombie'),
     [sudoku5, solution5],
     [sudoku6, solution6],
     [sudoku7, solution7],
-  ] = require('./test-sudokus.json'),
+  ] = require('./json/test-sudokus.json'),
   { env } = process,
   HOME = `http://localhost:${env.PORT || 3000}`,
   SUDOKU = '/sudoku-solver'

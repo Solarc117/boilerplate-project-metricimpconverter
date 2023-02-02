@@ -9,7 +9,7 @@ const chai = require('chai'),
     TEST_DOC_3,
     TEST_DOC_4,
     TEST_DOC_5,
-  ] = require('./personal-library-test-docs.json'),
+  ] = require('./json/personal-library-test-docs.json'),
   assert = require('./modified-assert.js'),
   { env } = process,
   BOOKS = '/api/books'

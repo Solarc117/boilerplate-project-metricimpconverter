@@ -13,7 +13,7 @@ const chaiHttp = require('chai-http'),
     TEST_DOC_6,
     TEST_DOC_7,
     TEST_DOC_8,
-  ] = require('./issue-tracker-test-docs.json'),
+  ] = require('./json/issue-tracker-test-docs.json'),
   ISSUES_API = '/api/issues'
 
 chai.use(chaiHttp)
@@ -99,15 +99,15 @@ suite('🧪 Issue Tracker: HTTP\n', () => {
         )
 
         const {
-          title, 
-          text, 
-          created_by, 
-          assigned_to, 
-          status_text, 
-          open, 
-          created_on, 
-          last_updated,  
-          index, 
+          title,
+          text,
+          created_by,
+          assigned_to,
+          status_text,
+          open,
+          created_on,
+          last_updated,
+          index,
         } = issues[0]
 
         assert.areNull(err, assigned_to, status_text)

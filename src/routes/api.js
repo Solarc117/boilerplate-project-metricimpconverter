@@ -4,6 +4,7 @@ const { Router } = require('express'),
   IssueHandler = require('../handlers/issues-handler.js'),
   LibraryHandler = require('../handlers/library-handler.js'),
   SudokuHandler = require('../handlers/sudoku-handler.js'),
+  TranslatorHandler = require('../handlers/translator-handler.js'),
   router = Router(),
   getNum = ConvertHandler.getNum.bind(ConvertHandler),
   getUnit = ConvertHandler.getUnit.bind(ConvertHandler),
@@ -60,5 +61,7 @@ router
 
 router.route('/solve').post(SudokuHandler.solve)
 router.route('/check').post(SudokuHandler.check)
+
+router.route('/translate').post(TranslatorHandler.translate)
 
 module.exports = router

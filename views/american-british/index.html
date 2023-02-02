@@ -19,7 +19,7 @@
     />
 
     <link rel="stylesheet" href="../public/all.css" type="text/css" />
-    <link rel="stylesheet" href="../public/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../public/translator.css" type="text/css" />
 
     <script defer src="../../public/translator-client.js"></script>
   </head>
@@ -42,26 +42,32 @@
         </ul>
       </nav>
     </header>
-    <hr  />
+    <hr />
     <main>
-      <div class="form-container">
-        <textarea rows="10" cols="60" id="text-input"></textarea>
+      <form id="translate-form">
+        <label
+          >Text to translate:
+          <textarea name="text"></textarea>
+        </label>
         <br />
-        <select id="locale-select">
-          <option value="american-to-british">American to British</option>
-          <option value="british-to-american">British to American</option>
-        </select>
-        <input type="button" value="Translate" id="translate-btn" />
-      </div>
+        <label
+          >Locale (English version to translate to):
+          <select name="locale">
+            <option value="british">British</option>
+            <option value="american">American</option>
+          </select>
+        </label>
+        <button type="submit" id="translate-btn">Translate</button>
+      </form>
       <div id="output-container">
         <div id="solution-container">
           Translated Sentence:
-          <div id="translated-sentence"></div>
-          <div id="error-msg"></div>
+          <code id="translated-sentence"></code>
+          <code id="error-msg"></code>
         </div>
       </div>
     </main>
-    <hr  />
+    <hr />
     <footer>
       <ul>
         <li>

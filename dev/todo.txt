@@ -40,6 +40,21 @@ but came up empty-handed)
 ✅ stage & commit changes with semantic notes
 ✅ fix duplicate project bug:
 ✅ stage & commit changes with semantic notes
-
 ✅ ensure American/British tests are running
+✅ stage & commit changes with semantic notes
+
+✅ for 10 sentences, test that translating with the proper locale setting translates properly (british <=> american):
+  ✅ reorganised => reorganized: "I reorganised my bookshelf by book size."
+  ✅ sabre => saber: "Are sabre-toothed tigers extinct now?"
+  ✅ secularisation => secularization: "Scientific interest has led to a rise in secularisation."
+  ✅ specialisations => specializations: "There are many specialisations in Computer Science."
+  ✅ systematisation => systematisation: "Systematization improves workflow in small businesses."
+  ✅ acclimate => acclimatise: "I need to acclimate to this weather!"
+  ✅ front desk => reception: "Can you point me to the front desk?"
+  ✅ demilitarization => demilitarisation: "More and more politicians support demilitarization."
+  ✅ graveled => gravelled: "It took a while, but we finally graveled this area."
+  ✅ hemorrhages => haemorrhages: "The hospital is overwhelmed with hemorrhages today."
+- stage & commit changes with semantic notes
+ 
+- figure out how to handle capitalized letters in the text, then implement; copy all but the necessary letter, and provide a capital translation if the entire letter matched was already capitalized
 - stage & commit changes with semantic notes
