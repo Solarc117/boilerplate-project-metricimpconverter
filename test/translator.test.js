@@ -27,7 +27,7 @@ suite('🧪 American/British Translator: HTTP', () => {
               if (error) return assert.fail(error)
               for (const key of Object.keys(expectedResponse)) {
                 const value = response[key],
-                  expectedValue = expectedResponse[key]-
+                  expectedValue = expectedResponse[key]
 
                 expectedValue instanceof Object
                   ? assert.deepEqual(value, expectedValue)
