@@ -14,15 +14,17 @@ suite('🧪 American/British Translator: HTTP', () => {
    * @param {string} name The name of the test.
    * @param {'get' | 'put' | 'post' | 'patch' | 'delete'} method The method of the request.
    * @param {URL | string} api The URL instance pointing to the api endpoint.
-   * @param {object} body The data to send, in case of a method besides 'get'.
+   * @param {object} body The data to send, in case of a method that accepts a body (POST, PUT, CONNECT or PATCH). Ignored in other methods.
    * @param {object} expectedResponse The expected values of certain response properties. */
-  function runTest(name, method, api, body, expectedResponse) {
+  function runHTTPTest(name, method, api, body, expectedResponse) {
     function callback(done) {
-      method === 'get'
+      const bodyMethodRegexes = [/post/i, /put/i, /connect/i, /patch/i]
+      bodyMethodRegexes.some(regex => regex.test(method))
         ? chai
             .request(server)
             // @ts-ignore
-            .get(api?.href || api)
+            [method](api?.href || api)
+            .send(body)
             .end((error, response) => {
               if (error) return assert.fail(error)
               for (const key of Object.keys(expectedResponse)) {
@@ -39,8 +41,7 @@ suite('🧪 American/British Translator: HTTP', () => {
         : chai
             .request(server)
             // @ts-ignore
-            [method](api?.href || api)
-            .send(body)
+            .get(api?.href || api)
             .end((error, response) => {
               if (error) return assert.fail(error)
               for (const key of Object.keys(expectedResponse)) {
@@ -59,20 +60,20 @@ suite('🧪 American/British Translator: HTTP', () => {
     test(name, callback)
   }
   /**
-   * @param {'american' | 'british'} from
+   * @param {'american' | 'british'} foreign
    * @param {'american' | 'british'} locale
    * @modifies testCount - incrememts the testCoutn variable by 1 whenever called.
    * @returns {string} */
-  function testName(from, locale) {
+  function testName(foreign, locale) {
     return `${testCount++}. ${
-      from === 'american' ? 'American text' : 'British text'
-    } with "${locale}" locale`
+      foreign === 'american' ? 'American text' : 'British text'
+    } with ${locale[0].toUpperCase() + locale.slice(1)} locale`
   }
   let testCount = 1
   for (const [americanSentence, britishSentence] of americanBritishSentences) {
     /** @type {'american' | 'british'} */
     let currentLocale = 'american'
-    runTest(
+    runHTTPTest(
       testName('american', currentLocale),
       'post',
       `${TRANSLATOR_API}?locale=${currentLocale}`,
@@ -87,7 +88,7 @@ suite('🧪 American/British Translator: HTTP', () => {
         },
       }
     )
-    runTest(
+    runHTTPTest(
       testName('british', currentLocale),
       'post',
       `${TRANSLATOR_API}?locale=${currentLocale}`,
@@ -104,7 +105,7 @@ suite('🧪 American/British Translator: HTTP', () => {
     )
 
     currentLocale = 'british'
-    runTest(
+    runHTTPTest(
       testName('american', currentLocale),
       'post',
       `${TRANSLATOR_API}?locale=${currentLocale}`,
@@ -119,7 +120,7 @@ suite('🧪 American/British Translator: HTTP', () => {
         },
       }
     )
-    runTest(
+    runHTTPTest(
       testName('british', currentLocale),
       'post',
       `${TRANSLATOR_API}?locale=${currentLocale}`,

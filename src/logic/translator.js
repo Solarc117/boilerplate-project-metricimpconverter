@@ -11,9 +11,20 @@ module.exports = class Translator {
       function replacer(matched, preceeding, succeeding) {
         const alphaNumeric = /[A-Za-zÀ-ÖØ-öø-ÿ0-9]/
 
-        return alphaNumeric.test(preceeding) || alphaNumeric.test(succeeding)
-          ? matched
-          : `${preceeding}${local}${succeeding}`
+        if (alphaNumeric.test(preceeding) || alphaNumeric.test(succeeding))
+          return matched
+
+        const alpha = /[A-Za-zÀ-ÖØ-öø-ÿ]/,
+          firstLetter = matched[alpha.test(matched[0]) ? 0 : 1]
+
+        return `${preceeding}${
+          firstLetter === firstLetter.toUpperCase() &&
+          matched.slice(1) === matched.slice(1).toLowerCase()
+            ? `${local[0].toUpperCase()}${local.slice(1)}`
+            : matched === matched.toUpperCase()
+            ? local.toUpperCase()
+            : local
+        }${succeeding}`
       }
       function getForeignRegex(foreign) {
         return new RegExp(`(.?)${foreign}(.?)`, 'gi')
