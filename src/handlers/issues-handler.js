@@ -1,14 +1,12 @@
 'use strict'
-const { ObjectId } = require('mongodb'),
-  sanitize = require('mongo-sanitize'),
+const sanitize = require('mongo-sanitize'),
   IssuesDAO = require('../dao/issues-dao.js')
 
 module.exports = class IssueHandler {
-  1
   /**
    * @description Calls the IssuesDAO dropTest method, and sends json to the client depicting the result.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async drop(req, res) {
     const dropResult = await IssuesDAO.dropTest()
@@ -20,8 +18,8 @@ module.exports = class IssueHandler {
 
   /**
    * @description Fetches all projects in database, and returns their names.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async getProjects(req, res) {
     const result = await IssuesDAO.fetchProjects()
@@ -33,8 +31,8 @@ module.exports = class IssueHandler {
 
   /**
    * @description Attempts to post the received project to the database. Automatically assigns a new ObjectId to new projects.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async postProject(req, res) {
     const {
@@ -47,8 +45,7 @@ module.exports = class IssueHandler {
           .status(400)
           .json({ error: 'please provide valid project and owner values' })
 
-    const owner = sanitize(o),
-      project = sanitize(p),
+    const [owner, project] = [o, p].map(sanitize),
       postResult = await IssuesDAO.createProject(project, owner)
 
     // @ts-ignore
@@ -57,8 +54,8 @@ module.exports = class IssueHandler {
 
   /**
    * @description Fetches a project from the database using its title. Responds with null if no match was found, or otherwise with the project's issues. Filters the issues array if any queries were passed. Responds with an error object and status code 500 if a server error is encountered.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async getProjectIssues(req, res) {
     function filterIssues(issues = [], queries = {}) {
@@ -157,8 +154,8 @@ module.exports = class IssueHandler {
 
   /**
    * @description Attempts to append an issue to a project. Creates the project if it does not exist.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async appendIssue(req, res) {
     const {
@@ -166,38 +163,33 @@ module.exports = class IssueHandler {
         params: { project: p },
       } = req,
       project = sanitize(p),
-      openType = typeof issue.open,
-      requiredProperties = {
+      properties = {
         strings: [
-          'title',
-          'text',
-          'created_by',
-          'assigned_to',
-          'status_text',
-          'created_on',
-          'last_updated',
+          { name: 'title', required: true },
+          { name: 'text', required: true },
+          { name: 'created_by', required: true },
+          { name: 'assigned_to', required: false },
+          { name: 'status_text', required: false },
+          { name: 'created_on', required: false },
+          { name: 'last_updated', required: false },
         ],
         booleans: ['open'],
       }
     sanitize(issue)
 
-    for (const stringProperty of requiredProperties.strings)
-      if (typeof issue[stringProperty] !== 'string') issue[stringProperty] = ''
-    for (const booleanProperty of requiredProperties.booleans)
-      if (typeof issue[booleanProperty] !== 'boolean')
-        issue[booleanProperty] = true
+    for (const { name, required } of properties.strings) {
+      if (typeof issue[name] !== 'string') issue[name] = ''
+      if (required && issue[name].length === 0)
+        return res.status(400).json({
+          error: `missing required string property ${name} - expected a string of at least length 1`,
+        })
+    }
+    for (const property of properties.booleans)
+      if (typeof issue[property] !== 'boolean') issue[property] = true
 
-    if (openType !== 'boolean' && openType !== 'undefined')
-      return res.status(400).json({
-        error: `unexpected open property of type ${openType} on project - expected a boolean or undefined`,
-      })
-
-    // Do not require a trycatch block for the following asynchronous method, because it itself will handle errors returned by the db and return an object with an error property.
-    // this.#updateIssueDates(issue) does not work in node/express project, but it does in next?
     const issueWithUpdatedDates = IssueHandler.#updateIssueDates(issue),
       result = await IssuesDAO.createIssue(issueWithUpdatedDates, project)
 
-    // Remember to verify that all error properties the DAO returns are SERVER, and not CLIENT errors. DAO should only be dealing with server errors at this point; client errors (bad requests) should be handled by the handler.
     result?.error
       ? res.status(500).json({ error: 'could not submit issue' })
       : res.status(200).json({
@@ -207,8 +199,8 @@ module.exports = class IssueHandler {
 
   /**
    * @description Attempts to update a single issue of the specified index, under the specified project. May only update title, text, assigned_to, status_text, and/or open properties of issues.
-   * @param {object} req The Express request body.
-   * @param {object} res The Express response body.
+   * @param {import('express').Request} req The Express request body.
+   * @param {import('express').Response} res The Express response body.
    */
   static async updateIssue(req, res) {
     const {
@@ -217,6 +209,12 @@ module.exports = class IssueHandler {
         params: { project: p },
       } = req,
       project = sanitize(p)
+
+    if (Object.keys(issue).length === 0)
+      return res.status(400).json({
+        error: 'no update fields passed - please include at least one field',
+      })
+
     sanitize(issue)
     issue.open = issue.open !== undefined
     let patchResult
@@ -227,17 +225,14 @@ module.exports = class IssueHandler {
           error: `unexpected property ${prop} on issue update - this property cannot be updated`,
         })
 
-    if (Object.keys(issue).length === 0)
-      return res.status(400).json({
-        error: 'no update fields passed - please include at least one field',
-      })
-
+    // @ts-ignore
     if (!IssueHandler.#validateIndex(index))
       return res
         .status(400)
         .json({ error: 'invalid index - please provide a whole number' })
 
     issue.last_updated = new Date().toLocaleDateString()
+    // @ts-ignore
     patchResult = await IssuesDAO.updateIssue({ project, index }, issue)
 
     res.status(patchResult?.error ? 500 : 200).json(patchResult)
@@ -245,12 +240,12 @@ module.exports = class IssueHandler {
 
   /**
    * @description Attempts to delete the specified issue of the specified project from the database.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async deleteIssue(req, res) {
     const { project: p } = req.params,
-      { index } = req.body,
+      { index } = req.query,
       project = sanitize(p)
     let deleteResult
 
@@ -259,11 +254,13 @@ module.exports = class IssueHandler {
         error: 'please provide a valid project name',
       })
 
+    // @ts-ignore
     if (!IssueHandler.#validateIndex(index))
       return res
         .status(400)
         .json({ error: 'please provide a whole number index' })
 
+    // @ts-ignore
     deleteResult = await IssuesDAO.deleteIssue(project, +index)
     res.status(deleteResult?.error ? 500 : 200).json(deleteResult)
   }

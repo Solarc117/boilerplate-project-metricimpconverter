@@ -3,3 +3,9 @@ node_modules/
 .vscode
 dev/
 .vercel
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/playwright/.cache/

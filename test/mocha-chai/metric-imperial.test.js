@@ -1,9 +1,9 @@
 'use strict'
 const chai = require('chai'),
   chaiHttp = require('chai-http'),
-  server = require('../src/server.js'),
-  cH = require('../src/handlers/convert-handler.js'),
-  assert = require('./modified-assert.js'),
+  server = require('../../src/server.js'),
+  cH = require('../../src/handlers/convert-handler.js'),
+  assert = require('../modified-assert.js'),
   { IMP_MET_PAIRS } = cH,
   UNITS = IMP_MET_PAIRS.flat(),
   getNum = cH.getNum.bind(cH),
@@ -12,7 +12,6 @@ const chai = require('chai'),
   getReturnUnit = cH.getReturnUnit.bind(cH),
   spellOutUnit = cH.spellOutUnit.bind(cH),
   CONVERTER = '/api/convert'
-
 chai.use(chaiHttp)
 
 suite('🧪 \x1b[33mMetric Imperial: ConvertHandler\n', () => {

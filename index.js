@@ -25,7 +25,8 @@ MongoClient.connect(env.MONGO_URI, {
       if (env.NODE_ENV !== 'development') return
 
       try {
-        require('./test-runner.js').run()
+        // @ts-ignore
+        require('./mocha-runner.js').run()
       } catch (err) {
         error('\x1b[31m\nTests are not valid:', err)
       }

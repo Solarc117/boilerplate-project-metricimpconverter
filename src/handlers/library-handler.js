@@ -5,8 +5,8 @@ const { ObjectId } = require('mongodb'),
 module.exports = class LibraryHandler {
   /**
    * @description Fetches all books.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async getAllBooks(req, res) {
     const result = await LibraryDAO.getBooks()
@@ -16,8 +16,8 @@ module.exports = class LibraryHandler {
 
   /**
    * @description Attempts to post the received resources to the database.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async createBook(req, res) {
     const { body: book } = req,
@@ -46,8 +46,8 @@ module.exports = class LibraryHandler {
 
   /**
    * @description Fetches a single book using its _id.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async getBook(req, res) {
     const {
@@ -60,8 +60,8 @@ module.exports = class LibraryHandler {
 
   /**
    * @description Adds a comment to the book with the passed _id.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async addComment(req, res) {
     const {
@@ -86,8 +86,8 @@ module.exports = class LibraryHandler {
 
   /**
    * @description Deletes a single book using its _id.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async deleteBook(req, res) {
     const {
@@ -100,8 +100,8 @@ module.exports = class LibraryHandler {
 
   /**
    * @description Deletes all books.
-   * @param {object} req The Express request object.
-   * @param {object} res The Express response object.
+   * @param {import('express').Request} req The Express request object.
+   * @param {import('express').Response} res The Express response object.
    */
   static async deleteBooks(req, res) {
     const result = await LibraryDAO.deleteAll()

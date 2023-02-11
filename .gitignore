@@ -3,8 +3,11 @@ node_modules
 .vscode
 *.mongodb
 ignore.js
-dev/test.http
-dev/package.json
-dev/ignore.js
 .vercel
 app.yaml
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -1,6 +1,5 @@
 // @ts-nocheck
-const chai = require('chai'),
-  { assert } = chai
+const { assert } = require('chai')
 
 /**
  * @description Asserts that arguments passed are null.
@@ -44,8 +43,8 @@ assert.strictEqualPairs = function (...pairs) {
 
 /**
  * @description Asserts the array argument contains every other argument passed.
- * @param {Array} array 
- * @param  {...any} vals 
+ * @param {Array} array
+ * @param  {...any} vals
  */
 assert.includesAll = function (array, ...vals) {
   for (const v of vals) assert.include(array, v)
@@ -54,9 +53,9 @@ assert.includesAll = function (array, ...vals) {
 /**
  * @description Asserts all arguments match the data types found in the array argument.
  * @param {any[]} dataTypes Data types that all values are expected to fall under.
- * @param {...any} vals Values to assert are of a data type found in the dataTypes parameter. 
+ * @param {...any} vals Values to assert are of a data type found in the dataTypes parameter.
  */
-assert.allOneOf = function(dataTypes, ...vals) {
+assert.allOneOf = function (dataTypes, ...vals) {
   for (const v of vals) assert.oneOf(v, dataTypes)
 }
 

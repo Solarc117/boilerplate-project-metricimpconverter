@@ -11,8 +11,8 @@ const { Router } = require('express'),
   getReturnNum = ConvertHandler.getReturnNum.bind(ConvertHandler),
   getReturnUnit = ConvertHandler.getReturnUnit.bind(ConvertHandler),
   getString = ConvertHandler.getString.bind(ConvertHandler)
+  // Base route: /api
 
-// Base route: /api
 router.route('/convert').get((req, res) => {
   const { input } = req.query,
     { err: err0, initNum } = getNum(input),

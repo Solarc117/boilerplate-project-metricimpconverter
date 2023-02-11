@@ -6,6 +6,7 @@ LEGEND:
 
 📄 implement tdd for these projects; FIRST write the E2E failing test, THEN write code to pass test, FINALLY refactor test/code to implement a better solution (if any).  
  
+TASKS:
 ✅ set environment variables on app.yaml
 ❌ for issue-tracker, write a test that: (bind EINVAL 0.0.0.0, 
 tried comparing to sudoku-solver which also uses browser tests
@@ -15,7 +16,6 @@ but came up empty-handed)
   ❌ and ensures #jsonResult is updated with the correct data 
     📄 avoid being TOO thorough when validating data above
 ✅ stage & commit changes with semantic notes
-
   ✅ ensure api endpoints are tied to the proper handler methods
   ✅ ensure data is being sent & received propery in client forms and handler methods; for each form, send data and add logs to debug in their respective handler methods until they work:
     ✅ getProjects
@@ -35,14 +35,12 @@ but came up empty-handed)
     ✅ delete:
 ✅ fix bug where project_owner is assigned to the ISSUE, instead of the project
 ✅ stage & commit changes with semantic notes
-
 ✅ fix bug where updateIssueForm shows even when no issue was fetched:
 ✅ stage & commit changes with semantic notes
 ✅ fix duplicate project bug:
 ✅ stage & commit changes with semantic notes
 ✅ ensure American/British tests are running
 ✅ stage & commit changes with semantic notes
-
 ✅ for 10 sentences, test that translating with the proper locale setting translates properly (british <=> american):
   ✅ reorganised => reorganized: "I reorganised my bookshelf by book size."
   ✅ sabre => saber: "Are sabre-toothed tigers extinct now?"
@@ -54,7 +52,19 @@ but came up empty-handed)
   ✅ demilitarization => demilitarisation: "More and more politicians support demilitarization."
   ✅ graveled => gravelled: "It took a while, but we finally graveled this area."
   ✅ hemorrhages => haemorrhages: "The hospital is overwhelmed with hemorrhages today."
+✅ stage & commit changes with semantic notes
+✅ figure out how to handle capitalized letters in the text, then implement; copy all but the necessary letter, and provide a capital translation if the entire letter matched was already capitalized
+✅ stage & commit changes with semantic notes
+
+
+- address failing tests for Sudoku Solver (browser):
+    - try adding a new test file, to see if the problem can be recreated/avoided?
 - stage & commit changes with semantic notes
- 
-- figure out how to handle capitalized letters in the text, then implement; copy all but the necessary letter, and provide a capital translation if the entire letter matched was already capitalized
+
+- address failing tests for Issue Tracker:
+    - 
+- stage & commit changes with semantic notes
+
+- address failing tests for Personal Library:
+  - 
 - stage & commit changes with semantic notes
